@@ -2,32 +2,54 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>MEISTER-BLITZ TEST</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEISTER-BLITZ FIX</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
-<body style="font-family:sans-serif; text-align:center; padding-top:50px;">
+<body style="font-family:sans-serif; text-align:center; padding-top:50px; background:#f0f4f8;">
 
-    <div id="auth-box">
+    <div style="background:white; padding:30px; border-radius:15px; display:inline-block; box-shadow:0 10px 20px rgba(0,0,0,0.1);">
         <h1>⚡ Registrierungs-Test</h1>
-        <input type="email" id="email" placeholder="E-Mail" style="padding:10px;"><br><br>
-        <input type="password" id="pass" placeholder="Passwort" style="padding:10px;"><br><br>
-        <button onclick="testSignUp()" style="padding:10px 20px; background:blue; color:white;">JETZT REGISTRIEREN</button>
+        <p>Bitte gib Daten ein:</p>
+        <input type="email" id="email" placeholder="E-Mail" style="padding:12px; width:250px; border:1px solid #ccc; border-radius:8px;"><br><br>
+        <input type="password" id="pass" placeholder="Passwort" style="padding:12px; width:250px; border:1px solid #ccc; border-radius:8px;"><br><br>
+        <button onclick="startAuth()" style="padding:15px 30px; background:#5d5fef; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">JETZT REGISTRIEREN</button>
     </div>
 
     <script>
-        const sb = supabase.createClient('https://jifbshvofzsqiuvitpgm.supabase.coeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8');
+        async function startAuth() {
+            // 1. Prüfen ob das Script überhaupt geladen wurde
+            if (typeof supabase === 'undefined') {
+                alert("FEHLER: Die Supabase-Bibliothek konnte nicht geladen werden! Dein Browser oder dein Netzwerk blockiert die Verbindung.");
+                return;
+            }
 
-        async function testSignUp() {
-            alert("Knopf gedrückt! Starte Registrierung...");
+            const sb = supabase.createClient(
+                'https://jifbshvofzsqiuvitpgm.supabase.co', 
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8'
+            );
+
             const e = document.getElementById('email').value;
             const p = document.getElementById('pass').value;
 
-            const { data, error } = await sb.auth.signUp({ email: e, password: p });
+            if(!e || !p) return alert("Bitte E-Mail und Passwort ausfüllen!");
 
-            if (error) {
-                alert("FEHLER VON SUPABASE: " + error.message);
-            } else {
-                alert("ERFOLG! User angelegt. Prüfe jetzt dein Supabase Dashboard unter Authentication.");
+            alert("Verbindung wird aufgebaut...");
+
+            try {
+                const { data, error } = await sb.auth.signUp({ 
+                    email: e, 
+                    password: p,
+                    options: { emailRedirectTo: window.location.href }
+                });
+
+                if (error) {
+                    alert("SUPABASE FEHLER: " + error.message);
+                } else {
+                    alert("ERFOLG! User wurde angelegt. Schau jetzt in dein Postfach oder in dein Supabase Dashboard.");
+                }
+            } catch (err) {
+                alert("KRITISCHER SYSTEMFEHLER: " + err.message);
             }
         }
     </script>
