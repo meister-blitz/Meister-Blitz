@@ -157,7 +157,6 @@
         .btn-mail { background: var(--accent); }
         .btn-upgrade { background: #10b981; }
 
-        /* --- TABLE AREA --- */
         .leistung-zeile { 
             display: grid; 
             grid-template-columns: 1fr 80px 100px 100px 40px; 
@@ -213,7 +212,7 @@
                     <div class="section-title">Abonnement & Status</div>
                     <div id="status-display" class="badge">Lade...</div>
                     <div id="upgrade-area" style="margin-top: 20px; display: none;">
-                        <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-main btn-upgrade">Upgrade auf PRO</a>
+                        <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-main btn-upgrade">Upgrade auf PRO (4 Wochen frei)</a>
                     </div>
                 </div>
 
@@ -243,7 +242,7 @@
                         <option value="KOSTENVORANSCHLAG">Kostenvoranschlag</option>
                         <option value="LIEFERSCHEIN">Lieferschein</option>
                     </select>
-                    <input type="text" id="r_nr_custom" placeholder="Rechnungsnummer (z.B. RE-2024-001)">
+                    <input type="text" id="r_nr_custom" placeholder="Nummer (z.B. RE-2024-001)">
                 </div>
 
                 <div class="card">
@@ -266,14 +265,19 @@
     </div>
 
 <script>
+    // Supabase Konfiguration
     const _supabase = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
     let currentUser, userCredits = 0, aboBis = null;
-    let rNum = Math.floor(Math.random() * 9000) + 1000;
 
     window.onload = async () => {
         const { data: { session } } = await _supabase.auth.getSession();
-        if (session) { currentUser = session.user; await loadUserData(); await checkPaymentSuccess(); loadHistory(); }
-        id('r_nr_custom').value = "RE-" + new Date().getFullYear() + "-" + rNum;
+        if (session) { 
+            currentUser = session.user; 
+            await loadUserData(); 
+            await checkPaymentSuccess(); 
+            loadHistory(); 
+        }
+        id('r_nr_custom').value = "RE-" + new Date().getFullYear() + "-" + (Math.floor(Math.random() * 9000) + 1000);
     };
 
     async function handleLogin() {
@@ -286,6 +290,7 @@
         const { data, error } = await _supabase.auth.signUp({ email, password });
         if (error) { alert(error.message); } 
         else if (data.user) {
+            // WICHTIG: Hier werden die 3 Gratis-Credits initial in die DB geschrieben
             await _supabase.from('profiles').insert({ id: data.user.id, credits: 3 });
             alert("Konto erstellt! Bitte einloggen.");
         }
@@ -296,7 +301,9 @@
     async function loadUserData() {
         const { data: prof } = await _supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
         if (prof) {
-            userCredits = prof.credits || 0; aboBis = prof.abo_bis;
+            // Wir nehmen die Credits IMMER aus der Datenbank
+            userCredits = prof.credits; 
+            aboBis = prof.abo_bis;
             id('meinName').value = prof.firma_name || ''; id('meinInhaber').value = prof.firma_inhaber || '';
             id('meinStrasse').value = prof.firma_strasse || ''; id('meinOrt').value = prof.firma_ort || '';
             id('meinIban').value = prof.firma_iban || ''; id('meinSteuer').value = prof.firma_steuer || '';
@@ -311,10 +318,12 @@
     async function saveProfile() {
         if (!currentUser) return;
         await _supabase.from('profiles').upsert({ 
-            id: currentUser.id, firma_name: v('meinName'), firma_inhaber: v('meinInhaber'),
+            id: currentUser.id, 
+            firma_name: v('meinName'), firma_inhaber: v('meinInhaber'),
             firma_strasse: v('meinStrasse'), firma_ort: v('meinOrt'),
             firma_iban: v('meinIban'), firma_steuer: v('meinSteuer'),
-            firma_tel: v('meinTel'), credits: userCredits, abo_bis: aboBis
+            firma_tel: v('meinTel')
+            // Credits werden hier NICHT gespeichert, damit der User sie nicht selbst im Browser manipulieren kann
         });
     }
 
@@ -336,59 +345,87 @@
     function refreshUI() {
         const area = id('action-area'), status = id('status-display'), upgrade = id('upgrade-area');
         const aktiv = aboBis && new Date(aboBis) > new Date();
-        status.innerText = aktiv ? "PRO PLAN AKTIV" : "GUTHABEN: " + userCredits + " DOKUMENTE";
-        status.style.background = aktiv ? "#dcfce7" : "#fef9c3";
-        status.style.color = aktiv ? "#166534" : "#854d0e";
-        if (aktiv || userCredits > 0) {
+        
+        if (aktiv) {
+            status.innerText = "PRO PLAN AKTIV (UNLIMITIERT)";
+            status.style.background = "#dcfce7"; status.style.color = "#166534";
             upgrade.style.display = "none";
+        } else {
+            status.innerText = "GUTHABEN: " + (userCredits > 0 ? userCredits : 0) + " DOKUMENTE";
+            status.style.background = "#fef9c3"; status.style.color = "#854d0e";
+            if(userCredits <= 0) upgrade.style.display = "block";
+        }
+
+        if (aktiv || userCredits > 0) {
             area.innerHTML = `
                 <button class="btn-main btn-pdf" onclick="generatePDF(false)">PDF Dokument erstellen</button>
                 <button class="btn-main btn-mail" onclick="generatePDF(true)">Per E-Mail an Kunden senden</button>`;
         } else {
-            upgrade.style.display = "block";
-            area.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Guthaben aufgebraucht.</p>`;
+            area.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Bitte Upgrade durchführen, um weitere Dokumente zu erstellen.</p>`;
         }
     }
 
     async function generatePDF(isEmail) {
         const aktiv = aboBis && new Date(aboBis) > new Date();
-        if (!aktiv) { if(userCredits <= 0) return; userCredits--; await saveProfile(); }
+        
+        // Prüfung vor dem Erstellen
+        if (!aktiv) { 
+            if(userCredits <= 0) return alert("Guthaben aufgebraucht!");
+            
+            // WICHTIG: Credit in der Datenbank abziehen
+            userCredits--; 
+            const { error } = await _supabase.from('profiles').update({ credits: userCredits }).eq('id', currentUser.id);
+            if(error) return alert("Fehler beim Abbuchen der Credits.");
+        }
+        
         refreshUI();
 
         const doc = new jspdf.jsPDF();
         const type = id('doc-type').value;
         const nr = v('r_nr_custom');
         
-        // PDF Header & Adressen
-        doc.setFontSize(22); doc.text(type, 20, 30);
+        // PDF Gestaltung (Absender oben rechts, Empfänger links)
         doc.setFontSize(10);
-        doc.text("VON: " + v('meinName') + " | " + v('meinStrasse') + ", " + v('meinOrt'), 20, 40);
-        doc.text("AN: " + v('kundeName'), 20, 55);
-        doc.text(v('kundeStrasse') + ", " + v('kundeOrt'), 20, 60);
-        doc.text("Datum: " + new Date().toLocaleDateString() + " | Nummer: " + nr, 20, 75);
+        doc.text(v('meinName'), 140, 20);
+        doc.text(v('meinStrasse'), 140, 25);
+        doc.text(v('meinOrt'), 140, 30);
+        doc.text("Tel: " + v('meinTel'), 140, 35);
+
+        doc.setFontSize(22); doc.text(type, 20, 50);
+        doc.setFontSize(11);
+        doc.text("AN:", 20, 65);
+        doc.text(v('kundeName'), 20, 72);
+        doc.text(v('kundeStrasse'), 20, 77);
+        doc.text(v('kundeOrt'), 20, 82);
+        
+        doc.setFontSize(10);
+        doc.text("Datum: " + new Date().toLocaleDateString(), 20, 100);
+        doc.text("Dokument-Nr: " + nr, 20, 105);
 
         const tableData = []; let netto = 0;
         document.querySelectorAll('.leistung-zeile').forEach(row => {
             const d = row.querySelector('.desc').value, m = row.querySelector('.menge').value, e = row.querySelector('.einheit').value, p = row.querySelector('.preis').value;
             const s = (m * p); netto += s;
-            tableData.push([d, m + " " + e, p + " €", s.toFixed(2) + " €"]);
+            tableData.push([d, m + " " + e, p.toFixed(2) + " €", s.toFixed(2) + " €"]);
         });
 
-        doc.autoTable({ startY: 85, head: [['Leistung', 'Menge', 'E-Preis', 'Gesamt']], body: tableData, headStyles: {fillColor: [15, 23, 42]} });
+        doc.autoTable({ startY: 115, head: [['Leistung', 'Menge', 'E-Preis', 'Gesamt']], body: tableData, headStyles: {fillColor: [15, 23, 42]} });
         
         const finalY = doc.lastAutoTable.finalY + 10;
-        doc.text("Netto: " + netto.toFixed(2) + " €", 140, finalY);
-        doc.text("MwSt 19%: " + (netto * 0.19).toFixed(2) + " €", 140, finalY + 5);
+        doc.text("Netto-Betrag:", 130, finalY); doc.text(netto.toFixed(2) + " €", 185, finalY, {align: 'right'});
+        doc.text("MwSt 19%:", 130, finalY + 7); doc.text((netto * 0.19).toFixed(2) + " €", 185, finalY + 7, {align: 'right'});
         doc.setFont(undefined, 'bold');
-        doc.text("GESAMT: " + (netto * 1.19).toFixed(2) + " €", 140, finalY + 12);
-        doc.setFont(undefined, 'normal');
-        doc.text("IBAN: " + v('meinIban') + " | Steuer-Nr: " + v('meinSteuer'), 20, finalY + 25);
+        doc.text("RECHNUNGSBETRAG:", 130, finalY + 16); doc.text((netto * 1.19).toFixed(2) + " €", 185, finalY + 16, {align: 'right'});
+        
+        doc.setFont(undefined, 'normal'); doc.setFontSize(9);
+        doc.text("Zahlbar an IBAN: " + v('meinIban'), 20, finalY + 35);
+        doc.text("Steuer-Nr: " + v('meinSteuer') + " | Inhaber: " + v('meinInhaber'), 20, finalY + 40);
 
         if (isEmail) {
             const mail = v('kundeEmail');
-            if(!mail) alert("Keine E-Mail Adresse hinterlegt!");
+            if(!mail) alert("Keine E-Mail Adresse des Kunden eingegeben!");
             const subject = encodeURIComponent(type + " " + nr);
-            const body = encodeURIComponent("Hallo " + v('kundeName') + ",\nanhängend erhalten Sie das Dokument.\n\nBeste Grüße,\n" + v('meinName'));
+            const body = encodeURIComponent("Sehr geehrte(r) " + v('kundeName') + ",\n\nanbei erhalten Sie das Dokument " + nr + " als PDF.\n\nBeste Grüße,\n" + v('meinName'));
             window.location.href = `mailto:${mail}?subject=${subject}&body=${body}`;
         }
         doc.save(`${type}_${nr}.pdf`);
@@ -397,7 +434,7 @@
 
     function saveToHistory(name, betrag) {
         let history = JSON.parse(localStorage.getItem('meister_history') || '[]');
-        history.unshift({ name, betrag });
+        history.unshift({ name, betrag, date: new Date().toLocaleDateString() });
         localStorage.setItem('meister_history', JSON.stringify(history.slice(0,5)));
         loadHistory();
     }
@@ -405,15 +442,20 @@
     function loadHistory() {
         const list = id('history-list');
         let history = JSON.parse(localStorage.getItem('meister_history') || '[]');
-        list.innerHTML = history.map(h => `<div class="history-item">${h.name} - ${h.betrag}€</div>`).join('');
+        list.innerHTML = history.map(h => `<div class="history-item"><b>${h.name}</b><br>${h.betrag}€ (${h.date})</div>`).join('');
     }
 
     function id(i) { return document.getElementById(i); }
     function v(i) { return id(i).value; }
+    
     async function checkPaymentSuccess() {
         if (new URLSearchParams(window.location.search).get('payment') === 'success') {
-            let d = new Date(); d.setDate(d.getDate() + 30); aboBis = d.toISOString();
-            await saveProfile(); window.history.replaceState({}, '', '/'); refreshUI();
+            let d = new Date(); d.setDate(d.getDate() + 30); 
+            aboBis = d.toISOString();
+            // Updatet das Abo-Datum in der Datenbank
+            await _supabase.from('profiles').update({ abo_bis: aboBis }).eq('id', currentUser.id);
+            window.history.replaceState({}, '', '/'); 
+            refreshUI();
         }
     }
 </script>
