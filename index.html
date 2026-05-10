@@ -2,14 +2,74 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEISTER-BLITZ PRO</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; background: #f0f4f8; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .btn-blue { background: #5d5fef; color: white; }
+        :root { 
+            --primary: #5d5fef; 
+            --bg: #f0f4f8; 
+            --white: #ffffff; 
+            --dark: #1a1a2e;
+            --gray: #666;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg); 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
+        .card { 
+            background: var(--white); 
+            padding: 40px; 
+            border-radius: 20px; 
+            width: 100%; 
+            max-width: 400px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            text-align: center; 
+        }
+        h1 { color: var(--dark); margin-bottom: 30px; font-size: 28px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 5px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .btn { 
+            width: 100%; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 16px; 
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-blue { background: var(--primary); color: white; }
+        .btn-blue:hover { background: #4a4cd9; }
+        .btn-ghost { background: #eee; color: var(--dark); }
+        
+        .credits-display {
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ffe082;
+        }
+        .payment-alert {
+            color: #d32f2f;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -17,25 +77,33 @@
 <div class="card">
     <div id="auth-ui">
         <h1>⚡ Meister-Blitz</h1>
-        <input type="email" id="email" placeholder="Deine E-Mail">
-        <input type="password" id="password" placeholder="Passwort">
-        <button class="btn btn-blue" onclick="register()">Registrieren (3 Gratis-Codes)</button>
-        <button class="btn" onclick="login()" style="background:#eee;">Einloggen</button>
+        <div class="input-group">
+            <input type="email" id="email" placeholder="E-Mail Adresse">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Passwort">
+        </div>
+        <button class="btn btn-blue" onclick="handleAuth('signUp')">Registrieren (3 Gratis-Codes)</button>
+        <button class="btn btn-ghost" onclick="handleAuth('signIn')">Einloggen</button>
     </div>
 
     <div id="app-ui" style="display:none;">
         <h1>✅ Willkommen</h1>
-        <p>Verfügbare Credits: <strong id="credits-count">0</strong></p>
-        <div id="payment-notice" style="display:none; color: red; font-weight: bold;">
-            Guthaben leer! Bitte zahlen für mehr Codes.
+        <div class="credits-display">
+            Verfügbare Credits: <strong id="credits-count">...</strong>
         </div>
-        <button class="btn btn-blue" onclick="useCode()">Einen Code verbrauchen</button>
-        <button class="btn" onclick="location.reload()" style="margin-top:20px;">Abmelden</button>
+        
+        <div id="payment-notice" style="display:none;" class="payment-alert">
+            ⚠️ Guthaben leer! Bitte für weitere Codes zahlen.
+        </div>
+
+        <button class="btn btn-blue" id="use-btn" onclick="useCredit()">Einen Code verbrauchen</button>
+        <button class="btn btn-ghost" onclick="location.reload()" style="margin-top:30px;">Abmelden</button>
     </div>
 </div>
 
 <script>
-    // HIER SIND DIE KORREKTEN ZUGANGSDATEN
+    // DEINE NEUEN DATEN (GEMYWL...)
     const _supabase = supabase.createClient(
         'https://gemywlmdshnagfetimyy.supabase.co', 
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlbXl3bG1kc2huYWdmZXRpbXl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTE5OTQsImV4cCI6MjA5MzkyNzk5NH0.jfbP6DI7XhZ0zVg4VoltIZEWOztvXZ7g_ZmhGKG7sFA'
@@ -43,57 +111,60 @@
 
     let userSession = null;
 
-    async function register() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        if(!e || !p) return alert("Bitte alles ausfüllen!");
+    async function handleAuth(type) {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-        const { data, error } = await _supabase.auth.signUp({ email: e, password: p });
-        
-        if (error) return alert("Fehler: " + error.message);
-        
-        // Erstellt den Eintrag für die 3 Gratis-Credits
-        if (data.user) {
-            await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
-            alert("Account erstellt! Du kannst dich jetzt einloggen.");
+        if (!email || !password) return alert("Bitte Daten eingeben!");
+
+        let result;
+        if (type === 'signUp') {
+            result = await _supabase.auth.signUp({ email, password });
+            if (!result.error) {
+                // Profil mit 3 Credits anlegen
+                await _supabase.from('profiles').insert([{ id: result.data.user.id, credits: 3 }]);
+                alert("Registriert! Du kannst dich jetzt einloggen.");
+            }
+        } else {
+            result = await _supabase.auth.signInWithPassword({ email, password });
         }
-    }
 
-    async function login() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        const { data, error } = await _supabase.auth.signInWithPassword({ email: e, password: p });
-        
-        if (error) return alert("Login fehlgeschlagen: " + error.message);
-        
-        userSession = data.user;
-        showApp();
+        if (result.error) alert("Fehler: " + result.error.message);
+        else if (result.data.user && type === 'signIn') {
+            userSession = result.data.user;
+            showApp();
+        }
     }
 
     async function showApp() {
         document.getElementById('auth-ui').style.display = 'none';
         document.getElementById('app-ui').style.display = 'block';
-        updateCreditsDisplay();
+        updateCredits();
     }
 
-    async function updateCreditsDisplay() {
-        const { data, error } = await _supabase.from('profiles').select('credits').eq('id', userSession.id).single();
+    async function updateCredits() {
+        const { data } = await _supabase.from('profiles').select('credits').eq('id', userSession.id).single();
         if (data) {
             document.getElementById('credits-count').innerText = data.credits;
-            document.getElementById('payment-notice').style.display = data.credits <= 0 ? 'block' : 'none';
+            if (data.credits <= 0) {
+                document.getElementById('payment-notice').style.display = 'block';
+                document.getElementById('use-btn').disabled = true;
+                document.getElementById('use-btn').style.opacity = '0.5';
+            }
         }
     }
 
-    async function useCode() {
+    async function useCredit() {
         const { data } = await _supabase.from('profiles').select('credits').eq('id', userSession.id).single();
         
         if (data && data.credits > 0) {
-            const newCredits = data.credits - 1;
-            await _supabase.from('profiles').update({ credits: newCredits }).eq('id', userSession.id);
-            alert("Code verbraucht! Noch " + newCredits + " übrig.");
-            updateCreditsDisplay();
+            const { error } = await _supabase.from('profiles').update({ credits: data.credits - 1 }).eq('id', userSession.id);
+            if (!error) {
+                alert("Code generiert! -1 Credit.");
+                updateCredits();
+            }
         } else {
-            alert("Kein Guthaben mehr! Bitte lade dein Konto auf.");
+            alert("Keine Credits mehr!");
         }
     }
 </script>
