@@ -8,22 +8,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #5d5fef; --bg: #f0f4f8; --dark: #1a1a2e; --yellow: #ffcc00; --white: #ffffff; }
+        :root { --primary: #5d5fef; --bg: #f0f4f8; --dark: #1a1a2e; --yellow: #ffcc00; --white: #ffffff; --green: #28a745; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: #333; }
         .wrapper { width: 100%; max-width: 900px; margin: auto; }
         .card { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e0e6ed; }
+        
+        /* Login Design aus Deployment #34 & #38 */
         #login-screen { background: var(--yellow); padding: 60px 40px; border-radius: 40px; text-align: center; border: 10px solid var(--dark); margin-top: 40px; }
         .auth-input { width: 100%; max-width: 400px; padding: 15px; margin: 10px 0; border-radius: 12px; border: 4px solid #000; font-size: 18px; font-weight: 900; box-sizing: border-box; }
         .btn-auth { background: #000; color: #fff; padding: 18px 40px; border-radius: 12px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; max-width: 400px; }
+        
         #main-dashboard { display: none; }
         .header-bar { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 15px 25px; border-radius: 20px; margin-bottom: 20px; }
         .section-title { font-weight: 900; color: var(--primary); margin-bottom: 15px; border-left: 5px solid var(--primary); padding-left: 15px; text-transform: uppercase; }
         .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
         input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; box-sizing: border-box; }
-        .leistung-zeile { display: grid; grid-template-columns: 2.5fr 1fr 1.5fr 1fr 0.5fr; gap: 10px; background: #f4f6ff; padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center; border: 1px solid #d0d7de; }
+        
+        .leistung-zeile { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr 0.5fr; gap: 10px; background: #f4f6ff; padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center; }
         .btn-main { width: 100%; padding: 18px; color: white; border: none; border-radius: 15px; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
         .btn-pdf { background: var(--primary); }
-        .btn-save { background: #28a745; font-size: 14px; padding: 10px; margin-bottom: 20px; }
+        .btn-save { background: var(--green); font-size: 14px; padding: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -31,8 +35,8 @@
         <div id="login-screen">
             <h1 style="font-size: 45px; margin: 0;">⚡ MEISTER-BLITZ</h1>
             <p style="font-weight: 900; margin-bottom: 30px;">PROFI-RECHNUNGEN FÜR HANDWERKER</p>
-            <input type="email" id="email" class="auth-input" placeholder="E-MAIL">
-            <input type="password" id="password" class="auth-input" placeholder="PASSWORT">
+            <input type="email" id="auth-email" class="auth-input" placeholder="E-MAIL">
+            <input type="password" id="auth-password" class="auth-input" placeholder="PASSWORT">
             <div style="margin-top: 20px;">
                 <button class="btn-auth" onclick="handleAuth('signInWithPassword')">ANMELDEN</button>
                 <p onclick="handleAuth('signUp')" style="cursor:pointer; font-weight:bold; text-decoration:underline; margin-top:15px;">Konto erstellen (3 Gratis-Tests)</p>
@@ -42,7 +46,7 @@
         <div id="main-dashboard">
             <div class="header-bar">
                 <span>USER: <b id="user-display" style="color:var(--yellow);"></b></span>
-                <span id="credit-badge" style="background:white; color:black; padding:5px 10px; border-radius:10px; font-weight:900;">Lade Credits...</span>
+                <span id="credit-badge" style="background:white; color:black; padding:5px 10px; border-radius:10px; font-weight:900;">...</span>
             </div>
             
             <div class="card">
@@ -53,7 +57,6 @@
                     <input type="text" id="f_ort" placeholder="PLZ / Ort">
                     <input type="text" id="f_iban" placeholder="IBAN">
                     <input type="text" id="f_stnr" placeholder="Steuernummer">
-                    <input type="text" id="f_logo" placeholder="Logo Link (Optional)">
                 </div>
                 <button class="btn-main btn-save" onclick="saveProfile()">DATEN DAUERHAFT SPEICHERN</button>
             </div>
@@ -62,14 +65,14 @@
                 <div class="section-title">👤 KUNDE & RECHNUNG</div>
                 <div class="grid-inputs">
                     <input type="text" id="k_name" placeholder="Kundenname">
-                    <input type="text" id="k_str" placeholder="Kundenstraße">
-                    <input type="text" id="k_ort" placeholder="Kunden PLZ / Ort">
+                    <input type="text" id="k_str" placeholder="Straße">
+                    <input type="text" id="k_ort" placeholder="PLZ / Ort">
                     <input type="text" id="r_nr" placeholder="Rechnungsnummer">
                 </div>
             </div>
 
             <div class="card">
-                <div class="section-title">🛠️ LEISTUNGEN</div>
+                <div class="section-title">🛠️ POSITIONEN</div>
                 <div id="pos-container"></div>
                 <button onclick="addPos()" style="width:100%; padding:10px; border:2px dashed #ccc; border-radius:10px; cursor:pointer;">+ POSITION HINZUFÜGEN</button>
             </div>
@@ -78,12 +81,12 @@
                 <button class="btn-main btn-pdf" onclick="generatePDF()">📥 RECHNUNG JETZT ERSTELLEN</button>
                 <button class="btn-main" style="background:#007bff;" onclick="generatePDF('mail')">📧 DIREKT AN KUNDE SENDEN</button>
             </div>
-            
-            <button onclick="logout()" style="width:100%; background:none; border:none; color:gray; cursor:pointer; margin-top:20px; text-decoration:underline;">Abmelden</button>
+            <button onclick="handleLogout()" style="width:100%; background:none; border:none; color:gray; cursor:pointer; margin-top:20px;">Abmelden</button>
         </div>
     </div>
 
 <script>
+    // Supabase Initialisierung (Korrigiert gemäß Deployment #20)
     const URL = 'https://gemywlmdshnagfetimyy.supabase.co';
     const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlbXl3bG1kc2huYWdmZXRpbXl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTE5OTQsImV4cCI6MjA5MzkyNzk5NH0.jfbP6DI7XhZ0zVg4VoltIZEWOztvXZ7g_ZmhGKG7sFA';
     const _supabase = supabase.createClient(URL, KEY);
@@ -91,16 +94,19 @@
     let sessionUser = null;
     let userProfile = null;
 
+    // Login Logik (Refactored gemäß Deployment #25 & #38)
     async function handleAuth(type) {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        if(!email || !password) return alert("Bitte Daten eingeben");
+
         const { data, error } = await _supabase.auth[type]({ email, password });
-        
-        if (error) return alert("FEHLER: " + error.message);
+        if (error) return alert("Fehler: " + error.message);
         
         if (type === 'signUp') {
+            // Profil Initialisierung
             await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
-            alert("Erfolgreich! Bitte logge dich jetzt ein.");
+            alert("Konto erstellt! Bitte logge dich jetzt ein.");
         } else {
             sessionUser = data.user;
             loadApp();
@@ -112,23 +118,26 @@
         document.getElementById('main-dashboard').style.display = 'block';
         document.getElementById('user-display').innerText = sessionUser.email;
 
-        const { data } = await _supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
-        userProfile = data;
-        
-        if (data && data.firma_daten) {
-            const fd = data.firma_daten;
-            document.getElementById('f_name').value = fd.name || '';
-            document.getElementById('f_str').value = fd.str || '';
-            document.getElementById('f_ort').value = fd.ort || '';
-            document.getElementById('f_iban').value = fd.iban || '';
-            document.getElementById('f_stnr').value = fd.stnr || '';
-            document.getElementById('f_logo').value = data.logo_url || '';
+        // Profil laden
+        const { data, error } = await _supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
+        if(data) {
+            userProfile = data;
+            if (data.firma_daten) {
+                const fd = data.firma_daten;
+                document.getElementById('f_name').value = fd.name || '';
+                document.getElementById('f_str').value = fd.str || '';
+                document.getElementById('f_ort').value = fd.ort || '';
+                document.getElementById('f_iban').value = fd.iban || '';
+                document.getElementById('f_stnr').value = fd.stnr || '';
+            }
+            updateCreditUI();
         }
-        
+        if(document.getElementById('pos-container').innerHTML === "") addPos();
+    }
+
+    function updateCreditUI() {
         const istAbo = userProfile.abo_bis && new Date(userProfile.abo_bis) > new Date();
         document.getElementById('credit-badge').innerText = istAbo ? "PRO AKTIV" : "CREDITS: " + userProfile.credits;
-        
-        if(document.getElementById('pos-container').innerHTML === "") addPos();
     }
 
     async function saveProfile() {
@@ -139,11 +148,9 @@
             iban: document.getElementById('f_iban').value,
             stnr: document.getElementById('f_stnr').value
         };
-        await _supabase.from('profiles').update({ 
-            firma_daten: fd, 
-            logo_url: document.getElementById('f_logo').value 
-        }).eq('id', sessionUser.id);
-        alert("Daten erfolgreich gespeichert!");
+        const { error } = await _supabase.from('profiles').update({ firma_daten: fd }).eq('id', sessionUser.id);
+        if(error) alert("Fehler beim Speichern");
+        else alert("Daten dauerhaft gespeichert!");
     }
 
     function addPos() {
@@ -152,7 +159,7 @@
         div.innerHTML = `
             <input type="text" class="p_d" placeholder="Leistung">
             <input type="number" class="p_m" value="1">
-            <select class="p_e"><option>Std</option><option>Stk</option><option>Material</option><option>Anfahrt</option></select>
+            <select class="p_e"><option>Std</option><option>Stk</option><option>Anfahrt</option><option>Material</option></select>
             <input type="number" class="p_p" placeholder="€">
             <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer;">❌</button>
         `;
@@ -163,26 +170,19 @@
         const istAbo = userProfile.abo_bis && new Date(userProfile.abo_bis) > new Date();
         if (!istAbo && userProfile.credits <= 0) return alert("Keine Credits mehr!");
 
-        // Credit abziehen wenn kein Abo
         if (!istAbo) {
-            const { error } = await _supabase.rpc('use_credit_safe');
-            if(error) return alert("Fehler beim Credit-Abzug");
+            await _supabase.rpc('use_credit_safe');
         }
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Briefkopf
         doc.setFontSize(22); doc.text(document.getElementById('f_name').value, 20, 20);
         doc.setFontSize(10); doc.text(`${document.getElementById('f_str').value}, ${document.getElementById('f_ort').value}`, 20, 28);
-
         doc.setFontSize(12); doc.text("RECHNUNG AN:", 20, 50);
         doc.text(document.getElementById('k_name').value, 20, 56);
-        doc.text(document.getElementById('k_str').value + ", " + document.getElementById('k_ort').value, 20, 62);
         doc.text("Rechnungs-Nr: " + document.getElementById('r_nr').value, 140, 56);
-        doc.text("Datum: " + new Date().toLocaleDateString(), 140, 62);
 
-        // Tabelle berechnen
         const rows = []; let gesamt = 0;
         document.querySelectorAll('.leistung-zeile').forEach(z => {
             const m = parseFloat(z.querySelector('.p_m').value) || 0;
@@ -191,31 +191,26 @@
             rows.push([z.querySelector('.p_d').value, m, z.querySelector('.p_e').value, p.toFixed(2) + " €", sum.toFixed(2) + " €"]);
         });
 
-        doc.autoTable({ 
-            startY: 75, 
-            head: [['Leistung', 'Menge', 'Einh.', 'E-Preis', 'Gesamt']], 
-            body: rows, 
-            headStyles: {fillColor: [26, 26, 46]} 
-        });
+        doc.autoTable({ startY: 75, head: [['Leistung', 'Menge', 'Einh.', 'E-Preis', 'Gesamt']], body: rows, headStyles: {fillColor: [26, 26, 46]} });
         
-        const finalY = doc.lastAutoTable.finalY + 10;
-        doc.setFontSize(14); doc.text("GESAMTBETRAG: " + gesamt.toFixed(2) + " €", 140, finalY);
-        doc.setFontSize(10); doc.text("IBAN: " + document.getElementById('f_iban').value, 20, finalY + 20);
-        doc.text("Steuernummer: " + document.getElementById('f_stnr').value, 20, finalY + 26);
-
         if (mode === 'mail') {
-            window.location.href = `mailto:?subject=Rechnung ${document.getElementById('r_nr').value}&body=Guten Tag, anbei die Rechnung über ${gesamt.toFixed(2)} €.`;
+            window.location.href = `mailto:?subject=Rechnung&body=Anbei die Rechnung über ${gesamt.toFixed(2)} €`;
         }
-        
-        doc.save(`Rechnung_${document.getElementById('r_nr').value}.pdf`);
-        alert("PDF wurde erstellt!");
+        doc.save("Rechnung.pdf");
+        setTimeout(() => location.reload(), 1000);
+    }
+
+    async function handleLogout() {
+        await _supabase.auth.signOut();
         location.reload();
     }
 
-    function logout() { _supabase.auth.signOut(); location.reload(); }
-
-    _supabase.auth.getSession().then(({data}) => { 
-        if(data.session) { sessionUser = data.session.user; loadApp(); } 
+    // Auto-Login Check (Deployment #18 & #25)
+    _supabase.auth.getSession().then(({data}) => {
+        if(data.session) {
+            sessionUser = data.session.user;
+            loadApp();
+        }
     });
 </script>
 </body>
