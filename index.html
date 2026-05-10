@@ -150,11 +150,12 @@
             cursor: pointer; 
             transition: 0.2s;
             text-decoration: none;
+            margin-bottom: 10px;
         }
 
         .btn-pdf { background: var(--dark); }
         .btn-mail { background: var(--accent); }
-        .btn-upgrade { background: var(--secondary); background: #10b981; }
+        .btn-upgrade { background: #10b981; }
 
         /* --- TABLE AREA --- */
         .leistung-zeile { 
@@ -235,13 +236,22 @@
 
             <div class="content">
                 <div class="card">
+                    <div class="section-title">Dokumenten-Typ & Nummer</div>
+                    <select id="doc-type">
+                        <option value="RECHNUNG">Rechnung</option>
+                        <option value="QUITTUNG">Quittung</option>
+                        <option value="KOSTENVORANSCHLAG">Kostenvoranschlag</option>
+                        <option value="LIEFERSCHEIN">Lieferschein</option>
+                    </select>
+                    <input type="text" id="r_nr_custom" placeholder="Rechnungsnummer (z.B. RE-2024-001)">
+                </div>
+
+                <div class="card">
                     <div class="section-title">Rechnungsempfänger</div>
-                    <div class="grid-inputs">
-                        <input type="text" id="kundeName" placeholder="Name des Kunden">
-                        <input type="text" id="kundeStrasse" placeholder="Straße">
-                        <input type="text" id="kundeOrt" placeholder="PLZ / Ort">
-                        <input type="email" id="kundeEmail" placeholder="E-Mail">
-                    </div>
+                    <input type="text" id="kundeName" placeholder="Name des Kunden">
+                    <input type="text" id="kundeStrasse" placeholder="Straße">
+                    <input type="text" id="kundeOrt" placeholder="PLZ / Ort">
+                    <input type="email" id="kundeEmail" placeholder="E-Mail für Direktversand">
                 </div>
 
                 <div class="card">
@@ -250,20 +260,20 @@
                     <button onclick="addLeistung()" style="background: none; border: 2px dashed var(--border); width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; color: #64748b; font-weight: 600;">+ Zeile hinzufügen</button>
                 </div>
 
-                <div id="action-area" style="margin-top: 20px;">
-                    </div>
+                <div id="action-area" style="margin-top: 20px;"></div>
             </div>
         </div>
     </div>
 
 <script>
     const _supabase = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
-    const STRIPE_URL = "https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200";
-    let currentUser, userCredits = 0, aboBis = null, rechnungsNummer = Math.floor(Math.random() * 90000) + 10000;
+    let currentUser, userCredits = 0, aboBis = null;
+    let rNum = Math.floor(Math.random() * 9000) + 1000;
 
     window.onload = async () => {
         const { data: { session } } = await _supabase.auth.getSession();
         if (session) { currentUser = session.user; await loadUserData(); await checkPaymentSuccess(); loadHistory(); }
+        id('r_nr_custom').value = "RE-" + new Date().getFullYear() + "-" + rNum;
     };
 
     async function handleLogin() {
@@ -286,8 +296,7 @@
     async function loadUserData() {
         const { data: prof } = await _supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
         if (prof) {
-            userCredits = prof.credits || 0;
-            aboBis = prof.abo_bis;
+            userCredits = prof.credits || 0; aboBis = prof.abo_bis;
             id('meinName').value = prof.firma_name || ''; id('meinInhaber').value = prof.firma_inhaber || '';
             id('meinStrasse').value = prof.firma_strasse || ''; id('meinOrt').value = prof.firma_ort || '';
             id('meinIban').value = prof.firma_iban || ''; id('meinSteuer').value = prof.firma_steuer || '';
@@ -296,7 +305,7 @@
         id('login-screen').style.display = 'none'; id('main-dashboard').style.display = 'block';
         id('user-display').innerText = currentUser.email;
         refreshUI();
-        if(document.querySelectorAll('.leistung-zeile').length === 0) addLeistung('Arbeitsleistung', 1, 'Std', 0);
+        if(document.querySelectorAll('.leistung-zeile').length === 0) addLeistung();
     }
 
     async function saveProfile() {
@@ -309,15 +318,17 @@
         });
     }
 
-    function addLeistung(d='', m=1, e='Std', p=0) {
+    function addLeistung() {
         const div = document.createElement('div');
         div.className = 'leistung-zeile';
         div.innerHTML = `
-            <input type="text" class="desc" placeholder="Leistung..." value="${d}">
-            <input type="number" class="menge" value="${m}">
-            <select class="einheit"><option>Std</option><option>Stk</option><option>m²</option></select>
-            <input type="number" class="preis" value="${p}">
-            <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer; font-size:18px;">✕</button>
+            <input type="text" class="desc" placeholder="Beschreibung...">
+            <input type="number" class="menge" value="1">
+            <select class="einheit">
+                <option>Std</option><option>Stk</option><option>m</option><option>m²</option><option>m³</option><option>Lfm</option><option>Anfahrt</option><option>Pauschale</option>
+            </select>
+            <input type="number" class="preis" placeholder="0.00">
+            <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer;">✕</button>
         `;
         id('leistungen-container').appendChild(div);
     }
@@ -325,63 +336,63 @@
     function refreshUI() {
         const area = id('action-area'), status = id('status-display'), upgrade = id('upgrade-area');
         const aktiv = aboBis && new Date(aboBis) > new Date();
-        
-        status.innerText = aktiv ? "PRO PLAN AKTIV" : "GUTHABEN: " + userCredits + " RECHNUNGEN";
+        status.innerText = aktiv ? "PRO PLAN AKTIV" : "GUTHABEN: " + userCredits + " DOKUMENTE";
         status.style.background = aktiv ? "#dcfce7" : "#fef9c3";
         status.style.color = aktiv ? "#166534" : "#854d0e";
-        
         if (aktiv || userCredits > 0) {
             upgrade.style.display = "none";
             area.innerHTML = `
                 <button class="btn-main btn-pdf" onclick="generatePDF(false)">PDF Dokument erstellen</button>
-                <button class="btn-main btn-mail" onclick="generatePDF(true)">Per E-Mail versenden</button>`;
+                <button class="btn-main btn-mail" onclick="generatePDF(true)">Per E-Mail an Kunden senden</button>`;
         } else {
             upgrade.style.display = "block";
-            area.innerHTML = `<p style="text-align:center; font-size:14px; color:red; font-weight:bold;">Guthaben aufgebraucht. Bitte upgraden.</p>`;
+            area.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Guthaben aufgebraucht.</p>`;
         }
     }
 
     async function generatePDF(isEmail) {
         const aktiv = aboBis && new Date(aboBis) > new Date();
-        if (!aktiv) { 
-            if(userCredits <= 0) return;
-            userCredits--; await saveProfile(); 
-        }
+        if (!aktiv) { if(userCredits <= 0) return; userCredits--; await saveProfile(); }
         refreshUI();
 
         const doc = new jspdf.jsPDF();
-        const netto = calculateNetto();
+        const type = id('doc-type').value;
+        const nr = v('r_nr_custom');
         
-        // PDF-Logik (einfach gehalten für Stabilität)
-        doc.setFontSize(22); doc.text("RECHNUNG", 20, 30);
-        doc.setFontSize(10); doc.text("Absender: " + v('meinName'), 20, 45);
-        doc.text("Empfänger: " + v('kundeName'), 20, 60);
+        // PDF Header & Adressen
+        doc.setFontSize(22); doc.text(type, 20, 30);
+        doc.setFontSize(10);
+        doc.text("VON: " + v('meinName') + " | " + v('meinStrasse') + ", " + v('meinOrt'), 20, 40);
+        doc.text("AN: " + v('kundeName'), 20, 55);
+        doc.text(v('kundeStrasse') + ", " + v('kundeOrt'), 20, 60);
+        doc.text("Datum: " + new Date().toLocaleDateString() + " | Nummer: " + nr, 20, 75);
 
-        doc.autoTable({
-            startY: 80, head: [['Pos', 'Menge', 'Preis', 'Gesamt']],
-            body: getTableData()
+        const tableData = []; let netto = 0;
+        document.querySelectorAll('.leistung-zeile').forEach(row => {
+            const d = row.querySelector('.desc').value, m = row.querySelector('.menge').value, e = row.querySelector('.einheit').value, p = row.querySelector('.preis').value;
+            const s = (m * p); netto += s;
+            tableData.push([d, m + " " + e, p + " €", s.toFixed(2) + " €"]);
         });
 
-        doc.save(`Rechnung_${rechnungsNummer}.pdf`);
+        doc.autoTable({ startY: 85, head: [['Leistung', 'Menge', 'E-Preis', 'Gesamt']], body: tableData, headStyles: {fillColor: [15, 23, 42]} });
+        
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.text("Netto: " + netto.toFixed(2) + " €", 140, finalY);
+        doc.text("MwSt 19%: " + (netto * 0.19).toFixed(2) + " €", 140, finalY + 5);
+        doc.setFont(undefined, 'bold');
+        doc.text("GESAMT: " + (netto * 1.19).toFixed(2) + " €", 140, finalY + 12);
+        doc.setFont(undefined, 'normal');
+        doc.text("IBAN: " + v('meinIban') + " | Steuer-Nr: " + v('meinSteuer'), 20, finalY + 25);
+
+        if (isEmail) {
+            const mail = v('kundeEmail');
+            if(!mail) alert("Keine E-Mail Adresse hinterlegt!");
+            const subject = encodeURIComponent(type + " " + nr);
+            const body = encodeURIComponent("Hallo " + v('kundeName') + ",\nanhängend erhalten Sie das Dokument.\n\nBeste Grüße,\n" + v('meinName'));
+            window.location.href = `mailto:${mail}?subject=${subject}&body=${body}`;
+        }
+        doc.save(`${type}_${nr}.pdf`);
         saveToHistory(v('kundeName'), (netto * 1.19).toFixed(2));
-        rechnungsNummer++;
-    }
-
-    function calculateNetto() {
-        let n = 0;
-        document.querySelectorAll('.leistung-zeile').forEach(row => {
-            n += (parseFloat(row.querySelector('.menge').value) || 0) * (parseFloat(row.querySelector('.preis').value) || 0);
-        });
-        return n;
-    }
-
-    function getTableData() {
-        const data = [];
-        document.querySelectorAll('.leistung-zeile').forEach(row => {
-            const d = row.querySelector('.desc').value, m = row.querySelector('.menge').value, p = row.querySelector('.preis').value;
-            data.push([d, m, p + " €", (m*p).toFixed(2) + " €"]);
-        });
-        return data;
     }
 
     function saveToHistory(name, betrag) {
