@@ -9,106 +9,95 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* DEIN ORIGINAL DESIGN AUS DER DATEI */
-        :root { --primary: #5d5fef; --secondary: #28a745; --bg: #f0f4f8; --dark: #1a1a2e; --yellow: #ffcc00; --white: #ffffff; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; color: #333; }
-        .wrapper { width: 100%; max-width: 1000px; }
+        :root { --primary: #5d5fef; --bg: #f0f4f8; --dark: #1a1a2e; --yellow: #ffcc00; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: #333; }
         .card { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e0e6ed; }
-        #login-screen { background: var(--yellow); padding: 80px 50px; border-radius: 40px; text-align: center; border: 10px solid var(--dark); box-shadow: 0 30px 60px rgba(0,0,0,0.3); margin-top: 40px; }
-        .auth-input { width: 100%; max-width: 400px; padding: 20px; margin: 15px 0; border-radius: 15px; border: 5px solid #000; font-size: 20px; font-weight: 900; box-sizing: border-box; }
-        .btn-auth-primary { background: #000; color: #fff; padding: 20px 50px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 20px; }
-        #main-dashboard { display: none; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 20px 30px; border-radius: 20px; margin-bottom: 25px; }
-        .section-title { font-weight: 900; color: var(--primary); margin-bottom: 20px; border-left: 5px solid var(--primary); text-transform: uppercase; padding-left: 15px; }
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        input, select { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; box-sizing: border-box; }
-        .leistung-zeile { display: grid; grid-template-columns: 3fr 1fr 1fr 1.2fr 0.5fr; gap: 15px; margin-bottom: 12px; background: #f4f6ff; padding: 15px; border-radius: 15px; align-items: center; }
-        .btn-main { display: flex; align-items: center; justify-content: center; width: 100%; padding: 20px; color: white; border: none; border-radius: 18px; font-size: 18px; font-weight: 900; cursor: pointer; text-decoration: none; margin-bottom: 15px; }
-        .btn-pdf { background: var(--primary); }
-        .badge { background: #fff3cd; color: #856404; padding: 12px 25px; border-radius: 15px; font-weight: 900; }
+        
+        /* DEIN GELBER LOGIN SCREEN */
+        #login-screen { background: var(--yellow); padding: 60px 40px; border-radius: 40px; text-align: center; border: 10px solid var(--dark); max-width: 500px; margin: 40px auto; }
+        .auth-input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 4px solid #000; font-size: 18px; font-weight: 900; box-sizing: border-box; }
+        .btn-auth { background: #000; color: #fff; padding: 18px 40px; border-radius: 12px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; }
+        
+        #main-dashboard { display: none; max-width: 1000px; margin: auto; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 15px 25px; border-radius: 20px; margin-bottom: 20px; }
+        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        .leistung-zeile { display: grid; grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr; gap: 10px; background: #f4f6ff; padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center; }
+        .btn-pdf { background: var(--primary); color: white; width: 100%; padding: 20px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div id="login-screen">
-            <h1 style="font-size: 55px; margin: 0 0 10px 0;">⚡ MEISTER-BLITZ</h1>
-            <p style="font-weight: 900; text-transform: uppercase; margin-bottom: 40px;">Professionelle Rechnungs-Vollautomatik</p>
-            <input type="email" id="email" class="auth-input" placeholder="IHRE E-MAIL">
-            <input type="password" id="password" class="auth-input" placeholder="PASSWORT">
-            <div style="margin-top: 30px;">
-                <button class="btn-auth-primary" onclick="handleLogin()">ANMELDEN</button>
-                <p onclick="handleSignUp()" style="margin-top:25px; cursor:pointer; font-weight:bold; text-decoration:underline;">Noch kein Konto? Hier registrieren</p>
+
+    <div id="login-screen">
+        <h1 style="font-size: 40px; margin: 0;">⚡ MEISTER-BLITZ</h1>
+        <p style="font-weight: 900; margin-bottom: 30px;">HANDWERKER-PROFI-SYSTEM</p>
+        <input type="email" id="email" class="auth-input" placeholder="E-MAIL">
+        <input type="password" id="password" class="auth-input" placeholder="PASSWORT">
+        <button class="btn-auth" onclick="handleLogin()">ANMELDEN</button>
+        <button class="btn-auth" style="background:#555; margin-top:10px;" onclick="handleSignUp()">KONTO ERSTELLEN</button>
+    </div>
+
+    <div id="main-dashboard">
+        <div class="header-bar">
+            <span>USER: <b id="user-display" style="color:var(--yellow);"></b></span>
+            <span id="credit-display" style="background:white; color:black; padding:5px 10px; border-radius:10px; font-weight:bold;">Credits: -</span>
+        </div>
+
+        <div class="card">
+            <h3 style="color:var(--primary); text-transform:uppercase;">🏢 Meine Firmendaten</h3>
+            <div class="grid-inputs">
+                <input type="text" id="meinName" placeholder="Firma" oninput="autoSave()">
+                <input type="text" id="meinIban" placeholder="IBAN" oninput="autoSave()">
+                <input type="text" id="meinSteuer" placeholder="Steuernummer" oninput="autoSave()">
+                <input type="text" id="meinStrasse" placeholder="Straße" oninput="autoSave()">
+                <input type="text" id="meinOrt" placeholder="Ort" oninput="autoSave()">
             </div>
         </div>
 
-        <div id="main-dashboard">
-            <div class="header-bar">
-                <span>USER: <b id="user-display" style="color:var(--yellow);"></b></span>
-                <button onclick="handleLogout()" style="background:red; color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;">LOGOUT</button>
-            </div>
-
-            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin:0;">DASHBOARD</h2>
-                <div id="status-display" class="badge">Lade System...</div>
-            </div>
-
-            <div class="card">
-                <div class="section-title">🏢 FIRMEN-PROFIL (Autom. Speicherung)</div>
-                <div class="grid-inputs">
-                    <input type="text" id="meinName" placeholder="Firmenname" oninput="saveProfile()">
-                    <input type="text" id="meinInhaber" placeholder="Inhaber" oninput="saveProfile()">
-                    <input type="text" id="meinStrasse" placeholder="Straße" oninput="saveProfile()">
-                    <input type="text" id="meinOrt" placeholder="PLZ / Ort" oninput="saveProfile()">
-                    <input type="text" id="meinIban" placeholder="IBAN" oninput="saveProfile()">
-                    <input type="text" id="meinSteuer" placeholder="Steuernummer" oninput="saveProfile()">
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="section-title">👤 KUNDE</div>
-                <input type="text" id="kundeName" placeholder="Name des Kunden">
-            </div>
-
-            <div class="card">
-                <div class="section-title">🛠️ POSITIONEN</div>
-                <div id="leistungen-container"></div>
-                <button onclick="addLeistung()" style="width:100%; padding:15px; border:2px dashed #ccc; border-radius:15px; background:none; cursor:pointer;">+ POSITION HINZUFÜGEN</button>
-            </div>
-
-            <div class="card" style="border:5px solid var(--primary);">
-                <button class="btn-main btn-pdf" onclick="generatePDF()">📥 RECHNUNG ALS PDF ERSTELLEN (-1 CREDIT)</button>
-            </div>
+        <div class="card">
+            <h3 style="color:var(--primary); text-transform:uppercase;">👤 Kunde</h3>
+            <input type="text" id="kundeName" placeholder="Name des Kunden">
         </div>
+
+        <div class="card">
+            <h3 style="color:var(--primary); text-transform:uppercase;">🛠️ Leistungen</h3>
+            <div id="pos-container"></div>
+            <button onclick="addPos()" style="width:100%; padding:10px; border:2px dashed #ccc; border-radius:10px; cursor:pointer; background:none;">+ Position hinzufügen</button>
+        </div>
+
+        <button class="btn-pdf" onclick="generatePDF()">📥 RECHNUNG ALS PDF SPEICHERN (-1 CREDIT)</button>
+        <button onclick="logout()" style="width:100%; background:none; border:none; color:gray; cursor:pointer; margin-top:20px;">Abmelden</button>
     </div>
 
 <script>
-    // KORREKTER KEY FÜR DEINE DATENBANK
     const URL = 'https://gemywlmdshnagfetimyy.supabase.co';
     const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlbXl3bG1kc2huYWdmZXRpbXl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTE5OTQsImV4cCI6MjA5MzkyNzk5NH0.jfbP6DI7XhZ0zVg4VoltIZEWOztvXZ7g_ZmhGKG7sFA';
     const _supabase = supabase.createClient(URL, KEY);
 
-    let userCredits = 0;
+    let currentCredits = 0;
 
+    // LOGIN FUNKTION
     async function handleLogin() {
-        const { data, error } = await _supabase.auth.signInWithPassword({
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
-        });
-        if (error) alert("Login Fehler: " + error.message);
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+        if (error) alert("Fehler: " + error.message);
         else location.reload();
     }
 
+    // REGISTER FUNKTION
     async function handleSignUp() {
-        const { data, error } = await _supabase.auth.signUp({
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
-        });
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const { data, error } = await _supabase.auth.signUp({ email, password });
         if (error) return alert("Fehler: " + error.message);
         if (data.user) {
             await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
-            alert("Konto erstellt! Du kannst dich jetzt anmelden.");
+            alert("Konto erstellt! Bitte jetzt einloggen.");
         }
     }
 
+    // BEIM LADEN PRÜFEN
     window.onload = async () => {
         const { data: { session } } = await _supabase.auth.getSession();
         if (session) {
@@ -118,67 +107,55 @@
             
             const { data: prof } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
             if (prof) {
-                userCredits = prof.credits;
+                currentCredits = prof.credits;
                 document.getElementById('meinName').value = prof.firma_name || '';
                 document.getElementById('meinIban').value = prof.firma_iban || '';
                 document.getElementById('meinSteuer').value = prof.firma_steuer || '';
                 document.getElementById('meinStrasse').value = prof.firma_strasse || '';
                 document.getElementById('meinOrt').value = prof.firma_ort || '';
-                document.getElementById('meinInhaber').value = prof.firma_inhaber || '';
+                document.getElementById('credit-display').innerText = "Credits: " + currentCredits;
             }
-            updateStatus();
-            addLeistung();
+            addPos();
         }
     };
 
-    function updateStatus() {
-        document.getElementById('status-display').innerText = "GUTHABEN: " + userCredits + " RECHNUNGEN";
-    }
-
-    async function saveProfile() {
+    // AUTOMATISCH SPEICHERN
+    async function autoSave() {
         const { data: { session } } = await _supabase.auth.getSession();
-        await _supabase.from('profiles').upsert({ 
-            id: session.user.id, 
+        if (!session) return;
+        await _supabase.from('profiles').upsert({
+            id: session.user.id,
             firma_name: document.getElementById('meinName').value,
-            firma_inhaber: document.getElementById('meinInhaber').value,
-            firma_strasse: document.getElementById('meinStrasse').value,
-            firma_ort: document.getElementById('meinOrt').value,
             firma_iban: document.getElementById('meinIban').value,
-            firma_steuer: document.getElementById('meinSteuer').value
+            firma_steuer: document.getElementById('meinSteuer').value,
+            firma_strasse: document.getElementById('meinStrasse').value,
+            firma_ort: document.getElementById('meinOrt').value
         });
     }
 
-    function addLeistung() {
+    function addPos() {
         const div = document.createElement('div');
         div.className = 'leistung-zeile';
-        div.innerHTML = `
-            <input type="text" class="desc" placeholder="Leistung...">
-            <input type="number" class="menge" value="1">
-            <select><option>Std</option><option>Stk</option><option>Paus.</option></select>
-            <input type="number" class="preis" placeholder="€">
-            <button onclick="this.parentElement.remove()" style="border:none; background:none; font-size:20px; cursor:pointer;">❌</button>
-        `;
-        document.getElementById('leistungen-container').appendChild(div);
+        div.innerHTML = `<input type="text" class="p_d" placeholder="Leistung..."><input type="number" class="p_m" value="1"><select><option>Std</option><option>Stk</option></select><input type="number" class="p_p" placeholder="€"><button onclick="this.parentElement.remove()">❌</button>`;
+        document.getElementById('pos-container').appendChild(div);
     }
 
     async function generatePDF() {
-        if (userCredits <= 0) return alert("Kein Guthaben!");
+        if (currentCredits <= 0) return alert("Keine Credits!");
         
-        const { error } = await _supabase.rpc('use_credit_safe');
-        if (error) return alert("Fehler: " + error.message);
-
+        const { data: { session } } = await _supabase.auth.getSession();
+        currentCredits--;
+        await _supabase.from('profiles').update({ credits: currentCredits }).eq('id', session.user.id);
+        
         const doc = new jspdf.jsPDF();
-        doc.setFontSize(22);
-        doc.text("RECHNUNG", 20, 20);
-        doc.setFontSize(12);
-        doc.text("Absender: " + document.getElementById('meinName').value, 20, 35);
-        doc.text("Kunde: " + document.getElementById('kundeName').value, 20, 50);
-        
+        doc.setFontSize(20); doc.text("RECHNUNG", 20, 20);
+        doc.setFontSize(12); doc.text("Von: " + document.getElementById('meinName').value, 20, 35);
+        doc.text("An: " + document.getElementById('kundeName').value, 20, 45);
         doc.save("Rechnung.pdf");
         location.reload();
     }
 
-    function handleLogout() {
+    function logout() {
         _supabase.auth.signOut();
         location.reload();
     }
