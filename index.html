@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ PRO | DAS FINALE SYSTEM</title>
+    <title>MEISTER-BLITZ v4.0 | PRO-SYSTEM</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,11 +13,9 @@
         body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; color: #333; line-height: 1.6; }
         .wrapper { width: 100%; max-width: 1000px; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         #login-screen { background: var(--yellow); padding: 80px 50px; border-radius: 40px; text-align: center; border: 10px solid var(--dark); box-shadow: 0 30px 60px rgba(0,0,0,0.3); margin-top: 40px; }
         .auth-input { width: 100%; max-width: 400px; padding: 20px; margin: 15px 0; border-radius: 15px; border: 5px solid #000; font-size: 20px; font-weight: 900; box-sizing: border-box; outline: none; }
         .btn-auth-primary { background: #000; color: #fff; padding: 20px 50px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 20px; }
-        
         #main-dashboard { display: none; }
         .header-bar { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 20px 30px; border-radius: 20px; margin-bottom: 25px; }
         .card { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e0e6ed; }
@@ -26,10 +25,9 @@
         .leistung-zeile { display: grid; grid-template-columns: 3fr 1fr 1fr 1.2fr 0.5fr; gap: 15px; margin-bottom: 12px; background: #f4f6ff; padding: 15px; border-radius: 15px; border: 1px solid #dce0ff; align-items: center; }
         .btn-main { display: flex; align-items: center; justify-content: center; width: 100%; padding: 22px; color: white; border: none; border-radius: 18px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; text-decoration: none; margin-bottom: 15px; }
         .btn-pdf { background: var(--primary); box-shadow: 0 6px 0 #3e40b5; }
+        .btn-email { background: var(--secondary); box-shadow: 0 6px 0 #1e7e34; }
         .badge { background: #fff3cd; color: #856404; padding: 12px 25px; border-radius: 15px; font-weight: 900; border: 2px solid #ffeeba; }
-        
-        /* NEU: Logo Upload Area */
-        .logo-upload { border: 3px dashed var(--primary); padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; background: #f8faff; margin-bottom: 20px; }
+        .logo-upload { border: 3px dashed var(--primary); padding: 20px; text-align: center; border-radius: 15px; cursor: pointer; background: #f8faff; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -58,19 +56,9 @@
         </div>
 
         <div class="card">
-            <div class="section-title">🖼️ FIRMEN-LOGO (Optional)</div>
-            <div class="logo-upload" onclick="document.getElementById('logoInput').click()">
-                <span id="logo-text">Klicke hier, um dein Logo hochzuladen (PNG/JPG)</span>
-                <input type="file" id="logoInput" style="display:none" accept="image/*" onchange="previewLogo(event)">
-                <img id="logo-preview-img" style="max-height: 60px; display:none; margin: 0 auto;">
-            </div>
-        </div>
-
-        <div class="card">
             <div class="section-title">🏢 MEINE FIRMENDATEN (Auto-Save)</div>
             <div class="grid-inputs">
                 <input type="text" id="meinName" placeholder="Firmenname" oninput="saveProfile()">
-                <input type="text" id="meinInhaber" placeholder="Inhaber" oninput="saveProfile()">
                 <input type="text" id="meinStrasse" placeholder="Straße / Nr." oninput="saveProfile()">
                 <input type="text" id="meinOrt" placeholder="PLZ / Ort" oninput="saveProfile()">
                 <input type="text" id="meinIban" placeholder="IBAN" oninput="saveProfile()">
@@ -84,7 +72,7 @@
             <div class="grid-inputs">
                 <input type="text" id="kundeName" placeholder="Kunde / Firma">
                 <input type="text" id="kundeStrasse" placeholder="Straße">
-                <input type="text" id="kundeOrt" placeholder="Ort">
+                <input type="text" id="kundeOrt" placeholder="PLZ / Ort">
                 <input type="email" id="kundeEmail" placeholder="Kunden-E-Mail">
             </div>
         </div>
@@ -92,10 +80,18 @@
         <div class="card">
             <div class="section-title">🛠️ POSITIONEN</div>
             <div id="leistungen-container"></div>
+            <datalist id="leistungs-liste">
+                <option value="Arbeitszeit Fachkraft">
+                <option value="Anfahrtspauschale">
+                <option value="Material laut Aufwand">
+                <option value="Kleinmaterial & Verbrauch">
+                <option value="Serviceeinsatz">
+            </datalist>
             <button onclick="addLeistung()" style="width:100%; padding:15px; border:3px dashed #ddd; border-radius:15px; background:none; cursor:pointer; font-weight:bold; color:#888;">+ NEUE ZEILE</button>
         </div>
 
-        <div id="action-area" class="card" style="text-align:center; border:5px solid var(--primary); background:#f0f4ff;"></div>
+        <div id="action-area" class="card" style="text-align:center; border:5px solid var(--primary); background:#f0f4ff;">
+        </div>
     </div>
 </div>
 
@@ -103,23 +99,11 @@
     const _supabase = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
     const STRIPE_URL = "https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200";
     let currentUser, userCredits = 0, aboBis = null, rechnungsNummer = Math.floor(Math.random() * 90000) + 10000;
-    let logoData = "";
 
     window.onload = async () => {
         const { data: { session } } = await _supabase.auth.getSession();
-        if (session) { currentUser = session.user; await loadUserData(); await checkPaymentSuccess(); }
+        if (session) { currentUser = session.user; await loadUserData(); }
     };
-
-    function previewLogo(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            logoData = reader.result;
-            document.getElementById('logo-preview-img').src = logoData;
-            document.getElementById('logo-preview-img').style.display = "block";
-            document.getElementById('logo-text').style.display = "none";
-        }
-        reader.readAsDataURL(event.target.files[0]);
-    }
 
     async function handleLogin() {
         const { error } = await _supabase.auth.signInWithPassword({ email: v('email'), password: v('password') });
@@ -128,10 +112,9 @@
 
     async function handleSignUp() {
         const { data, error } = await _supabase.auth.signUp({ email: v('email'), password: v('password') });
-        if (error) alert(error.message); 
-        else if (data.user) {
+        if (error) alert(error.message); else if (data.user) {
             await _supabase.from('profiles').insert({ id: data.user.id, credits: 3 });
-            alert("Konto erstellt! Bitte E-Mail bestätigen.");
+            alert("Konto erstellt!");
         }
     }
 
@@ -140,113 +123,82 @@
     async function loadUserData() {
         const { data: prof } = await _supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
         if (prof) {
-            userCredits = prof.credits !== undefined ? prof.credits : 0;
-            aboBis = prof.abo_bis;
-            id('meinName').value = prof.firma_name || ''; 
-            id('meinInhaber').value = prof.firma_inhaber || '';
-            id('meinStrasse').value = prof.firma_strasse || ''; 
-            id('meinOrt').value = prof.firma_ort || '';
-            id('meinIban').value = prof.firma_iban || ''; 
-            id('meinSteuer').value = prof.firma_steuer || '';
-            id('meinTel').value = prof.firma_tel || '';
+            userCredits = prof.credits || 0; aboBis = prof.abo_bis;
+            id('meinName').value = prof.firma_name || ''; id('meinStrasse').value = prof.firma_strasse || '';
+            id('meinOrt').value = prof.firma_ort || ''; id('meinIban').value = prof.firma_iban || '';
+            id('meinSteuer').value = prof.firma_steuer || ''; id('meinTel').value = prof.firma_tel || '';
         }
-        id('login-screen').style.display = 'none'; 
-        id('main-dashboard').style.display = 'block';
+        id('login-screen').style.display = 'none'; id('main-dashboard').style.display = 'block';
         id('user-display').innerText = currentUser.email;
         refreshUI();
-        addLeistung('Arbeitsleistung', 1, 'Std', 65);
+        addLeistung('Arbeitszeit Fachkraft', 1, 'Std', 65);
     }
 
     async function saveProfile() {
         if (!currentUser) return;
         await _supabase.from('profiles').upsert({ 
-            id: currentUser.id, 
-            firma_name: v('meinName'), firma_inhaber: v('meinInhaber'),
-            firma_strasse: v('meinStrasse'), firma_ort: v('meinOrt'),
-            firma_iban: v('meinIban'), firma_steuer: v('meinSteuer'),
-            firma_tel: v('meinTel'), credits: userCredits, abo_bis: aboBis
+            id: currentUser.id, firma_name: v('meinName'), firma_strasse: v('meinStrasse'), 
+            firma_ort: v('meinOrt'), firma_iban: v('meinIban'), 
+            firma_steuer: v('meinSteuer'), firma_tel: v('meinTel'), credits: userCredits, abo_bis: aboBis
         });
     }
 
     function refreshUI() {
-        const area = id('action-area'), status = id('status-display');
-        const aktiv = aboBis && new Date(aboBis) > new Date();
-        if (aktiv) {
-            status.innerText = "PRO-ABO AKTIV"; status.style.background = "#d4edda";
-            area.innerHTML = `<button class="btn-main btn-pdf" onclick="generatePDF()">📥 PDF RECHNUNG ERSTELLEN</button>`;
+        const area = id('action-area'), status = id('status-display'), aktiv = aboBis && new Date(aboBis) > new Date();
+        if (aktiv || userCredits > 0) {
+            status.innerText = aktiv ? "PRO-ABO AKTIV" : `GUTHABEN: ${userCredits} FREI`;
+            area.innerHTML = `<button class="btn-main btn-pdf" onclick="generatePDF(false)">📥 PDF RECHNUNG SPEICHERN</button>
+                             <button class="btn-main btn-email" onclick="generatePDF(true)">📧 DIREKT AN KUNDE SENDEN</button>`;
         } else {
-            status.innerText = "GUTHABEN: " + userCredits + " FREI"; status.style.background = "#fff3cd";
-            if (userCredits > 0) {
-                area.innerHTML = `<button class="btn-main btn-pdf" onclick="generatePDF()">📥 PDF ERSTELLEN (${userCredits} übrig)</button>`;
-            } else {
-                area.innerHTML = `<p style="font-weight:bold; color:red; margin-bottom:10px;">Guthaben verbraucht!</p><a href="${STRIPE_URL}" class="btn-main" style="background:var(--secondary); text-decoration:none; box-shadow: 0 6px 0 #1e7e34;">🚀 JETZT 30 TAGE FREISCHALTEN (11,99 €)</a>`;
-            }
+            status.innerText = "GUTHABEN LEER";
+            area.innerHTML = `<a href="${STRIPE_URL}" class="btn-main" style="background:var(--secondary); text-decoration:none;">🚀 FREISCHALTEN</a>`;
         }
     }
 
-    async function generatePDF() {
+    async function generatePDF(isEmail) {
         const aktiv = aboBis && new Date(aboBis) > new Date();
-        if (!aktiv) { if (userCredits <= 0) return alert("Kein Guthaben mehr!"); userCredits--; await saveProfile(); }
+        if (!aktiv) { if (userCredits <= 0) return; userCredits--; await saveProfile(); }
         refreshUI();
-
         const doc = new jspdf.jsPDF();
-        
-        // Logo einbinden
-        if (logoData) { doc.addImage(logoData, 'PNG', 150, 15, 40, 20); }
-
-        doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("RECHNUNG", 20, 30);
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        
-        // Header Daten
-        doc.text("Nr: " + rechnungsNummer + " | Datum: " + new Date().toLocaleDateString(), 20, 40);
-        
-        // VON / AN Block
-        doc.setFont("helvetica", "bold"); doc.text("VON:", 20, 50); doc.setFont("helvetica", "normal");
-        doc.text(`${v('meinName')}\n${v('meinStrasse')}\n${v('meinOrt')}`, 20, 55);
-        
-        doc.setFont("helvetica", "bold"); doc.text("AN:", 120, 50); doc.setFont("helvetica", "normal");
-        doc.text(`${v('kundeName')}\n${v('kundeStrasse')}\n${v('kundeOrt')}`, 120, 55);
-
+        doc.setFontSize(22); doc.text("RECHNUNG", 20, 25);
+        doc.setFontSize(10);
+        doc.text("VON:\n" + v('meinName') + "\n" + v('meinStrasse') + "\n" + v('meinOrt'), 20, 40);
+        doc.text("AN:\n" + v('kundeName') + "\n" + v('kundeStrasse') + "\n" + v('kundeOrt'), 120, 40);
         const rows = []; let netto = 0;
         document.querySelectorAll('.leistung-zeile').forEach(row => {
             const d = row.querySelector('.desc').value, m = parseFloat(row.querySelector('.menge').value) || 0,
-                  e = row.querySelector('.einheit-select').value, p = parseFloat(row.querySelector('.preis').value) || 0;
+                  e = row.querySelector('.einheit').value, p = parseFloat(row.querySelector('.preis').value) || 0;
             if(d) { rows.push([d, m, e, p.toFixed(2) + " €", (m*p).toFixed(2) + " €"]); netto += (m*p); }
         });
-
-        doc.autoTable({ startY: 75, head: [['Beschreibung', 'Menge', 'Einh.', 'Einzel', 'Gesamt']], body: rows, theme: 'grid' });
-        doc.setFont("helvetica", "bold");
+        doc.autoTable({ startY: 65, head: [['Leistung', 'Menge', 'Einh.', 'Preis', 'Gesamt']], body: rows });
         doc.text("Gesamt Brutto (19% MwSt): " + (netto * 1.19).toFixed(2) + " €", 120, doc.lastAutoTable.finalY + 15);
-        
+        if (isEmail) {
+            const sub = encodeURIComponent("Rechnung " + rechnungsNummer), body = encodeURIComponent("Anbei die Rechnung.");
+            window.location.href = `mailto:${v('kundeEmail')}?subject=${sub}&body=${body}`;
+        }
         doc.save(`Rechnung_${rechnungsNummer}.pdf`);
-        rechnungsNummer++;
     }
 
     function addLeistung(d='', m=1, e='Std', p=0) {
         const div = document.createElement('div');
         div.className = 'leistung-zeile';
         div.innerHTML = `
-            <input type="text" class="desc" value="${d}" placeholder="Leistung">
+            <input type="text" class="desc" list="leistungs-liste" value="${d}" placeholder="Tippen oder wählen...">
             <input type="number" class="menge" value="${m}">
-            <select class="einheit-select">
+            <select class="einheit">
                 <option value="Std" ${e=='Std'?'selected':''}>Std</option>
+                <option value="Pausch." ${e=='Pausch.'?'selected':''}>Pausch.</option>
                 <option value="Stk" ${e=='Stk'?'selected':''}>Stk</option>
                 <option value="m" ${e=='m'?'selected':''}>m</option>
-                <option value="Pausch." ${e=='Pausch.'?'selected':''}>Pausch.</option>
+                <option value="m²" ${e=='m²'?'selected':''}>m²</option>
             </select>
             <input type="number" class="preis" value="${p}">
-            <button onclick="this.parentElement.remove()" style="background:none; border:none; font-size:20px; cursor:pointer;">🗑️</button>`;
+            <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
         id('leistungen-container').appendChild(div);
     }
 
     function id(i) { return document.getElementById(i); }
     function v(i) { return id(i).value; }
-    async function checkPaymentSuccess() {
-        if (new URLSearchParams(window.location.search).get('payment') === 'success') {
-            let d = new Date(); d.setDate(d.getDate() + 30); aboBis = d.toISOString();
-            userCredits = 0; await saveProfile(); window.history.replaceState({}, '', '/'); refreshUI();
-        }
-    }
 </script>
 </body>
 </html>
