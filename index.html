@@ -2,84 +2,86 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>MEISTER-BLITZ PRO | HANDWERKER-VERSION</title>
+    <title>MEISTER-BLITZ PRO</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --yellow: #ffcc00; --dark: #1a1a2e; --white: #ffffff; --gray: #f4f6ff; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .card { background: var(--white); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 900px; border: 2px solid #ddd; }
-        
-        .header-yellow { background: var(--yellow); padding: 30px; border-radius: 15px; border: 5px solid var(--dark); text-align: center; margin-bottom: 20px; }
-        .section-title { font-weight: 900; text-transform: uppercase; border-left: 5px solid var(--dark); padding-left: 10px; margin: 20px 0 10px 0; }
-        
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        input, select { padding: 12px; border-radius: 10px; border: 2px solid #ccc; font-size: 14px; width: 100%; box-sizing: border-box; }
-        
-        .zeile { display: grid; grid-template-columns: 3fr 1fr 1.5fr 1fr 0.5fr; gap: 10px; background: var(--gray); padding: 10px; border-radius: 10px; margin-bottom: 10px; align-items: center; }
-        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .btn-black { background: var(--dark); color: white; width: 100%; font-size: 16px; }
-        .btn-save { background: #28a745; color: white; margin-top: 10px; }
-        
-        #auth-screen { display: block; text-align: center; max-width: 400px; }
+        :root { --yellow: #ffcc00; --dark: #1a1a2e; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .card { background: var(--white); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 850px; border: 5px solid var(--dark); }
+        .header-yellow { background: var(--yellow); padding: 20px; border-radius: 15px; border: 5px solid var(--dark); text-align: center; margin-bottom: 20px; }
+        .section-title { font-weight: 900; text-transform: uppercase; border-left: 8px solid var(--dark); padding-left: 15px; margin: 25px 0 15px 0; font-size: 18px; }
+        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        input, select { padding: 15px; border-radius: 10px; border: 3px solid #eee; font-size: 16px; width: 100%; box-sizing: border-box; background: #fafafa; font-weight: 600; }
+        .zeile { display: grid; grid-template-columns: 3fr 1fr 1.5fr 1fr 0.5fr; gap: 10px; background: #f4f6ff; padding: 15px; border-radius: 15px; margin-bottom: 10px; align-items: center; border: 2px solid #e0e6ed; }
+        .btn { padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 16px; transition: 0.2s; }
+        .btn-black { background: var(--dark); color: white; width: 100%; box-shadow: 0 5px 0 #333; }
+        .btn-save { background: #28a745; color: white; margin-top: 15px; font-size: 12px; padding: 10px; }
+        #auth-screen { display: block; text-align: center; max-width: 450px; margin-top: 50px; }
         #app-screen { display: none; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="card">
-        <div class="header-yellow"><h1>⚡ MEISTER-BLITZ</h1></div>
-        <input type="email" id="email" placeholder="E-Mail" style="margin-bottom:10px;"><br>
-        <input type="password" id="pw" placeholder="Passwort"><br>
-        <button class="btn btn-black" onclick="auth('signInWithPassword')" style="margin-top:15px;">Einloggen</button>
-        <button class="btn" onclick="auth('signUp')" style="background:none; color:blue; font-size:12px;">Registrieren</button>
+        <div class="header-yellow"><h1 style="font-size:40px; margin:0;">⚡ MEISTER-BLITZ</h1></div>
+        <input type="email" id="email" placeholder="E-MAIL ADRESSE" style="margin-bottom:10px;">
+        <input type="password" id="pw" placeholder="PASSWORT">
+        <button class="btn btn-black" onclick="auth('signInWithPassword')" style="margin-top:20px;">EINLOGGEN</button>
+        <p onclick="auth('signUp')" style="margin-top:20px; cursor:pointer; font-weight:bold; text-decoration:underline;">Konto erstellen (3 Gratis-Tests)</p>
     </div>
 
     <div id="app-screen" class="card">
         <div class="header-yellow">
-            <h2 style="margin:0;">RECHNUNGS-GENERATOR PRO</h2>
-            <small id="user-info"></small>
+            <h2 style="margin:0;">RECHNUNGS-CENTER</h2>
+            <div id="status-badge" style="background:white; display:inline-block; padding:5px 15px; border-radius:20px; margin-top:10px; font-weight:bold;">Lade...</div>
         </div>
 
-        <div class="section-title">Meine Firmendaten (Wird gespeichert)</div>
-        <div class="grid-3">
-            <input type="text" id="f_name" placeholder="Firmenname / Inhaber">
-            <input type="text" id="f_str" placeholder="Straße / Hausnr.">
+        <div class="section-title">🏢 FIRMEN-DATEN</div>
+        <div class="grid-inputs">
+            <input type="text" id="f_name" placeholder="Firma">
+            <input type="text" id="f_str" placeholder="Straße">
             <input type="text" id="f_ort" placeholder="PLZ / Ort">
             <input type="text" id="f_iban" placeholder="IBAN">
-            <input type="text" id="f_stnr" placeholder="Steuer-Nr / USt-ID">
-            <input type="text" id="f_logo" placeholder="Logo-URL (Optional)">
+            <input type="text" id="f_stnr" placeholder="Steuer-Nr.">
         </div>
-        <button class="btn btn-save" onclick="saveFirmendaten()">Firmendaten dauerhaft speichern</button>
+        <button class="btn btn-save" onclick="saveFirmendaten()">DATEN SPEICHERN</button>
 
-        <div class="section-title">Kunde & Rechnung</div>
-        <div class="grid-3">
+        <div class="section-title">👤 KUNDE</div>
+        <div class="grid-inputs">
             <input type="text" id="k_name" placeholder="Kundenname">
-            <input type="text" id="k_str" placeholder="Kundenstraße">
-            <input type="text" id="k_ort" placeholder="Kundenort">
-            <input type="text" id="r_nr" placeholder="Rechnungs-Nr (z.B. 2024-001)">
+            <input type="text" id="k_str" placeholder="Straße">
+            <input type="text" id="k_ort" placeholder="Ort">
+            <input type="text" id="r_nr" value="RE-001">
             <input type="date" id="r_datum">
         </div>
 
-        <div class="section-title">Leistungen / Material</div>
+        <div class="section-title">🛠️ POSITIONEN</div>
         <div id="pos-container"></div>
-        <button onclick="addPos()" style="width:100%; padding:10px; border:2px dashed #ccc; background:none; cursor:pointer; border-radius:10px;">+ Position hinzufügen</button>
+        <button onclick="addPos()" style="width:100%; padding:10px; border:2px dashed #ccc; cursor:pointer;">+ POSITION</button>
 
         <div style="margin-top:30px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <button class="btn btn-black" onclick="finish('download')">PDF Speichern</button>
-            <button class="btn btn-black" style="background:#007bff;" onclick="finish('email')">Direkt per E-Mail senden</button>
+            <button class="btn btn-black" onclick="finish('download')">PDF SPEICHERN</button>
+            <button class="btn btn-black" style="background:#007bff;" onclick="finish('email')">SENDEN</button>
         </div>
+        <button onclick="location.reload()" style="margin-top:20px; background:none; border:none; color:gray; cursor:pointer; width:100%;">Abmelden</button>
     </div>
 
 <script>
-    const _supabase = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'DEIN_ANON_KEY');
+    // DEINE DATEN - PRÄZISE EINGEBAUT
+    const URL = 'https://gemywlmdshnagfetimyy.supabase.co';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlbXl3bG1kc2huYWdmZXRpbXl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTE5OTQsImV4cCI6MjA5MzkyNzk5NH0.jfbP6DI7XhZ0zVg4VoltIZEWOztvXZ7g_ZmhGKG7sFA';
+    
+    const _supabase = supabase.createClient(URL, KEY);
+
     let sessionUser = null;
+    let userProfile = null;
 
     async function auth(type) {
         const { data, error } = await _supabase.auth[type]({ email: document.getElementById('email').value, password: document.getElementById('pw').value });
-        if (error) alert(error.message);
-        else if (data.user) {
+        if (error) return alert("Fehler: " + error.message);
+        if (data.user) {
             sessionUser = data.user;
             if (type === 'signUp') await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
             loadApp();
@@ -89,19 +91,26 @@
     async function loadApp() {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('app-screen').style.display = 'block';
-        document.getElementById('user-info').innerText = "Angemeldet als: " + sessionUser.email;
+        document.getElementById('r_datum').valueAsDate = new Date();
         
-        const { data } = await _supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
-        if (data && data.firma_daten) {
-            const fd = data.firma_daten;
-            document.getElementById('f_name').value = fd.name || '';
-            document.getElementById('f_str').value = fd.str || '';
-            document.getElementById('f_ort').value = fd.ort || '';
-            document.getElementById('f_iban').value = fd.iban || '';
-            document.getElementById('f_stnr').value = fd.stnr || '';
-            document.getElementById('f_logo').value = data.logo_url || '';
+        const { data, error } = await _supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
+        if (error) return console.log("Profil laden fehlgeschlagen");
+        userProfile = data;
+        
+        if (data.firma_daten) {
+            document.getElementById('f_name').value = data.firma_daten.name || '';
+            document.getElementById('f_str').value = data.firma_daten.str || '';
+            document.getElementById('f_ort').value = data.firma_daten.ort || '';
+            document.getElementById('f_iban').value = data.firma_daten.iban || '';
+            document.getElementById('f_stnr').value = data.firma_daten.stnr || '';
         }
-        addPos(); 
+        updateBadge();
+        addPos();
+    }
+
+    function updateBadge() {
+        const istAbo = userProfile.abo_bis && new Date(userProfile.abo_bis) > new Date();
+        document.getElementById('status-badge').innerText = istAbo ? "🌟 PRO AKTIV" : "CREDITS: " + userProfile.credits;
     }
 
     async function saveFirmendaten() {
@@ -112,74 +121,46 @@
             iban: document.getElementById('f_iban').value,
             stnr: document.getElementById('f_stnr').value
         };
-        const logo = document.getElementById('f_logo').value;
-        const { error } = await _supabase.from('profiles').update({ firma_daten: fd, logo_url: logo }).eq('id', sessionUser.id);
-        if (!error) alert("Firmendaten gespeichert!");
+        await _supabase.from('profiles').update({ firma_daten: fd }).eq('id', sessionUser.id);
+        alert("Gespeichert!");
     }
 
     function addPos() {
         const div = document.createElement('div');
         div.className = 'zeile';
         div.innerHTML = `
-            <input type="text" class="p_desc" placeholder="Leistung / Material">
+            <input type="text" class="p_desc" placeholder="Leistung">
             <input type="number" class="p_menge" value="1">
-            <select class="p_einheit">
-                <option>Stunden</option><option>Stk.</option><option>Pauschale</option>
-                <option>Anfahrt</option><option>Material</option><option>lfm</option><option>qm</option>
-            </select>
-            <input type="number" class="p_preis" placeholder="Einzelpreis €">
-            <button onclick="this.parentElement.remove()">🗑️</button>
-        `;
+            <select class="p_einheit"><option>Std.</option><option>Stk.</option><option>Anfahrt</option><option>Material</option></select>
+            <input type="number" class="p_preis" placeholder="€">
+            <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">❌</button>`;
         document.getElementById('pos-container').appendChild(div);
     }
 
     async function finish(mode) {
-        // Credit Check
-        const { data: prof } = await _supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
-        const istAbo = prof.abo_bis && new Date(prof.abo_bis) > new Date();
-        if (!istAbo && prof.credits <= 0) return alert("Limit erreicht! Bitte Abo abschließen.");
+        const istAbo = userProfile.abo_bis && new Date(userProfile.abo_bis) > new Date();
+        if (!istAbo && userProfile.credits <= 0) return alert("Bitte Guthaben aufladen!");
 
         if (!istAbo) await _supabase.rpc('use_credit_safe');
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        doc.setFontSize(22); doc.text(document.getElementById('f_name').value, 20, 25);
+        doc.setFontSize(10); doc.text(document.getElementById('f_str').value + ", " + document.getElementById('f_ort').value, 20, 32);
         
-        // Layout Design
-        if (prof.logo_url) { /* Logo einfügen Logik hier falls gewünscht */ }
-        doc.setFontSize(20); doc.text(document.getElementById('f_name').value, 20, 20);
-        doc.setFontSize(10); doc.text(`${document.getElementById('f_str').value}, ${document.getElementById('f_ort').value}`, 20, 28);
-        
-        doc.text("RECHNUNG AN:", 20, 50);
-        doc.text(document.getElementById('k_name').value, 20, 55);
-        doc.text(document.getElementById('k_str').value, 20, 60);
-        doc.text(document.getElementById('k_ort').value, 20, 65);
-
-        doc.text("Rechnungs-Nr: " + document.getElementById('r_nr').value, 140, 55);
-        doc.text("Datum: " + document.getElementById('r_datum').value, 140, 60);
-
-        const tableData = [];
-        let gesamt = 0;
+        const rows = []; let gesamt = 0;
         document.querySelectorAll('.zeile').forEach(z => {
-            const m = z.querySelector('.p_menge').value;
-            const p = z.querySelector('.p_preis').value;
-            const sum = m * p;
-            gesamt += sum;
-            tableData.push([z.querySelector('.p_desc').value, m, z.querySelector('.p_einheit').value, p + " €", sum.toFixed(2) + " €"]);
+            const m = parseFloat(z.querySelector('.p_menge').value) || 0;
+            const p = parseFloat(z.querySelector('.p_preis').value) || 0;
+            const sum = m * p; gesamt += sum;
+            rows.push([z.querySelector('.p_desc').value, m, z.querySelector('.p_einheit').value, p.toFixed(2) + " €", sum.toFixed(2) + " €"]);
         });
 
-        doc.autoTable({ startY: 80, head: [['Leistung', 'Menge', 'Einh.', 'E-Preis', 'Gesamt']], body: tableData });
-        doc.text(`Gesamtbetrag (Netto): ${gesamt.toFixed(2)} EUR`, 140, doc.lastAutoTable.finalY + 10);
-        doc.text(`IBAN: ${document.getElementById('f_iban').value}`, 20, doc.lastAutoTable.finalY + 30);
-        doc.text(`Steuernummer: ${document.getElementById('f_stnr').value}`, 20, doc.lastAutoTable.finalY + 35);
-
-        if (mode === 'download') {
-            doc.save("Rechnung.pdf");
-        } else {
-            const mailUri = `mailto:?subject=Rechnung&body=Anbei die Rechnung über ${gesamt.toFixed(2)} EUR.`;
-            window.location.href = mailUri;
-            doc.save("Rechnung.pdf");
-        }
-        alert("Erfolgreich erstellt!");
+        doc.autoTable({ startY: 80, head: [['Leistung', 'Menge', 'Einh.', 'Preis', 'Gesamt']], body: rows });
+        doc.text("GESAMT: " + gesamt.toFixed(2) + " €", 140, doc.lastAutoTable.finalY + 10);
+        doc.save("Rechnung.pdf");
+        
+        alert("Erfolgreich!");
         location.reload();
     }
 </script>
