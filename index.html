@@ -27,7 +27,6 @@
         .btn-pdf { background: var(--primary); box-shadow: 0 6px 0 #3e40b5; }
         .btn-email { background: var(--secondary); box-shadow: 0 6px 0 #1e7e34; }
         .badge { background: #fff3cd; color: #856404; padding: 12px 25px; border-radius: 15px; font-weight: 900; border: 2px solid #ffeeba; }
-        .logo-upload { border: 3px dashed var(--primary); padding: 20px; text-align: center; border-radius: 15px; cursor: pointer; background: #f8faff; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -84,8 +83,8 @@
                 <option value="Arbeitszeit Fachkraft">
                 <option value="Anfahrtspauschale">
                 <option value="Material laut Aufwand">
-                <option value="Kleinmaterial & Verbrauch">
-                <option value="Serviceeinsatz">
+                <option value="Kleinmaterial & Verbrauchsmaterial">
+                <option value="Serviceeinsatz Pauschal">
             </datalist>
             <button onclick="addLeistung()" style="width:100%; padding:15px; border:3px dashed #ddd; border-radius:15px; background:none; cursor:pointer; font-weight:bold; color:#888;">+ NEUE ZEILE</button>
         </div>
@@ -131,7 +130,7 @@
         id('login-screen').style.display = 'none'; id('main-dashboard').style.display = 'block';
         id('user-display').innerText = currentUser.email;
         refreshUI();
-        addLeistung('Arbeitszeit Fachkraft', 1, 'Std', 65);
+        if(document.querySelectorAll('.leistung-zeile').length === 0) addLeistung('Arbeitszeit Fachkraft', 1, 'Std', 65);
     }
 
     async function saveProfile() {
@@ -183,7 +182,7 @@
         const div = document.createElement('div');
         div.className = 'leistung-zeile';
         div.innerHTML = `
-            <input type="text" class="desc" list="leistungs-liste" value="${d}" placeholder="Tippen oder wählen...">
+            <input type="text" class="desc" list="leistungs-liste" value="${d}" placeholder="Schreiben oder wählen...">
             <input type="number" class="menge" value="${m}">
             <select class="einheit">
                 <option value="Std" ${e=='Std'?'selected':''}>Std</option>
@@ -193,7 +192,7 @@
                 <option value="m²" ${e=='m²'?'selected':''}>m²</option>
             </select>
             <input type="number" class="preis" value="${p}">
-            <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
+            <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer; font-size:20px;">🗑️</button>`;
         id('leistungen-container').appendChild(div);
     }
 
