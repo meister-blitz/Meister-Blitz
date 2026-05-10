@@ -90,38 +90,53 @@
         <button class="btn btn-primary" onclick="generatePDF(false)">PDF Vorschau (kostenlos)</button>
         <button class="btn btn-secondary" onclick="generatePDF(true)">Final Senden & -1 Credit</button>
         
-        <p style="font-size: 12px; color: red; margin-top: 10px; text-align: center;">Hinweis: Finales Senden zieht 1 Credit ab. Danach kostet die Pro-Version 11,99 €.</p>
+        <p style="font-size: 12px; color: red; margin-top: 10px; text-align: center;">Hinweis: Senden zieht 1 Credit ab. Die Pro-Version kostet 11,99 €.</p>
     </div>
 
     <div class="footer">
-        © 2024 MEISTER-BLITZ | High-Speed-Invoicing für Profis
+        © 2024 MEISTER-BLITZ | Invoicing für Profis
     </div>
 </div>
 
 <script>
     const _supabase = supabase.createClient('https://jifbshvofzsqiuvitpgm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8');
 
-    const id = (i) => document.getElementById(i);
+    // Hilfsfunktion zum Auslesen der IDs
+    function getVal(id) { return document.getElementById(id).value; }
 
     async function handleSignUp() {
-        const email = id('email').value;
-        const password = id('password').value;
-        if (!email || password.length < 6) { alert("Daten unvollständig (Passwort min. 6 Zeichen)!"); return; }
+        const email = getVal('email');
+        const password = getVal('password');
+        
+        if (!email || password.length < 6) {
+            alert("E-Mail fehlt oder Passwort zu kurz (min. 6 Zeichen)!");
+            return;
+        }
 
+        // 1. Registrierung
         const { data, error } = await _supabase.auth.signUp({ email, password });
+
         if (error) {
             alert("Registrierung fehlgeschlagen: " + error.message);
         } else if (data.user) {
-            // Profil mit 3 Gratis-Credits anlegen
-            const { error: pErr } = await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
-            if (pErr) console.error(pErr);
-            alert("Konto erstellt! Bitte logge dich jetzt ein.");
+            // 2. Profil mit UPSERT anlegen (falls User schon existiert)
+            const { error: pErr } = await _supabase
+                .from('profiles')
+                .upsert([{ id: data.user.id, credits: 3 }], { onConflict: 'id' });
+            
+            if (pErr) console.error("Profilfehler:", pErr);
+            
+            alert("Erfolgreich! Bitte logge dich jetzt ein.");
             location.reload();
         }
     }
 
     async function handleLogin() {
-        const { error } = await _supabase.auth.signInWithPassword({ email: id('email').value, password: id('password').value });
+        const { data, error } = await _supabase.auth.signInWithPassword({ 
+            email: getVal('email'), 
+            password: getVal('password') 
+        });
+
         if (error) alert("Login fehlgeschlagen: " + error.message);
         else checkSession();
     }
@@ -134,17 +149,19 @@
     async function checkSession() {
         const { data: { session } } = await _supabase.auth.getSession();
         if (session) {
-            id('auth-section').classList.remove('active');
-            id('app-section').classList.add('active');
+            document.getElementById('auth-section').classList.remove('active');
+            document.getElementById('app-section').classList.add('active');
             loadProfile(session.user.id);
-            id('rechnungsNummer').value = 'RE-' + Math.floor(Math.random() * 90000 + 10000);
-            if(id('leistungen-container').innerHTML === "") addLeistung('Arbeitszeit', 1, 'Std', 65);
+            document.getElementById('rechnungsNummer').value = 'RE-' + Math.floor(Math.random() * 90000 + 10000);
+            if(document.getElementById('leistungen-container').innerHTML === "") {
+                addLeistung('Arbeitszeit', 1, 'Std', 65);
+            }
         }
     }
 
     async function loadProfile(uid) {
-        const { data } = await _supabase.from('profiles').select('*').eq('id', uid).single();
-        if (data) id('user-credits').innerText = data.credits;
+        const { data, error } = await _supabase.from('profiles').select('*').eq('id', uid).single();
+        if (data) document.getElementById('user-credits').innerText = data.credits;
     }
 
     function addLeistung(d='', m=1, e='Std', p=0) {
@@ -154,42 +171,57 @@
             <input type="text" class="desc" list="leistungs-liste" value="${d}" placeholder="Leistung...">
             <input type="number" class="menge" value="${m}">
             <select class="einheit">
-                <option value="Std">Std</option>
-                <option value="Pausch.">Pausch.</option>
-                <option value="Stk">Stk</option>
-                <option value="m">m</option>
-                <option value="m²">m²</option>
+                <option value="Std" ${e=='Std'?'selected':''}>Std</option>
+                <option value="Pausch." ${e=='Pausch.'?'selected':''}>Pausch.</option>
+                <option value="Stk" ${e=='Stk'?'selected':''}>Stk</option>
+                <option value="m" ${e=='m'?'selected':''}>m</option>
+                <option value="m²" ${e=='m²'?'selected':''}>m²</option>
             </select>
             <input type="number" class="preis" value="${p}">
             <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
-        id('leistungen-container').appendChild(div);
+        document.getElementById('leistungen-container').appendChild(div);
     }
 
     async function generatePDF(isEmail) {
         const { data: { session } } = await _supabase.auth.getSession();
+        if (!session) return alert("Sitzung abgelaufen!");
+
         const { data: profile } = await _supabase.from('profiles').select('credits').eq('id', session.user.id).single();
 
-        if (isEmail && profile.credits <= 0) {
-            alert("Keine Credits mehr! Upgrade auf Pro für 11,99 € nötig.");
+        if (isEmail && (!profile || profile.credits <= 0)) {
+            alert("Keine Credits! Bitte lade dein Konto auf.");
             return;
         }
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Einfaches PDF Layout
-        doc.setFontSize(20); doc.text(id('firmaName').value || "Rechnung", 20, 20);
-        doc.setFontSize(10); doc.text("Rechnungsnummer: " + id('rechnungsNummer').value, 20, 30);
-        doc.text("Kunde: " + id('kundeName').value, 20, 40);
+        // Firmendaten & Kunde (Dein Layout)
+        doc.setFontSize(22); doc.text(getVal('firmaName'), 20, 30);
+        doc.setFontSize(10); doc.text(getVal('firmaAnschrift'), 20, 38);
+        doc.text("Rechnung an: " + getVal('kundeName'), 20, 60);
+        doc.text("Nr: " + getVal('rechnungsNummer'), 140, 60);
+
+        // Tabellen-Logik
+        const rows = [];
+        document.querySelectorAll('.leistung-zeile').forEach(z => {
+            rows.push([
+                z.querySelector('.desc').value, 
+                z.querySelector('.menge').value, 
+                z.querySelector('.einheit').value, 
+                z.querySelector('.preis').value + " €"
+            ]);
+        });
+        doc.autoTable({ startY: 70, head: [['Leistung', 'Menge', 'Einh.', 'Preis']], body: rows });
 
         if (isEmail) {
             await _supabase.from('profiles').update({ credits: profile.credits - 1 }).eq('id', session.user.id);
             loadProfile(session.user.id);
-            alert("Rechnung finalisiert! E-Mail wird vorbereitet.");
-            const mailto = `mailto:${id('kundeEmail').value}?subject=Rechnung&body=Anbei die Rechnung.`;
-            window.location.href = mailto;
+            alert("Credits abgezogen. E-Mail wird geöffnet.");
+            window.location.href = `mailto:${getVal('kundeEmail')}?subject=Rechnung&body=Anbei die Rechnung.`;
         }
-        doc.save("Rechnung.pdf");
+        
+        doc.save(`Rechnung_${getVal('rechnungsNummer')}.pdf`);
     }
 
     checkSession();
