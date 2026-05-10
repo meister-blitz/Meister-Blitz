@@ -3,216 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ v4.0 | PRO-SYSTEM</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <title>MEISTER-BLITZ PRO</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root { --primary: #5d5fef; --secondary: #28a745; --bg: #f0f4f8; --dark: #1a1a2e; --yellow: #ffcc00; --white: #ffffff; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 800px; min-height: 600px; }
-        h1 { color: var(--dark); text-align: center; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
+        h1 { color: var(--dark); text-align: center; font-size: 28px; }
         .auth-box, .rechnungs-box { display: none; }
         .active { display: block; }
         .input-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark); }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         .btn { width: 100%; padding: 15px; border: none; border-radius: 8px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         .btn-primary { background: var(--primary); }
         .btn-secondary { background: var(--secondary); }
         .btn-yellow { background: var(--yellow); color: var(--dark); }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-        .leistung-zeile { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .credits-badge { background: var(--yellow); padding: 5px 15px; border-radius: 20px; font-weight: bold; float: right; }
-        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #777; }
-        .logo-placeholder { width: 100px; height: 100px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; cursor: pointer; border-radius: 10px; overflow: hidden; }
-        .logo-placeholder img { max-width: 100%; max-height: 100%; }
-        @media (max-width: 600px) { .leistung-zeile { grid-template-columns: 1fr; } }
+        .btn:hover { opacity: 0.9; transform: scale(1.01); }
+        .leistung-zeile { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px; }
+        .credits-badge { background: var(--yellow); padding: 8px 15px; border-radius: 20px; font-weight: bold; float: right; border: 2px solid var(--dark); }
+        
+        /* Sperrbildschirm */
+        #payment-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 26, 46, 0.98); color: white; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .pay-card { background: white; color: black; padding: 30px; border-radius: 20px; max-width: 400px; }
     </style>
 </head>
 <body>
 
+<div id="payment-overlay">
+    <div class="pay-card">
+        <h2 style="color: var(--dark)">⚡ Limit erreicht!</h2>
+        <p>Deine 3 Gratis-Rechnungen sind aufgebraucht.</p>
+        <hr>
+        <h3>Vollversion aktivieren</h3>
+        <p style="font-size: 24px; font-weight: bold;">11,99 € <span style="font-size: 14px;">/ Monat</span></p>
+        <button class="btn btn-primary" onclick="window.location.href='DEIN_PAYPAL_LINK'">Jetzt per PayPal freischalten</button>
+        <p style="font-size: 11px; margin-top: 10px;">Nach Zahlung erfolgt die Freischaltung manuell durch den Support.</p>
+    </div>
+</div>
+
 <div class="container">
-    <h1>⚡ MEISTER-BLITZ <span style="font-size: 0.5em; background: var(--dark); color: white; padding: 2px 8px; border-radius: 5px;">PRO</span></h1>
+    <h1>⚡ MEISTER-BLITZ <span style="background: var(--dark); color: white; padding: 2px 10px; border-radius: 5px; font-size: 0.6em;">PRO</span></h1>
     
     <div id="auth-section" class="auth-box active">
-        <p style="text-align: center; color: #666;">Handwerker-Abrechnung in 60 Sekunden.</p>
-        <div class="input-group">
-            <label>E-Mail</label>
-            <input type="email" id="auth-email" placeholder="Deine E-Mail">
+        <div style="background: #fdfdfd; padding: 20px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 20px;">
+            <h3 style="margin-top:0">Willkommen</h3>
+            <div class="input-group">
+                <label>E-Mail Adresse</label>
+                <input type="email" id="auth-email" placeholder="beispiel@handwerk.de">
+            </div>
+            <div class="input-group">
+                <label>Passwort</label>
+                <input type="password" id="auth-password" placeholder="Passwort (min. 6 Zeichen)">
+            </div>
+            <button class="btn btn-primary" onclick="handleLogin()">Einloggen</button>
+            <p style="text-align:center; margin: 15px 0;">oder</p>
+            <button class="btn btn-secondary" onclick="handleSignUp()">Kostenlos registrieren (3 Versuche)</button>
         </div>
-        <div class="input-group">
-            <label>Passwort</label>
-            <input type="password" id="auth-password" placeholder="Passwort (min. 6 Zeichen)">
-        </div>
-        <button class="btn btn-primary" onclick="handleLogin()">Einloggen</button>
-        <button class="btn btn-secondary" onclick="handleSignUp()">Registrieren (3 Frei-Versuche)</button>
     </div>
 
     <div id="app-section" class="rechnungs-box">
-        <div class="credits-badge">Credits: <span id="user-credits">0</span></div>
-        <button onclick="handleLogout()" style="margin-bottom: 20px; background: none; border: none; color: blue; cursor: pointer;">Abmelden</button>
+        <div class="credits-badge">Guthaben: <span id="user-credits">?</span> Rechnungen</div>
+        <button onclick="handleLogout()" style="color: red; background: none; border: none; cursor: pointer; font-weight: bold;">Abmelden</button>
         
-        <div class="logo-placeholder" onclick="document.getElementById('logo-input').click()">
-            <span id="logo-text">Logo (Optional)</span>
-            <img id="logo-preview" style="display:none;">
-        </div>
-        <input type="file" id="logo-input" style="display:none;" accept="image/*" onchange="previewLogo(this)">
-
-        <div style="border-bottom: 2px solid var(--bg); margin-bottom: 20px; padding-bottom: 10px;">
-            <h3>1. Deine Firmendaten</h3>
-            <div class="input-group"><input type="text" id="firmaName" placeholder="Dein Firmenname"></div>
-            <div class="input-group"><input type="text" id="firmaAnschrift" placeholder="Straße, PLZ Ort"></div>
-            <div class="input-group"><input type="text" id="firmaMail" placeholder="Deine E-Mail für Kopie"></div>
-        </div>
-
-        <div style="border-bottom: 2px solid var(--bg); margin-bottom: 20px; padding-bottom: 10px;">
-            <h3>2. Empfänger</h3>
-            <div class="input-group"><input type="text" id="kundeName" placeholder="Name des Kunden"></div>
-            <div class="input-group"><input type="text" id="kundeAnschrift" placeholder="Anschrift des Kunden"></div>
-            <div class="input-group"><input type="email" id="kundeEmail" placeholder="E-Mail des Kunden (für Direktversand)"></div>
-        </div>
-
-        <div style="border-bottom: 2px solid var(--bg); margin-bottom: 20px; padding-bottom: 10px;">
-            <h3>3. Leistungen</h3>
-            <div id="leistungen-container"></div>
-            <button class="btn btn-yellow" onclick="addLeistung()" style="padding: 10px; margin-top: 5px;">+ Position hinzufügen</button>
+        <div style="margin-top: 30px;">
+            <h3>Firmendaten</h3>
+            <input type="text" id="firmaName" placeholder="Name deines Betriebs" style="margin-bottom: 10px;">
+            <input type="text" id="firmaAnschrift" placeholder="Straße, PLZ, Ort">
             
-            <datalist id="leistungs-liste">
-                <option value="Arbeitsstunden">
-                <option value="Anfahrtspauschale">
-                <option value="Materialkosten laut Beleg">
-                <option value="Kleinmaterial & Reinigung">
-                <option value="Maschinenmiete">
-                <option value="Entsorgungspauschale">
-                <option value="Notdienst-Zuschlag">
-            </datalist>
+            <h3>Kunde</h3>
+            <input type="text" id="kundeName" placeholder="Name des Kunden" style="margin-bottom: 10px;">
+            <input type="email" id="kundeEmail" placeholder="E-Mail des Kunden">
+            
+            <h3>Leistungspositionen</h3>
+            <div id="leistungen-container"></div>
+            <button class="btn btn-yellow" onclick="addLeistung()" style="padding: 10px;">+ Position hinzufügen</button>
+            
+            <div style="margin-top: 30px; border-top: 2px solid var(--bg); padding-top: 20px;">
+                <button class="btn btn-primary" onclick="generatePDF(false)">Vorschau PDF öffnen</button>
+                <button class="btn btn-secondary" onclick="generatePDF(true)">Rechnung final senden (-1 Credit)</button>
+            </div>
         </div>
-
-        <div class="input-group">
-            <label>Rechnungsnummer</label>
-            <input type="text" id="rechnungsNummer" readonly style="background-color: #eee;">
-        </div>
-
-        <button class="btn btn-primary" onclick="generatePDF(false)">PDF Vorschau (Kostenlos)</button>
-        <button class="btn btn-secondary" onclick="generatePDF(true)">Final Senden & -1 Credit</button>
-        
-        <p style="text-align: center; font-size: 11px; color: #777; margin-top: 15px;">
-            Nach Verbrauch der Frei-Credits: Pro-Version für 11,99 € freischalten.
-        </p>
-    </div>
-
-    <div class="footer">
-        © 2024 MEISTER-BLITZ | High-Speed Handwerker Software
     </div>
 </div>
 
 <script>
-    // System-Initialisierung
-    const _supabase = supabase.createClient('https://jifbshvofzsqiuvitpgm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8');
-    
-    let logoData = null;
+    // DEINE DATEN (Aus deinem Supabase Bild)
+    const SUPABASE_URL = 'https://jifbshvofzsqiuvitpgm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function previewLogo(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('logo-preview').src = e.target.result;
-                document.getElementById('logo-preview').style.display = 'block';
-                document.getElementById('logo-text').style.display = 'none';
-                logoData = e.target.result;
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // REGISTRIERUNG
     async function handleSignUp() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
-        if (!email || password.length < 6) { alert("Daten prüfen!"); return; }
-
+        if(!email || password.length < 6) { alert("Bitte gültige E-Mail und Passwort (min. 6 Zeichen) eingeben."); return; }
+        
         const { data, error } = await _supabase.auth.signUp({ email, password });
-        if (error) {
-            alert("Fehler: " + error.message);
-        } else if (data.user) {
-            // Profil anlegen
-            await _supabase.from('profiles').upsert([{ id: data.user.id, credits: 3 }]);
-            alert("Erfolgreich registriert! Bitte logge dich ein.");
+        if (error) alert("Registrierung fehlgeschlagen: " + error.message);
+        else {
+            // WICHTIG: Erstellt den Eintrag in deiner 'profiles' Tabelle
+            await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3, ist_premium: false }]);
+            alert("Erfolgreich registriert! Du kannst dich jetzt einloggen.");
         }
     }
 
-    // LOGIN
     async function handleLogin() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
-        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-        if (error) alert("Login fehlgeschlagen.");
+        const { error } = await _supabase.auth.signInWithPassword({ email, password });
+        if (error) alert("Login fehlgeschlagen. Daten prüfen.");
         else checkSession();
     }
-
-    async function handleLogout() { await _supabase.auth.signOut(); location.reload(); }
 
     async function checkSession() {
         const { data: { session } } = await _supabase.auth.getSession();
         if (session) {
             document.getElementById('auth-section').classList.remove('active');
             document.getElementById('app-section').classList.add('active');
-            const { data } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
-            if (data) document.getElementById('user-credits').innerText = data.credits;
-            document.getElementById('rechnungsNummer').value = 'RE-' + Math.floor(Math.random()*90000+10000);
-            if(document.getElementById('leistungen-container').innerHTML === "") addLeistung('Arbeitszeit', 1, 'Std', 65);
+            
+            const { data: profile } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
+            if (profile) {
+                document.getElementById('user-credits').innerText = profile.credits;
+                if (profile.credits <= 0 && !profile.ist_premium) {
+                    document.getElementById('payment-overlay').style.display = 'flex';
+                }
+            }
+            if(!document.getElementById('leistungen-container').innerHTML) addLeistung();
         }
     }
 
-    function addLeistung(d='', m=1, e='Std', p=0) {
+    function addLeistung() {
         const div = document.createElement('div');
         div.className = 'leistung-zeile';
         div.innerHTML = `
-            <input type="text" class="desc" list="leistungs-liste" value="${d}" placeholder="Leistung...">
-            <input type="number" class="menge" value="${m}">
-            <select class="einheit">
-                <option value="Std">Std</option>
-                <option value="Stk">Stk</option>
-                <option value="Pausch.">Pausch.</option>
-                <option value="m">m</option>
-                <option value="m²">m²</option>
-            </select>
-            <input type="number" class="preis" value="${p}">
+            <input type="text" class="desc" placeholder="Leistung...">
+            <input type="number" class="menge" value="1" style="width:60px">
+            <select class="einheit" style="width:80px"><option>Std</option><option>Stk</option><option>m</option></select>
+            <input type="number" class="preis" placeholder="0 €" style="width:80px">
             <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
         document.getElementById('leistungen-container').appendChild(div);
     }
 
-    async function generatePDF(isEmail) {
+    async function generatePDF(isFinal) {
         const { data: { session } } = await _supabase.auth.getSession();
-        const { data: profile } = await _supabase.from('profiles').select('credits').eq('id', session.user.id).single();
-        
-        if (isEmail && (!profile || profile.credits <= 0)) {
-            alert("Keine Credits mehr vorhanden!"); return;
+        const { data: profile } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
+
+        if (isFinal && profile.credits <= 0 && !profile.ist_premium) {
+            document.getElementById('payment-overlay').style.display = 'flex';
+            return;
         }
 
         const doc = new jspdf.jsPDF();
-        if(logoData) doc.addImage(logoData, 'PNG', 150, 10, 40, 40);
+        doc.setFontSize(20);
+        doc.text("RECHNUNG", 20, 20);
+        doc.setFontSize(12);
+        doc.text(document.getElementById('firmaName').value || "Deine Firma", 20, 30);
+        doc.text("Kunde: " + (document.getElementById('kundeName').value || "Unbekannt"), 20, 50);
         
-        doc.setFontSize(22); doc.text(document.getElementById('firmaName').value || "RECHNUNG", 20, 30);
-        doc.setFontSize(10); doc.text(document.getElementById('firmaAnschrift').value, 20, 38);
-        doc.text("An: " + document.getElementById('kundeName').value, 20, 60);
-        doc.text("Nr: " + document.getElementById('rechnungsNummer').value, 140, 60);
-
         const rows = [];
         document.querySelectorAll('.leistung-zeile').forEach(z => {
-            rows.push([z.querySelector('.desc').value, z.querySelector('.menge').value, z.querySelector('.einheit').value, z.querySelector('.preis').value + " €"]);
+            rows.push([
+                z.querySelector('.desc').value, 
+                z.querySelector('.menge').value, 
+                z.querySelector('.einheit').value, 
+                z.querySelector('.preis').value + " €"
+            ]);
         });
-        doc.autoTable({ startY: 70, head: [['Leistung', 'Menge', 'Einh.', 'Preis']], body: rows });
+        doc.autoTable({ startY: 60, head: [['Leistung', 'Menge', 'Einh.', 'Preis']], body: rows });
 
-        if (isEmail) {
-            await _supabase.from('profiles').update({ credits: profile.credits - 1 }).eq('id', session.user.id);
-            document.getElementById('user-credits').innerText = profile.credits - 1;
-            window.location.href = `mailto:${document.getElementById('kundeEmail').value}?subject=Rechnung`;
+        if (isFinal) {
+            const newCredits = profile.credits - 1;
+            await _supabase.from('profiles').update({ credits: newCredits }).eq('id', session.user.id);
+            document.getElementById('user-credits').innerText = newCredits;
+            alert("Rechnung finalisiert. 1 Credit abgezogen.");
         }
         doc.save("Rechnung.pdf");
     }
 
+    function handleLogout() { _supabase.auth.signOut(); location.reload(); }
     checkSession();
 </script>
+</body>
+</html>
