@@ -9,10 +9,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* DEINE GESTALTUNG - KOMPLETT ERHALTEN */
+        /* DEIN VOLLSTÄNDIGES DESIGN - KEINE ÄNDERUNG */
         :root { --primary: #5d5fef; --secondary: #28a745; --bg: #f0f4f8; --dark: #1a1a2e; --yellow: #ffcc00; --white: #ffffff; }
         body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 800px; min-height: 500px; }
+        .container { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
         h1 { color: var(--dark); text-align: center; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .auth-box, .rechnungs-box { display: none; }
         .active { display: block; }
@@ -26,72 +26,88 @@
         .leistung-zeile { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px; align-items: center; }
         .credits-badge { background: var(--yellow); padding: 5px 15px; border-radius: 20px; font-weight: bold; float: right; }
         #payment-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); color: white; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .status-msg { font-size: 14px; text-align: center; margin-top: 10px; color: var(--primary); }
     </style>
 </head>
 <body>
 
 <div id="payment-overlay">
     <h2>⚡ Limit erreicht!</h2>
-    <p>Deine 3 Gratis-Versuche sind aufgebraucht.</p>
-    <button class="btn btn-yellow" onclick="window.location.href='DEIN_STRIPE_LINK'" style="width: auto; padding: 15px 40px;">Jetzt Vollversion freischalten</button>
+    <p>Bitte aktiviere die Vollversion für unbegrenzte Rechnungen.</p>
+    <button class="btn btn-yellow" onclick="window.location.href='DEIN_STRIPE_LINK'" style="width: auto; padding: 15px 40px;">Jetzt freischalten</button>
 </div>
 
 <div class="container">
     <h1>⚡ MEISTER-BLITZ PRO</h1>
     
     <div id="auth-section" class="auth-box active">
-        <div class="input-group"><label>E-Mail</label><input type="email" id="email" placeholder="E-Mail"></div>
-        <div class="input-group"><label>Passwort</label><input type="password" id="password" placeholder="Passwort"></div>
-        <button class="btn btn-primary" id="loginBtn">Einloggen</button>
-        <button class="btn btn-secondary" id="signupBtn">Registrieren (3 Frei-Versuche)</button>
+        <div class="input-group">
+            <label>E-Mail</label>
+            <input type="email" id="email_input" placeholder="Deine E-Mail">
+        </div>
+        <div class="input-group">
+            <label>Passwort</label>
+            <input type="password" id="pass_input" placeholder="Passwort (min. 6 Zeichen)">
+        </div>
+        <button class="btn btn-primary" onclick="handleLogin()">Einloggen</button>
+        <button class="btn btn-secondary" onclick="handleSignUp()">Registrieren (3 Frei-Versuche)</button>
+        <div id="status" class="status-msg"></div>
     </div>
 
     <div id="app-section" class="rechnungs-box">
         <div class="credits-badge">Credits: <span id="user-credits">0</span></div>
-        <button id="logoutBtn" style="background:none; border:none; color:blue; cursor:pointer;">Abmelden</button>
+        <button onclick="handleLogout()" style="background:none; border:none; color:blue; cursor:pointer;">Abmelden</button>
+        
         <div style="margin-top:20px;">
-            <div class="input-group"><input type="text" id="firmaName" placeholder="Deine Firma"></div>
-            <div class="input-group"><input type="text" id="kundeName" placeholder="Kunde"></div>
+            <div class="input-group">
+                <label>Kunde</label>
+                <input type="text" id="kundeName" placeholder="Name des Kunden">
+            </div>
             <div id="leistungen-container"></div>
-            <button class="btn btn-yellow" id="addPosBtn">+ Position</button>
-            <button class="btn btn-primary" id="previewBtn" style="margin-top:20px;">Vorschau</button>
-            <button class="btn btn-secondary" id="sendBtn">Final Senden (-1 Credit)</button>
+            <button class="btn btn-yellow" onclick="addLeistung()">+ Position hinzufügen</button>
+            
+            <button class="btn btn-primary" onclick="generatePDF(false)" style="margin-top:20px;">Vorschau PDF</button>
+            <button class="btn btn-secondary" onclick="generatePDF(true)">Final Senden & Credit nutzen</button>
         </div>
     </div>
 </div>
 
 <script>
-    // WICHTIG: Supabase Start
     const _supabase = supabase.createClient('https://jifbshvofzsqiuvitpgm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8');
 
-    // Button-Events (direkt gebunden, damit sicher etwas passiert)
-    document.getElementById('signupBtn').onclick = handleSignUp;
-    document.getElementById('loginBtn').onclick = handleLogin;
-    document.getElementById('logoutBtn').onclick = handleLogout;
-    document.getElementById('addPosBtn').onclick = () => addLeistung();
-    document.getElementById('previewBtn').onclick = () => generatePDF(false);
-    document.getElementById('sendBtn').onclick = () => generatePDF(true);
+    function showStatus(msg) { document.getElementById('status').innerText = msg; }
 
     async function handleSignUp() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        if(!email || !password) return alert("Daten eingeben!");
-        
+        const email = document.getElementById('email_input').value;
+        const password = document.getElementById('pass_input').value;
+        if (!email || !password) { alert("Bitte fülle alle Felder aus."); return; }
+
+        showStatus("Registrierung läuft...");
         const { data, error } = await _supabase.auth.signUp({ email, password });
-        if (error) return alert("Fehler: " + error.message);
         
-        if (data.user) {
-            await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
-            alert("Registrierung erfolgreich! Bitte jetzt einloggen.");
+        if (error) {
+            alert("Fehler: " + error.message);
+            showStatus("");
+        } else {
+            // Profil anlegen mit 3 Credits
+            const { error: pErr } = await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
+            alert("Account erstellt! Logge dich nun ein.");
+            showStatus("Erfolgreich registriert.");
         }
     }
 
     async function handleLogin() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('email_input').value;
+        const password = document.getElementById('pass_input').value;
+        showStatus("Login läuft...");
         const { error } = await _supabase.auth.signInWithPassword({ email, password });
-        if (error) alert("Login fehlgeschlagen: " + error.message);
-        else checkSession();
+        
+        if (error) {
+            alert("Login fehlgeschlagen. Daten prüfen.");
+            showStatus("");
+        } else {
+            checkSession();
+        }
     }
 
     async function checkSession() {
@@ -99,6 +115,7 @@
         if (session) {
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('app-section').style.display = 'block';
+            
             const { data: profile } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
             if (profile) {
                 document.getElementById('user-credits').innerText = profile.credits;
@@ -111,18 +128,23 @@
     function addLeistung() {
         const div = document.createElement('div');
         div.className = 'leistung-zeile';
-        div.innerHTML = `<input type="text" placeholder="Leistung..."><input type="number" value="1" style="width:60px"><button onclick="this.parentElement.remove()">🗑️</button>`;
+        div.innerHTML = `<input type="text" placeholder="Leistung..."><input type="number" value="1" style="width:60px"><button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
         document.getElementById('leistungen-container').appendChild(div);
     }
 
     async function generatePDF(isFinal) {
         const { data: { session } } = await _supabase.auth.getSession();
         const { data: profile } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
-        if (isFinal && (!profile || profile.credits <= 0)) return document.getElementById('payment-overlay').style.display = 'flex';
+        
+        if (isFinal && (!profile || profile.credits <= 0)) {
+            document.getElementById('payment-overlay').style.display = 'flex';
+            return;
+        }
 
         const doc = new jspdf.jsPDF();
         doc.text("RECHNUNG", 20, 20);
         doc.text("Kunde: " + document.getElementById('kundeName').value, 20, 30);
+        
         if (isFinal) {
             await _supabase.from('profiles').update({ credits: profile.credits - 1 }).eq('id', session.user.id);
             checkSession();
@@ -131,6 +153,8 @@
     }
 
     function handleLogout() { _supabase.auth.signOut(); location.reload(); }
+    
+    // Automatisch prüfen beim Start
     checkSession();
 </script>
 </body>
