@@ -2,129 +2,34 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ v4.0 | PRO-SYSTEM</title>
+    <title>MEISTER-BLITZ TEST</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        /* DEIN VOLLSTÄNDIGES ORIGINAL-DESIGN */
-        :root { --primary: #5d5fef; --secondary: #28a745; --bg: #f0f4f8; --dark: #1a1a2e; --yellow: #ffcc00; --white: #ffffff; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
-        h1 { color: var(--dark); text-align: center; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .auth-box, .rechnungs-box { display: none; }
-        .active { display: block; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark); }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 8px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-primary { background: var(--primary); }
-        .btn-secondary { background: var(--secondary); }
-        .btn-yellow { background: var(--yellow); color: var(--dark); }
-        .leistung-zeile { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .credits-badge { background: var(--yellow); padding: 5px 15px; border-radius: 20px; font-weight: bold; float: right; }
-        #payment-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); color: white; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-    </style>
 </head>
-<body>
+<body style="font-family:sans-serif; text-align:center; padding-top:50px;">
 
-<div id="payment-overlay">
-    <h2>⚡ Limit erreicht!</h2>
-    <p>Deine 3 Gratis-Rechnungen sind aufgebraucht.</p>
-    <button class="btn btn-yellow" onclick="window.location.href='DEIN_STRIPE_LINK'" style="width: auto; padding: 15px 40px;">Vollversion freischalten</button>
-</div>
-
-<div class="container">
-    <h1>⚡ MEISTER-BLITZ PRO</h1>
-    
-    <div id="auth-section" class="auth-box active">
-        <div class="input-group">
-            <label>E-Mail</label>
-            <input type="email" id="email" placeholder="Deine E-Mail">
-        </div>
-        <div class="input-group">
-            <label>Passwort</label>
-            <input type="password" id="password" placeholder="Passwort (min. 6 Zeichen)">
-        </div>
-        <button class="btn btn-primary" onclick="handleLogin()">Einloggen</button>
-        <button class="btn btn-secondary" onclick="handleSignUp()">Registrieren (3 Versuche frei)</button>
+    <div id="auth-box">
+        <h1>⚡ Registrierungs-Test</h1>
+        <input type="email" id="email" placeholder="E-Mail" style="padding:10px;"><br><br>
+        <input type="password" id="pass" placeholder="Passwort" style="padding:10px;"><br><br>
+        <button onclick="testSignUp()" style="padding:10px 20px; background:blue; color:white;">JETZT REGISTRIEREN</button>
     </div>
 
-    <div id="app-section" class="rechnungs-box">
-        <div class="credits-badge">Credits: <span id="display-credits">0</span></div>
-        <button onclick="handleLogout()" style="background:none; border:none; color:blue; cursor:pointer;">Abmelden</button>
-        
-        <div style="margin-top:20px;">
-            <h3>Rechnungsdetails</h3>
-            <input type="text" id="kunde" placeholder="Name des Kunden" class="input-group">
-            <div id="leistungen-container"></div>
-            <button class="btn btn-yellow" onclick="addLeistung()">+ Position</button>
-            <button class="btn btn-primary" onclick="generatePDF()">PDF Erstellen (-1 Credit)</button>
-        </div>
-    </div>
-</div>
+    <script>
+        const sb = supabase.createClient('https://jifbshvofzsqiuvitpgm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8');
 
-<script>
-    const _supabase = supabase.createClient('https://jifbshvofzsqiuvitpgm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8');
+        async function testSignUp() {
+            alert("Knopf gedrückt! Starte Registrierung...");
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('pass').value;
 
-    async function handleSignUp() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        const { data, error } = await _supabase.auth.signUp({ email: e, password: p });
-        if (error) return alert("Fehler: " + error.message);
-        if (data.user) {
-            await _supabase.from('profiles').upsert([{ id: data.user.id, credits: 3 }]);
-            alert("Erfolg! Logge dich jetzt ein.");
-        }
-    }
+            const { data, error } = await sb.auth.signUp({ email: e, password: p });
 
-    async function handleLogin() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        const { error } = await _supabase.auth.signInWithPassword({ email: e, password: p });
-        if (error) alert("Login fehlgeschlagen.");
-        else checkSession();
-    }
-
-    async function checkSession() {
-        const { data: { session } } = await _supabase.auth.getSession();
-        if (session) {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('app-section').style.display = 'block';
-            let { data: profile } = await _supabase.from('profiles').select('credits').eq('id', session.user.id).single();
-            if (!profile) {
-                await _supabase.from('profiles').insert([{ id: session.user.id, credits: 3 }]);
-                profile = { credits: 3 };
+            if (error) {
+                alert("FEHLER VON SUPABASE: " + error.message);
+            } else {
+                alert("ERFOLG! User angelegt. Prüfe jetzt dein Supabase Dashboard unter Authentication.");
             }
-            document.getElementById('display-credits').innerText = profile.credits;
-            if (profile.credits <= 0) document.getElementById('payment-overlay').style.display = 'flex';
-            if(!document.getElementById('leistungen-container').innerHTML) addLeistung();
         }
-    }
-
-    function addLeistung() {
-        const div = document.createElement('div');
-        div.className = 'leistung-zeile';
-        div.innerHTML = `<input type="text" placeholder="Leistung..."><input type="number" value="1" style="width:60px"><button onclick="this.parentElement.remove()">🗑️</button>`;
-        document.getElementById('leistungen-container').appendChild(div);
-    }
-
-    async function generatePDF() {
-        const { data: { session } } = await _supabase.auth.getSession();
-        const { data: profile } = await _supabase.from('profiles').select('credits').eq('id', session.user.id).single();
-        if (profile.credits <= 0) {
-            document.getElementById('payment-overlay').style.display = 'flex';
-            return;
-        }
-        await _supabase.from('profiles').update({ credits: profile.credits - 1 }).eq('id', session.user.id);
-        const doc = new jspdf.jsPDF();
-        doc.text("Rechnung für: " + document.getElementById('kunde').value, 10, 10);
-        doc.save("Rechnung.pdf");
-        checkSession();
-    }
-
-    function handleLogout() { _supabase.auth.signOut(); location.reload(); }
-    checkSession();
-</script>
+    </script>
 </body>
 </html>
