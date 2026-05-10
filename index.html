@@ -42,7 +42,7 @@
         </div>
         <div class="input-group">
             <label>Passwort</label>
-            <input type="password" id="password" placeholder="Passwort">
+            <input type="password" id="password" placeholder="Passwort (min. 6 Zeichen)">
         </div>
         <button class="btn btn-primary" onclick="handleLogin()">Einloggen</button>
         <button class="btn btn-secondary" onclick="handleSignUp()">Registrieren (3 Frei-Versuche)</button>
@@ -77,18 +77,20 @@
                 <option value="Materialkosten laut Beleg">
                 <option value="Kleinmaterial & Reinigung">
                 <option value="Maschinenmiete">
+                <option value="Entsorgungspauschale">
+                <option value="Notdienst-Zuschlag">
             </datalist>
         </div>
 
         <div class="input-group">
             <label>Rechnungsnummer (automatisch)</label>
-            <input type="text" id="rechnungsNummer" readonly>
+            <input type="text" id="rechnungsNummer" readonly style="background-color: #eee;">
         </div>
 
-        <button class="btn btn-primary" onclick="generatePDF(false)">PDF Vorschau</button>
+        <button class="btn btn-primary" onclick="generatePDF(false)">PDF Vorschau (kostenlos)</button>
         <button class="btn btn-secondary" onclick="generatePDF(true)">Final Senden & -1 Credit</button>
         
-        <p style="font-size: 12px; color: red; margin-top: 10px; text-align: center;">Hinweis: Senden zieht 1 Credit ab. Vorschau ist kostenlos.</p>
+        <p style="font-size: 12px; color: red; margin-top: 10px; text-align: center;">Hinweis: Finales Senden zieht 1 Credit ab. Danach kostet die Pro-Version 11,99 €.</p>
     </div>
 
     <div class="footer">
@@ -97,52 +99,29 @@
 </div>
 
 <script>
-    // Supabase Konfiguration
     const _supabase = supabase.createClient('https://jifbshvofzsqiuvitpgm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmJzaHZvZnpzcWl1dml0cGdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxNTcxMTQsImV4cCI6MjA0NzczMzExNH0.vG9-C7-fMOf-S3k-6jG15W9V6T9Y2z3G8p2Y4U7E5c8');
 
-    // Hilfsfunktionen
     const id = (i) => document.getElementById(i);
-    const v = (i) => id(i).value;
 
-    // AUTH FUNKTIONEN
     async function handleSignUp() {
-        const email = v('email');
-        const password = v('password');
-        
-        if (!email || password.length < 6) {
-            alert("Bitte E-Mail eingeben und ein Passwort mit mind. 6 Zeichen!");
-            return;
-        }
+        const email = id('email').value;
+        const password = id('password').value;
+        if (!email || password.length < 6) { alert("Daten unvollständig (Passwort min. 6 Zeichen)!"); return; }
 
-        // 1. User bei Supabase anmelden
-        const { data, error } = await _supabase.auth.signUp({
-            email: email,
-            password: password
-        });
-
+        const { data, error } = await _supabase.auth.signUp({ email, password });
         if (error) {
             alert("Registrierung fehlgeschlagen: " + error.message);
-            return;
-        }
-
-        if (data.user) {
-            // 2. Profil in der Datenbank erstellen (WICHTIG: RLS Policy muss auf TRUE stehen)
-            const { error: profileError } = await _supabase
-                .from('profiles')
-                .insert([{ id: data.user.id, credits: 3 }]);
-
-            if (profileError) {
-                console.error("DB Fehler beim Profil:", profileError);
-                alert("Account erstellt! Bitte logge dich jetzt ein.");
-            } else {
-                alert("Willkommen! Dein Account ist bereit mit 3 Gratis-Credits.");
-            }
+        } else if (data.user) {
+            // Profil mit 3 Gratis-Credits anlegen
+            const { error: pErr } = await _supabase.from('profiles').insert([{ id: data.user.id, credits: 3 }]);
+            if (pErr) console.error(pErr);
+            alert("Konto erstellt! Bitte logge dich jetzt ein.");
             location.reload();
         }
     }
 
     async function handleLogin() {
-        const { data, error } = await _supabase.auth.signInWithPassword({ email: v('email'), password: v('password') });
+        const { error } = await _supabase.auth.signInWithPassword({ email: id('email').value, password: id('password').value });
         if (error) alert("Login fehlgeschlagen: " + error.message);
         else checkSession();
     }
@@ -159,7 +138,7 @@
             id('app-section').classList.add('active');
             loadProfile(session.user.id);
             id('rechnungsNummer').value = 'RE-' + Math.floor(Math.random() * 90000 + 10000);
-            addLeistung('Arbeitszeit', 1, 'Std', 65); // Standard-Vorschlag
+            if(id('leistungen-container').innerHTML === "") addLeistung('Arbeitszeit', 1, 'Std', 65);
         }
     }
 
@@ -168,79 +147,52 @@
         if (data) id('user-credits').innerText = data.credits;
     }
 
-    // PDF GENERIERUNG
+    function addLeistung(d='', m=1, e='Std', p=0) {
+        const div = document.createElement('div');
+        div.className = 'leistung-zeile';
+        div.innerHTML = `
+            <input type="text" class="desc" list="leistungs-liste" value="${d}" placeholder="Leistung...">
+            <input type="number" class="menge" value="${m}">
+            <select class="einheit">
+                <option value="Std">Std</option>
+                <option value="Pausch.">Pausch.</option>
+                <option value="Stk">Stk</option>
+                <option value="m">m</option>
+                <option value="m²">m²</option>
+            </select>
+            <input type="number" class="preis" value="${p}">
+            <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
+        id('leistungen-container').appendChild(div);
+    }
+
     async function generatePDF(isEmail) {
         const { data: { session } } = await _supabase.auth.getSession();
         const { data: profile } = await _supabase.from('profiles').select('credits').eq('id', session.user.id).single();
 
         if (isEmail && profile.credits <= 0) {
-            alert("Keine Credits mehr! Bitte lade dein Konto auf.");
+            alert("Keine Credits mehr! Upgrade auf Pro für 11,99 € nötig.");
             return;
         }
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const fName = v('firmaName'), fAnschrift = v('firmaAnschrift'), rechnungsNummer = v('rechnungsNummer');
         
-        // Header
-        doc.setFontSize(22); doc.setTextColor(93, 95, 239); doc.text(fName, 20, 30);
-        doc.setFontSize(10); doc.setTextColor(100); doc.text(fAnschrift, 20, 38);
-        doc.setDrawColor(93, 95, 239); doc.line(20, 42, 190, 42);
-
-        // Kunde & Meta
-        doc.setTextColor(0); doc.setFontSize(12); doc.text("Rechnung an:", 20, 55);
-        doc.setFontSize(10); doc.text(v('kundeName'), 20, 62); doc.text(v('kundeAnschrift'), 20, 67);
-        doc.text(`Rechnungsnr: ${rechnungsNummer}`, 140, 62); doc.text(`Datum: ${new Date().toLocaleDateString()}`, 140, 67);
-
-        // Leistungen sammeln
-        const rows = []; let gesamt = 0;
-        document.querySelectorAll('.leistung-zeile').forEach(z => {
-            const d = z.querySelector('.desc').value, m = z.querySelector('.menge').value, e = z.querySelector('.einheit').value, p = z.querySelector('.preis').value;
-            const sum = parseFloat(m) * parseFloat(p); gesamt += sum;
-            rows.push([d, m, e, p + " €", sum.toFixed(2) + " €"]);
-        });
-
-        doc.autoTable({
-            startY: 80, head: [['Leistung', 'Menge', 'Einh.', 'Einzel', 'Gesamt']], body: rows,
-            headStyles: { fillColor: [93, 95, 239] }, styles: { fontSize: 9 }
-        });
-
-        const finalY = doc.lastAutoTable.finalY + 10;
-        doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text(`Gesamtbetrag: ${gesamt.toFixed(2)} €`, 140, finalY);
-        doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.text("Zahlbar innerhalb von 7 Tagen ohne Abzug.", 20, finalY + 15);
+        // Einfaches PDF Layout
+        doc.setFontSize(20); doc.text(id('firmaName').value || "Rechnung", 20, 20);
+        doc.setFontSize(10); doc.text("Rechnungsnummer: " + id('rechnungsNummer').value, 20, 30);
+        doc.text("Kunde: " + id('kundeName').value, 20, 40);
 
         if (isEmail) {
-            // Credit abziehen
             await _supabase.from('profiles').update({ credits: profile.credits - 1 }).eq('id', session.user.id);
             loadProfile(session.user.id);
-
-            const sub = encodeURIComponent("Rechnung " + rechnungsNummer), body = encodeURIComponent("Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie die Rechnung " + rechnungsNummer + ".\n\nMit freundlichen Grüßen\n" + fName);
-            window.location.href = `mailto:${v('kundeEmail')}?subject=${sub}&body=${body}`;
+            alert("Rechnung finalisiert! E-Mail wird vorbereitet.");
+            const mailto = `mailto:${id('kundeEmail').value}?subject=Rechnung&body=Anbei die Rechnung.`;
+            window.location.href = mailto;
         }
-        
-        doc.save(`Rechnung_${rechnungsNummer}.pdf`);
-    }
-
-    function addLeistung(d='', m=1, e='Std', p=0) {
-        const div = document.createElement('div');
-        div.className = 'leistung-zeile';
-        div.innerHTML = `
-            <input type="text" class="desc" list="leistungs-liste" value="${d}" placeholder="Schreiben oder wählen...">
-            <input type="number" class="menge" value="${m}">
-            <select class="einheit">
-                <option value="Std" ${e=='Std'?'selected':''}>Std</option>
-                <option value="Pausch." ${e=='Pausch.'?'selected':''}>Pausch.</option>
-                <option value="Stk" ${e=='Stk'?'selected':''}>Stk</option>
-                <option value="m" ${e=='m'?'selected':''}>m</option>
-                <option value="m²" ${e=='m²'?'selected':''}>m²</option>
-            </select>
-            <input type="number" class="preis" value="${p}">
-            <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer; font-size:20px;">🗑️</button>`;
-        id('leistungen-container').appendChild(div);
+        doc.save("Rechnung.pdf");
     }
 
     checkSession();
 </script>
-
 </body>
 </html>
