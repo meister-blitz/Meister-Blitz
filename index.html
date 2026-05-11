@@ -127,7 +127,7 @@
     <script>
         const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
         const CORE = {
-            user: null, creds: 3, pro: false, tax: 1.19, type: 'RECHNUNG',
+            user: null, creds: 3, abo_bis: null, pro: false, tax: 1.19, type: 'RECHNUNG',
             async login() { const e=document.getElementById('a-mail').value,p=document.getElementById('a-pass').value; const {error}=await _SB.auth.signInWithPassword({email:e,password:p}); if(error) alert(error.message); else location.reload(); },
             async register() { const e=document.getElementById('a-mail').value,p=document.getElementById('a-pass').value; const {error}=await _SB.auth.signUp({email:e,password:p}); if(error) alert(error.message); else alert("OK!"); },
             async logout() { await _SB.auth.signOut(); location.reload(); },
@@ -136,7 +136,11 @@
                 if(session) {
                     this.user = session.user; document.getElementById('gate').classList.add('hidden'); document.getElementById('app').style.display='block';
                     const {data:p} = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
-                    if(p) { this.creds = p.credits ?? 3; this.pro = p.is_pro ?? false; this.fill(p); }
+                    if(p) { 
+                        this.creds = p.credits ?? 3; 
+                        this.abo_bis = p.abo_bis; // Nutzt deine Spalte abo_bis
+                        this.fill(p); 
+                    }
                     this.status(); UI.addRow('Handwerksleistung', 1, 65, 'Std.');
                 }
             },
@@ -147,16 +151,48 @@
             },
             status() {
                 const b = document.getElementById('status-badge');
-                if(this.pro) { b.innerText = "PRO ACCOUNT"; b.style.background = "#fef3c7"; b.style.color = "#92400e"; document.getElementById('btn-export').classList.remove('hidden'); document.getElementById('lock-box').classList.add('hidden'); }
-                else { b.innerText = `${this.creds} FREI`; if(this.creds <= 0) { document.getElementById('btn-export').classList.add('hidden'); document.getElementById('lock-box').classList.remove('hidden'); } }
+                const lockBox = document.getElementById('lock-box');
+                const btnExport = document.getElementById('btn-export');
+                
+                const jetzt = new Date();
+                const ablaufDatum = this.abo_bis ? new Date(this.abo_bis) : null;
+
+                // Prüfen ob Datum in der Zukunft liegt
+                if (ablaufDatum && ablaufDatum > jetzt) {
+                    this.pro = true;
+                    const opt = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                    b.innerText = "PRO STATUS AKTIV (BIS " + ablaufDatum.toLocaleDateString('de-DE', opt) + ")";
+                    b.style.background = "#fef3c7"; b.style.color = "#92400e";
+                    btnExport.classList.remove('hidden');
+                    lockBox.classList.add('hidden');
+                } else {
+                    this.pro = false;
+                    b.innerText = `${this.creds} FREI`;
+                    b.style.background = "#dcfce7"; b.style.color = "#166534";
+                    if(this.creds <= 0) {
+                        btnExport.classList.add('hidden');
+                        lockBox.classList.remove('hidden');
+                    } else {
+                        btnExport.classList.remove('hidden');
+                        lockBox.classList.add('hidden');
+                    }
+                }
             },
             sync() { _SB.from('profiles').upsert({ id: this.user.id, firma_name: document.getElementById('m-name').value, firma_strasse: document.getElementById('m-addr').value, firma_tel: document.getElementById('m-tel').value, firma_iban: document.getElementById('m-iban').value, firma_steuer: document.getElementById('m-tax').value }); },
             async export() {
+                if(!this.pro && this.creds <= 0) return;
+
                 const doc = new jspdf.jsPDF(); doc.setFontSize(22).text(this.type, 20, 30);
                 const table = []; document.querySelectorAll('.pos-row').forEach(r => { table.push([r.querySelector('.p-d').value, r.querySelector('.p-q').value, r.querySelector('.p-u').value, r.querySelector('.p-p').value + " €"]); });
                 doc.autoTable({ startY: 60, head: [['Beschreibung', 'Menge', 'Einh.', 'Preis']], body: table });
                 doc.save(`${this.type}.pdf`);
-                if(!this.pro) { this.creds--; await _SB.from('profiles').update({credits: this.creds}).eq('id', this.user.id); }
+                
+                // Nur abziehen wenn kein Pro
+                if(!this.pro) { 
+                    this.creds--; 
+                    await _SB.from('profiles').update({credits: this.creds}).eq('id', this.user.id); 
+                }
+                
                 this.status(); confetti();
             }
         };
