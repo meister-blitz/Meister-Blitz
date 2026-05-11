@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ v6.0 | SUPREME ENTERPRISE EDITION</title>
+    <title>MEISTER-BLITZ v7.0 | SUPREME ENTERPRISE CONTROL</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* --- HIGH-END DESIGN SYSTEM --- */
+        /* --- HIGH-END DESIGN SYSTEM V7 --- */
         :root { 
             --primary: #3b82f6; 
             --primary-glow: rgba(59, 130, 246, 0.5);
@@ -28,10 +28,10 @@
             --text-muted: #64748b;
             --success: #10b981;
             --danger: #ef4444;
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
 
-        * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
         body { 
             font-family: 'Inter', sans-serif; 
@@ -41,376 +41,383 @@
             overflow-x: hidden;
         }
 
-        /* --- AUTHENTICATION LAYER --- */
+        /* AUTHENTICATION LAYER */
         #login-screen { 
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            padding: 25px;
-            z-index: 9999;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            padding: 30px;
             position: fixed;
             width: 100%;
+            z-index: 9999;
         }
 
-        .auth-container {
+        .auth-panel {
             background: var(--white);
-            padding: 70px 50px;
-            border-radius: 40px;
+            padding: 80px 60px;
+            border-radius: 45px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             text-align: center;
-            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
         }
 
-        .auth-container h1 { font-size: 42px; font-weight: 900; letter-spacing: -2px; color: var(--dark-surface); margin-bottom: 5px; }
-        .auth-container p { color: var(--text-muted); margin-bottom: 40px; font-size: 15px; }
+        .auth-panel h1 { font-size: 48px; font-weight: 900; letter-spacing: -3px; color: var(--dark-surface); margin: 0; }
+        .auth-panel p { color: var(--text-muted); margin-bottom: 40px; font-size: 16px; font-weight: 500; }
 
-        .auth-input {
+        .input-auth {
             width: 100%;
-            padding: 18px 24px;
-            margin-bottom: 15px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
+            padding: 22px 28px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            border: 2px solid var(--border);
             background: #f8fafc;
-            font-size: 16px;
+            font-size: 17px;
+            font-weight: 600;
         }
 
-        /* --- DASHBOARD HEADER --- */
-        #main-dashboard { display: none; padding-bottom: 100px; }
+        /* DASHBOARD COMPONENTS */
+        #main-dashboard { display: none; }
         
-        .navbar {
+        .top-navigation {
             background: var(--dark-surface);
             color: white;
-            padding: 20px 60px;
+            padding: 25px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
-        .nav-brand { font-weight: 900; font-size: 26px; letter-spacing: -1px; display: flex; align-items: center; gap: 12px; }
-        .nav-brand span { color: var(--primary); }
+        .brand-zone { font-weight: 900; font-size: 28px; display: flex; align-items: center; gap: 15px; }
+        .brand-zone span { background: var(--primary); padding: 5px 12px; border-radius: 12px; }
 
-        .user-profile {
+        .user-status-pill {
             display: flex;
             align-items: center;
-            gap: 20px;
-            background: rgba(255,255,255,0.05);
-            padding: 8px 8px 8px 20px;
+            gap: 25px;
+            background: rgba(255,255,255,0.07);
+            padding: 10px 10px 10px 25px;
             border-radius: 100px;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* --- LAYOUT WRAPPER --- */
-        .app-grid {
-            max-width: 1500px;
-            margin: 50px auto;
-            padding: 0 40px;
+        /* GRID SYSTEM */
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 60px auto;
+            padding: 0 50px;
             display: grid;
-            grid-template-columns: 420px 1fr;
-            gap: 50px;
+            grid-template-columns: 450px 1fr;
+            gap: 60px;
         }
 
-        @media (max-width: 1200px) { .app-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1300px) { .dashboard-container { grid-template-columns: 1fr; } }
 
-        /* --- UI CARDS --- */
-        .card {
+        /* CARDS */
+        .glass-ui-card {
             background: var(--white);
-            border-radius: 32px;
+            border-radius: 40px;
             border: 1px solid var(--border);
-            padding: 40px;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 40px;
+            padding: 45px;
+            box-shadow: var(--shadow-xl);
+            margin-bottom: 45px;
             position: relative;
-            overflow: hidden;
         }
 
-        .card-header {
+        .label-group {
             font-size: 14px;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--text-muted);
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
-        .card-header::after { content: ""; height: 1px; flex: 1; background: linear-gradient(to right, var(--border), transparent); }
+        .label-group::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--border), transparent); }
 
-        /* --- FORMS & POSITIONEN --- */
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 20px; }
+        /* FORM ELEMENTS */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 25px; }
         
-        label { display: block; font-size: 13px; font-weight: 800; color: var(--dark-surface); margin-bottom: 10px; margin-left: 5px; }
+        .field-box label { display: block; font-size: 14px; font-weight: 800; color: var(--dark-surface); margin-bottom: 12px; }
 
         input, select, textarea {
             width: 100%;
-            padding: 16px 22px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
+            padding: 18px 24px;
+            border-radius: 18px;
+            border: 2px solid var(--border);
             background: #f8fafc;
-            font-size: 15px;
-            font-family: inherit;
+            font-size: 16px;
+            font-weight: 500;
         }
 
-        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 5px var(--primary-glow); background: #fff; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 6px var(--primary-glow); background: white; outline: none; }
 
-        /* --- POSITIONEN TABLE --- */
-        .pos-item {
+        /* POSITION ROWS */
+        .pos-entry {
             background: #fcfcfd;
-            padding: 25px;
-            border-radius: 24px;
+            padding: 30px;
+            border-radius: 30px;
             border: 1px solid var(--border);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 60px;
+            grid-template-columns: 2.2fr 0.8fr 1.2fr 1fr 60px;
             gap: 20px;
             align-items: end;
         }
 
-        .editable-select-container { position: relative; }
-        .custom-input-overlay { 
+        .combo-box { position: relative; }
+        .combo-input { 
             position: absolute; 
-            top: 0; left: 0; width: 80%; height: 100%; 
+            top: 31px; left: 0; width: 85%; height: 58px; 
             border: none; background: transparent; 
-            padding: 16px 22px; z-index: 2;
+            padding: 0 24px; z-index: 2; font-weight: 600;
         }
 
-        .btn-del {
+        .btn-remove {
             background: #fee2e2;
             color: var(--danger);
             border: none;
-            height: 54px;
-            border-radius: 16px;
+            height: 58px;
+            width: 58px;
+            border-radius: 18px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .btn-del:hover { background: var(--danger); color: white; }
+        .btn-remove:hover { background: var(--danger); color: white; transform: rotate(90deg); }
 
-        /* --- ACTION BUTTONS --- */
-        .btn {
-            padding: 20px 30px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 16px;
+        /* BUTTONS */
+        .action-btn {
+            padding: 24px 35px;
+            border-radius: 22px;
+            font-weight: 900;
+            font-size: 17px;
             cursor: pointer;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 18px;
             width: 100%;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
 
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
-        .btn-dark { background: var(--dark-surface); color: white; }
-        .btn-add { background: #f1f5f9; color: var(--dark-surface); border: 2px dashed var(--border); }
+        .btn-blue { background: var(--primary); color: white; box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4); }
+        .btn-blue:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.5); }
+        
+        .btn-outline { background: #f1f5f9; color: var(--dark-surface); border: 3px dashed var(--border); margin-top: 15px; }
 
-        .btn-upgrade-pro {
+        .pro-badge-card {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 35px;
+            border-radius: 35px;
             color: white;
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
-        }
-
-        /* --- STATUS BADGES --- */
-        .status-container {
-            padding: 30px;
-            border-radius: 28px;
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
         }
 
-        .status-active { background: #ecfdf5; color: #065f46; border: 2px solid #a7f3d0; }
-        .status-warn { background: #fffbeb; color: #92400e; border: 2px solid #fef3c7; }
-
-        /* --- LOGO AREA --- */
-        .logo-upload-box {
+        /* LOGO HANDLING */
+        .logo-dropzone {
             width: 100%;
-            height: 180px;
-            border: 3px dashed var(--border);
-            border-radius: 30px;
+            height: 200px;
+            border: 4px dashed var(--border);
+            border-radius: 35px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             background: #f8fafc;
-            margin-top: 10px;
-            position: relative;
+            overflow: hidden;
         }
 
-        .logo-upload-box img { max-width: 90%; max-height: 90%; object-fit: contain; }
-        .logo-upload-box:hover { border-color: var(--primary); background: #f0f7ff; }
+        .logo-dropzone img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .logo-dropzone:hover { border-color: var(--primary); background: #f0f7ff; }
 
-        /* --- HISTORY --- */
-        .history-row {
+        .history-list-item {
             display: flex;
             justify-content: space-between;
-            padding: 15px 0;
+            align-items: center;
+            padding: 20px;
             border-bottom: 1px solid var(--border);
+            font-weight: 600;
         }
-        .history-row:last-child { border-bottom: none; }
+
+        #status-light { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .light-green { background: #10b981; box-shadow: 0 0 10px #10b981; }
+        .light-red { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
 
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="auth-container">
-            <div style="font-size: 70px; margin-bottom: 10px;">⚡</div>
+        <div class="auth-panel">
+            <div style="font-size: 80px; margin-bottom: 15px;">⚡</div>
             <h1>MEISTER-BLITZ</h1>
-            <p>Die Software für Profis. Schnell. Sicher. Sauber.</p>
+            <p>Enterprise Level Invoicing & Automation</p>
             
-            <input type="email" id="email" class="auth-input" placeholder="E-Mail Adresse">
-            <input type="password" id="password" class="auth-input" placeholder="Passwort">
+            <input type="email" id="email" class="input-auth" placeholder="E-Mail Adresse">
+            <input type="password" id="password" class="input-auth" placeholder="Passwort">
             
-            <button class="btn btn-primary" onclick="handleLogin()" style="margin-top: 10px;">Login starten</button>
+            <button class="action-btn btn-blue" onclick="execLogin()" style="margin-top: 15px;">SYSTEM STARTEN</button>
             
-            <div style="margin-top: 35px; font-size: 14px; color: var(--text-muted);">
-                Neu hier? 
-                <span onclick="handleSignUp()" style="color: var(--primary); cursor: pointer; font-weight: 800; text-decoration: underline;">
-                    Konto erstellen & 3 Belege gratis erhalten
+            <div style="margin-top: 40px; font-size: 15px; color: var(--text-muted);">
+                Kein Zugang? 
+                <span onclick="execSignUp()" style="color: var(--primary); cursor: pointer; font-weight: 800; text-decoration: underline;">
+                    Jetzt registrieren (+3 Gratis Belege)
                 </span>
             </div>
         </div>
     </div>
 
     <div id="main-dashboard">
-        <nav class="navbar">
-            <div class="nav-brand"><span>⚡</span> MEISTER-BLITZ</div>
-            <div class="user-profile">
-                <span id="display-user-name" style="font-weight: 700;">...</span>
-                <button onclick="handleLogout()" style="background: var(--danger); border: none; color: white; padding: 10px 18px; border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 11px;">LOGOUT</button>
+        <nav class="top-navigation">
+            <div class="brand-zone"><span>⚡</span> MEISTER-BLITZ V7</div>
+            <div class="user-status-pill">
+                <span id="user-mail-info" style="font-weight: 700;">...</span>
+                <button onclick="execLogout()" style="background: var(--danger); border: none; color: white; padding: 12px 22px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 12px;">LOGOUT</button>
             </div>
         </nav>
 
-        <div class="app-grid">
-            <div class="aside">
-                <div class="card">
-                    <div class="card-header">System-Status</div>
-                    <div id="status-card" class="status-container">
-                        <div id="main-status-text" style="font-weight: 900; font-size: 22px; letter-spacing: -1px;">PRÜFE...</div>
-                        <div id="sub-status-info" style="font-size: 13px; margin-top: 8px; opacity: 0.8;">Sync läuft</div>
-                    </div>
-                    <div id="pro-upgrade-area" style="display: none;">
-                        <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn btn-upgrade-pro">
-                            JETZT UNLIMITED PRO AKTIVIEREN
-                        </a>
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <div id="pro-status-box" class="pro-badge-card">
+                    <div id="status-text-large" style="font-weight: 900; font-size: 26px;">INITIALISIERE...</div>
+                    <div id="status-sub-text" style="font-size: 14px; margin-top: 5px; opacity: 0.9;">Sync mit Cloud...</div>
+                </div>
+
+                <div id="upgrade-promo" class="glass-ui-card" style="display: none; background: #fffbeb; border-color: #fef3c7;">
+                    <div class="label-group">Upgrade verfügbar</div>
+                    <p style="font-size: 14px; font-weight: 600;">Ihr Kontingent ist erschöpft. Schalten Sie unlimitierte Belege frei.</p>
+                    <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="action-btn btn-blue" style="font-size: 14px; padding: 18px;">PRO VERSION AKTIVIEREN</a>
+                </div>
+
+                <div class="glass-ui-card">
+                    <div class="label-group">Branding</div>
+                    <input type="file" id="logo-upload-input" accept="image/*" style="display: none;">
+                    <div class="logo-dropzone" onclick="document.getElementById('logo-upload-input').click()">
+                        <div id="logo-empty-state">
+                            <div style="font-size: 40px;">📂</div>
+                            <div style="font-size: 13px; font-weight: 800; margin-top: 10px;">LOGO HOCHLADEN</div>
+                        </div>
+                        <img id="logo-final-preview" src="" style="display: none;">
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">Ihr Markenlogo</div>
-                    <input type="file" id="logo-file" accept="image/*" style="display: none;">
-                    <div class="logo-upload-box" onclick="document.getElementById('logo-file').click()">
-                        <div id="logo-empty">
-                            <div style="font-size: 30px;">🖼️</div>
-                            <div style="font-size: 12px; font-weight: 700; margin-top: 10px;">BILD HOCHLADEN</div>
-                        </div>
-                        <img id="logo-output" src="" style="display: none;">
+                <div class="glass-ui-card">
+                    <div class="label-group">Eigene Firmendaten</div>
+                    <div class="field-box">
+                        <label>Name der Firma / Shop</label>
+                        <input type="text" id="p_firma" oninput="triggerAutoSave()">
                     </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">Firmeneinstellungen</div>
-                    <label>Firmenname / Rechnungssteller</label>
-                    <input type="text" id="prof_firma" oninput="autoSave()">
-                    <label>Inhaber / Geschäftsführer</label>
-                    <input type="text" id="prof_inhaber" oninput="autoSave()">
-                    
-                    <div class="form-row" style="margin-top: 15px;">
-                        <div>
-                            <label>Straße</label>
-                            <input type="text" id="prof_strasse" oninput="autoSave()">
+                    <div class="field-box" style="margin-top: 20px;">
+                        <label>Geschäftsführer / Inhaber</label>
+                        <input type="text" id="p_ceo" oninput="triggerAutoSave()">
+                    </div>
+                    <div class="form-grid" style="margin-top: 20px;">
+                        <div class="field-box">
+                            <label>Straße / Nr.</label>
+                            <input type="text" id="p_street" oninput="triggerAutoSave()">
                         </div>
-                        <div>
-                            <label>PLZ / Ort</label>
-                            <input type="text" id="prof_ort" oninput="autoSave()">
+                        <div class="field-box">
+                            <label>PLZ / Stadt</label>
+                            <input type="text" id="p_city" oninput="triggerAutoSave()">
                         </div>
                     </div>
-
-                    <label>IBAN für Zahlungen</label>
-                    <input type="text" id="prof_iban" placeholder="DE..." oninput="autoSave()">
-                    <label>Steuernummer / USt-ID</label>
-                    <input type="text" id="prof_steuer" oninput="autoSave()">
-                    <label>Telefon geschäftlich</label>
-                    <input type="text" id="prof_tel" oninput="autoSave()">
+                    <div class="field-box">
+                        <label>IBAN für Überweisungen</label>
+                        <input type="text" id="p_iban" oninput="triggerAutoSave()">
+                    </div>
+                    <div class="field-box" style="margin-top: 20px;">
+                        <label>Steuernummer / UST-ID</label>
+                        <input type="text" id="p_tax" oninput="triggerAutoSave()">
+                    </div>
+                    <div class="field-box" style="margin-top: 20px;">
+                        <label>Telefon</label>
+                        <input type="text" id="p_phone" oninput="triggerAutoSave()">
+                    </div>
                 </div>
             </div>
 
             <div class="main-content">
-                <div class="card">
-                    <div class="card-header">Beleg-Details</div>
-                    <div class="form-row">
-                        <div>
-                            <label>Dokumenten-Typ</label>
-                            <select id="doc_config_type">
-                                <option value="RECHNUNG">Offizielle Rechnung</option>
-                                <option value="QUITTUNG">Bar-Quittung</option>
+                <div class="glass-ui-card">
+                    <div class="label-group">Beleg-Einstellungen</div>
+                    <div class="form-grid">
+                        <div class="field-box">
+                            <label>Art des Belegs</label>
+                            <select id="cfg_type">
+                                <option value="RECHNUNG">Rechnung</option>
                                 <option value="KOSTENVORANSCHLAG">Kostenvoranschlag</option>
-                                <option value="LIEFERSCHEIN">Lieferschein</option>
+                                <option value="QUITTUNG">Quittung</option>
+                                <option value="PROFORMA">Proforma-Rechnung</option>
                             </select>
                         </div>
-                        <div>
-                            <label>Beleg-Nummer</label>
-                            <input type="text" id="doc_config_nr">
+                        <div class="field-box">
+                            <label>Vorgangs-Nummer</label>
+                            <input type="text" id="cfg_nr">
                         </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">Kundeninformationen</div>
-                    <label>Kundenname / Firmenkunde</label>
-                    <input type="text" id="cust_name" placeholder="Max Mustermann">
-                    <div class="form-row">
-                        <div>
-                            <label>Anschrift (Straße)</label>
-                            <input type="text" id="cust_street">
+                <div class="glass-ui-card">
+                    <div class="label-group">Rechnungsempfänger</div>
+                    <div class="field-box">
+                        <label>Kunde / Organisation</label>
+                        <input type="text" id="c_name" placeholder="Max Mustermann">
+                    </div>
+                    <div class="form-grid" style="margin-top: 25px;">
+                        <div class="field-box">
+                            <label>Straße</label>
+                            <input type="text" id="c_street">
                         </div>
-                        <div>
-                            <label>Ort (PLZ / Stadt)</label>
-                            <input type="text" id="cust_city">
+                        <div class="field-box">
+                            <label>PLZ / Ort</label>
+                            <input type="text" id="c_city">
                         </div>
                     </div>
-                    <label>E-Mail Adresse des Kunden</label>
-                    <input type="email" id="cust_mail" placeholder="kunde@beispiel.de">
+                    <div class="field-box">
+                        <label>Kunden-E-Mail (für Versand)</label>
+                        <input type="email" id="c_mail" placeholder="kunde@beispiel.de">
+                    </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">Leistungspositionen</div>
-                    <div id="pos-list-container">
+                <div class="glass-ui-card">
+                    <div class="label-group">Leistungen & Artikel</div>
+                    <div id="position-container">
                         </div>
-                    <button class="btn btn-add" onclick="addNewPositionRow()">
-                        + WEITERE POSITION HINZUFÜGEN
+                    <button class="action-btn btn-outline" onclick="addPositionRow()">
+                        + NEUE POSITION HINZUFÜGEN
                     </button>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 10px;">
-                    <button class="btn btn-dark" onclick="buildDocument(false)">
-                        <span>💾</span> PDF SPEICHERN
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 80px;">
+                    <button class="action-btn btn-blue" style="background: var(--dark-surface);" onclick="buildFinalPDF(false)">
+                        <span>💾</span> PDF ERSTELLEN
                     </button>
-                    <button class="btn btn-primary" onclick="buildDocument(true)">
-                        <span>✉️</span> BELEG VERSENDEN
+                    <button class="action-btn btn-blue" onclick="buildFinalPDF(true)">
+                        <span>✉️</span> AN KUNDE SENDEN
                     </button>
                 </div>
 
-                <div class="card" style="margin-top: 50px;">
-                    <div class="card-header">Letzte Aktivitäten</div>
-                    <div id="recent-history">
-                        <p style="text-align:center; padding:20px; color:var(--text-muted);">Noch keine Belege erstellt.</p>
+                <div class="glass-ui-card">
+                    <div class="label-group">Historie (Lokal)</div>
+                    <div id="local-history-list">
+                        <p style="text-align: center; color: var(--text-muted); padding: 30px;">Keine Belege in diesem Browser gefunden.</p>
                     </div>
                 </div>
             </div>
@@ -418,275 +425,274 @@
     </div>
 
     <script>
-        const _client = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
+        const _db = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
         
-        let activeUser = null;
-        let userCredits = 0;
-        let proExpiry = null;
-        let base64Logo = null;
+        let sessionUser = null;
+        let cloudCredits = 0;
+        let expiryDate = null;
+        let cachedLogo = null;
 
-        // Vorlagen für schnelles Ausfüllen (Klick & Schreibbar)
-        const PRESETS_WORK = ["Arbeitszeit vor Ort", "Materialpauschale", "Anfahrtskosten", "Verpackungsmaterial", "Kleinmaterial", "Entsorgungsgebühr", "Notdienst-Zuschlag", "Maschinenmiete", "Wartungsservice"];
-        const PRESETS_UNITS = ["Std", "Stk", "lfm", "m²", "m³", "kg", "Paus.", "Euro", "Fahrt"];
+        // Configuration
+        const WORK_TYPES = ["Facharbeit Elektro", "Arbeitszeit Sanitär", "Pauschale Anfahrt", "Materialkosten", "Entsorgungspauschale", "Maschinenstunden", "Notdienst Zuschlag", "Kleinteile/Zubehör"];
+        const UNIT_TYPES = ["Std", "Stk", "lfm", "m²", "Paus.", "Einheit", "Fahrt"];
 
         window.onload = async () => {
-            const { data: { session } } = await _client.auth.getSession();
+            const { data: { session } } = await _db.auth.getSession();
             if (session) { 
-                activeUser = session.user; 
-                await startSystem(); 
+                sessionUser = session.user; 
+                await initializeCore(); 
             }
-            // Initiale Zufallsnummer
-            id('doc_config_nr').value = "BN-" + Math.floor(100000 + Math.random() * 899999);
+            id('cfg_nr').value = "INV-" + Date.now().toString().slice(-6);
         };
 
-        async function startSystem() {
+        async function initializeCore() {
             id('login-screen').style.display = 'none';
             id('main-dashboard').style.display = 'block';
-            id('display-user-name').innerText = activeUser.email;
+            id('user-mail-info').innerText = sessionUser.email;
 
-            // Lade Nutzerdaten
-            const { data: profile } = await _client.from('profiles').select('*').eq('id', activeUser.id).maybeSingle();
+            const { data: prof } = await _db.from('profiles').select('*').eq('id', sessionUser.id).maybeSingle();
             
-            if (profile) {
-                userCredits = profile.credits;
-                proExpiry = profile.abo_bis;
+            if (prof) {
+                cloudCredits = prof.credits;
+                expiryDate = prof.abo_bis;
                 
-                // Formularfelder füllen
-                id('prof_firma').value = profile.firma_name || '';
-                id('prof_inhaber').value = profile.firma_inhaber || '';
-                id('prof_strasse').value = profile.firma_strasse || '';
-                id('prof_ort').value = profile.firma_ort || '';
-                id('prof_iban').value = profile.firma_iban || '';
-                id('prof_steuer').value = profile.firma_steuer || '';
-                id('prof_tel').value = profile.firma_tel || '';
+                id('p_firma').value = prof.firma_name || '';
+                id('p_ceo').value = prof.firma_inhaber || '';
+                id('p_street').value = prof.firma_strasse || '';
+                id('p_city').value = prof.firma_ort || '';
+                id('p_iban').value = prof.firma_iban || '';
+                id('p_tax').value = prof.firma_steuer || '';
+                id('p_phone').value = prof.firma_tel || '';
             }
             
-            await checkPaymentStatus();
-            refreshStatusDisplay();
-            addNewPositionRow();
-            loadLocalHistory();
+            await syncPaymentStatus();
+            refreshStatusBadge();
+            addPositionRow();
+            renderHistory();
         }
 
-        async function handleLogin() {
-            const { error } = await _client.auth.signInWithPassword({ email: v('email'), password: v('password') });
-            if (error) alert("Login fehlgeschlagen. Bitte prüfen."); else location.reload();
+        async function execLogin() {
+            const { error } = await _db.auth.signInWithPassword({ email: v('email'), password: v('password') });
+            if (error) alert("Login Fehler: " + error.message); else location.reload();
         }
 
-        async function handleSignUp() {
-            const { data, error } = await _client.auth.signUp({ email: v('email'), password: v('password') });
+        async function execSignUp() {
+            const { data, error } = await _db.auth.signUp({ email: v('email'), password: v('password') });
             if (error) return alert(error.message);
             if (data.user) {
-                // Erstelle Profil-Eintrag mit 3 Gratis-Credits
-                await _client.from('profiles').insert({ id: data.user.id, credits: 3 });
-                alert("Account erfolgreich erstellt! Sie können sich jetzt einloggen.");
+                await _db.from('profiles').insert({ id: data.user.id, credits: 3 });
+                alert("Erfolgreich registriert! Bitte loggen Sie sich ein.");
             }
         }
 
-        async function handleLogout() {
-            await _client.auth.signOut();
+        async function execLogout() {
+            await _db.auth.signOut();
             location.reload();
         }
 
-        async function autoSave() {
-            if (!activeUser) return;
-            await _client.from('profiles').upsert({
-                id: activeUser.id,
-                firma_name: v('prof_firma'),
-                firma_inhaber: v('prof_inhaber'),
-                firma_strasse: v('prof_strasse'),
-                firma_ort: v('prof_ort'),
-                firma_iban: v('prof_iban'),
-                firma_steuer: v('prof_steuer'),
-                firma_tel: v('prof_tel')
+        async function triggerAutoSave() {
+            if (!sessionUser) return;
+            await _db.from('profiles').upsert({
+                id: sessionUser.id,
+                firma_name: v('p_firma'),
+                firma_inhaber: v('p_ceo'),
+                firma_strasse: v('p_street'),
+                firma_ort: v('p_city'),
+                firma_iban: v('p_iban'),
+                firma_steuer: v('p_tax'),
+                firma_tel: v('p_phone')
             });
         }
 
-        function refreshStatusDisplay() {
-            const isPro = proExpiry && new Date(proExpiry) > new Date();
-            const card = id('status-card');
-            const txt = id('main-status-text');
-            const sub = id('sub-status-info');
-            const upgradeArea = id('pro-upgrade-area');
+        function refreshStatusBadge() {
+            const isPro = expiryDate && new Date(expiryDate) > new Date();
+            const badge = id('pro-status-box');
+            const txt = id('status-text-large');
+            const sub = id('status-sub-text');
 
             if (isPro) {
-                card.className = "status-container status-active";
-                txt.innerText = "PRO ACCOUNT";
-                sub.innerText = "Gültig bis: " + new Date(proExpiry).toLocaleDateString();
-                upgradeArea.style.display = "none";
+                badge.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+                txt.innerText = "PRO ACCOUNT AKTIV";
+                sub.innerText = "Unlimitiert bis: " + new Date(expiryDate).toLocaleDateString();
+                id('upgrade-promo').style.display = "none";
             } else {
-                card.className = "status-container status-warn";
-                txt.innerText = (userCredits > 0 ? userCredits : 0) + " GRATIS BELEGE";
-                sub.innerText = "Danach Pro-Abo erforderlich";
-                if (userCredits <= 0) upgradeArea.style.display = "block";
+                badge.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
+                txt.innerText = (cloudCredits > 0 ? cloudCredits : 0) + " FREI-BELEGE";
+                sub.innerText = "Kontingent für diesen Account";
+                if (cloudCredits <= 0) id('upgrade-promo').style.display = "block";
             }
         }
 
-        // --- POSITIONEN LOGIK (KLICK & SCHREIBBAR) ---
-        function addNewPositionRow() {
-            const container = id('pos-list-container');
+        // --- DYNAMIC POSITION ROWS ---
+        function addPositionRow() {
+            const container = id('position-container');
             const div = document.createElement('div');
-            div.className = 'pos-item';
+            div.className = 'pos-entry';
 
-            // HTML für die editierbaren Selects
             div.innerHTML = `
-                <div class="editable-select-container">
+                <div class="combo-box">
                     <label>Leistung / Artikel</label>
-                    <input type="text" class="p-text custom-input-overlay" placeholder="...oder schreiben">
-                    <select class="p-select" onchange="this.previousElementSibling.value = this.value">
+                    <input type="text" class="p-text combo-input" placeholder="Wählen oder schreiben...">
+                    <select onchange="this.previousElementSibling.value = this.value">
                         <option value="">Wählen...</option>
-                        ${PRESETS_WORK.map(p => `<option value="${p}">${p}</option>`).join('')}
+                        ${WORK_TYPES.map(w => `<option value="${w}">${w}</option>`).join('')}
                     </select>
                 </div>
                 <div>
                     <label>Menge</label>
                     <input type="number" class="p-qty" value="1">
                 </div>
-                <div class="editable-select-container">
+                <div class="combo-box">
                     <label>Einheit</label>
-                    <input type="text" class="p-unit-text custom-input-overlay" placeholder="...">
-                    <select class="p-unit-select" onchange="this.previousElementSibling.value = this.value">
+                    <input type="text" class="p-unit combo-input" placeholder="...">
+                    <select onchange="this.previousElementSibling.value = this.value">
                         <option value="">...</option>
-                        ${PRESETS_UNITS.map(u => `<option value="${u}">${u}</option>`).join('')}
+                        ${UNIT_TYPES.map(u => `<option value="${u}">${u}</option>`).join('')}
                     </select>
                 </div>
                 <div>
                     <label>Einzelpreis €</label>
                     <input type="number" class="p-price" placeholder="0.00">
                 </div>
-                <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
+                <button class="btn-remove" onclick="this.parentElement.remove()">✕</button>
             `;
             container.appendChild(div);
         }
 
-        // --- LOGO HANDLING ---
-        id('logo-file').addEventListener('change', function(e) {
+        // --- LOGO ENGINE ---
+        id('logo-upload-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = (event) => {
-                base64Logo = event.target.result;
-                id('logo-output').src = base64Logo;
-                id('logo-output').style.display = 'block';
-                id('logo-empty').style.display = 'none';
+                cachedLogo = event.target.result;
+                id('logo-final-preview').src = cachedLogo;
+                id('logo-final-preview').style.display = 'block';
+                id('logo-empty-state').style.display = 'none';
             };
             reader.readAsDataURL(file);
         });
 
-        // --- PDF GENERIERUNG ---
-        async function buildDocument(mailOut) {
-            const isPro = proExpiry && new Date(proExpiry) > new Date();
+        // --- PDF ENGINE V7 (LAYOUT FIX) ---
+        async function buildFinalPDF(sendMail) {
+            const isPro = expiryDate && new Date(expiryDate) > new Date();
             if (!isPro) {
-                if (userCredits <= 0) return alert("Ihr Guthaben ist leer. Bitte laden Sie Ihren Account auf.");
-                userCredits--;
-                await _client.from('profiles').update({ credits: userCredits }).eq('id', activeUser.id);
+                if (cloudCredits <= 0) return alert("Upgrade erforderlich!");
+                cloudCredits--;
+                await _db.from('profiles').update({ credits: cloudCredits }).eq('id', sessionUser.id);
             }
-            refreshStatusDisplay();
+            refreshStatusBadge();
 
             const doc = new jspdf.jsPDF();
-            const belegTyp = v('doc_config_type');
-            const belegNr = v('doc_config_nr');
+            const typ = v('cfg_type');
+            const nr = v('cfg_nr');
 
-            // Header Logo
-            if (base64Logo) {
-                doc.addImage(base64Logo, 'PNG', 20, 15, 50, 0);
-            }
+            // Logo Header
+            if (cachedLogo) doc.addImage(cachedLogo, 'PNG', 20, 15, 45, 0);
 
-            // Firmendaten rechts oben
-            doc.setFontSize(9);
-            doc.setFont(undefined, 'normal');
-            const me = v('prof_firma') + "\n" + v('prof_inhaber') + "\n" + v('prof_strasse') + "\n" + v('prof_ort') + "\nTel: " + v('prof_tel');
-            doc.text(me, 190, 25, { align: 'right' });
+            // Sender (Right aligned)
+            doc.setFontSize(9).setFont(undefined, 'normal');
+            const senderInfo = `${v('p_firma')}\n${v('p_ceo')}\n${v('p_street')}\n${v('p_city')}\nTel: ${v('p_phone')}`;
+            doc.text(senderInfo, 190, 25, { align: 'right' });
 
-            // Titel
-            doc.setFontSize(28);
+            // Title
+            doc.setFontSize(26).setFont(undefined, 'bold');
+            doc.text(typ, 20, 65);
+
+            // Customer Block
+            doc.setFontSize(10).setFont(undefined, 'normal');
+            doc.text("EMPFÄNGER:", 20, 82);
             doc.setFont(undefined, 'bold');
-            doc.text(belegTyp, 20, 65);
-
-            // Kunden & Info Block
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            doc.text("EMPFÄNGER:", 20, 80);
-            doc.setFont(undefined, 'bold');
-            doc.text(v('cust_name') + "\n" + v('cust_street') + "\n" + v('cust_city'), 20, 87);
+            doc.text(`${v('c_name')}\n${v('c_street')}\n${v('c_city')}`, 20, 89);
 
             doc.setFont(undefined, 'normal');
-            doc.text("Datum: " + new Date().toLocaleDateString(), 190, 87, { align: 'right' });
-            doc.text("Beleg-Nummer: " + belegNr, 190, 93, { align: 'right' });
+            doc.text("Datum: " + new Date().toLocaleDateString(), 190, 89, { align: 'right' });
+            doc.text("Beleg-Nr: " + nr, 190, 95, { align: 'right' });
 
-            // Tabelle erstellen
-            const rows = [];
-            let nettoGesamt = 0;
-            document.querySelectorAll('.pos-item').forEach(el => {
+            // Table
+            const data = [];
+            let totalNetto = 0;
+            document.querySelectorAll('.pos-entry').forEach(el => {
                 const text = el.querySelector('.p-text').value;
-                const qty = el.querySelector('.p-qty').value;
-                const unit = el.querySelector('.p-unit-text').value;
-                const price = el.querySelector('.p-price').value;
-                const total = qty * price;
-                nettoGesamt += total;
-                rows.push([text, qty + " " + unit, price + " €", total.toFixed(2) + " €"]);
+                const qty = parseFloat(el.querySelector('.p-qty').value) || 0;
+                const unit = el.querySelector('.p-unit').value;
+                const price = parseFloat(el.querySelector('.p-price').value) || 0;
+                const sum = qty * price;
+                totalNetto += sum;
+                data.push([text, qty + " " + unit, price.toFixed(2) + " €", sum.toFixed(2) + " €"]);
             });
 
             doc.autoTable({
-                startY: 110,
-                head: [['Beschreibung der Leistung', 'Menge', 'E-Preis', 'Gesamt']],
-                body: rows,
-                headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255], fontStyle: 'bold' },
-                theme: 'grid'
+                startY: 115,
+                head: [['Leistungsbeschreibung', 'Menge', 'E-Preis', 'Gesamt']],
+                body: data,
+                headStyles: { fillColor: [15, 23, 42], textColor: 255 },
+                theme: 'striped',
+                columnStyles: { 1: {halign: 'right'}, 2: {halign: 'right'}, 3: {halign: 'right'} }
             });
 
+            // Summary Calculation (FIXED LAYOUT)
             const finalY = doc.lastAutoTable.finalY + 15;
-            const mwst = nettoGesamt * 0.19;
-            const brutto = nettoGesamt + mwst;
+            const mwst = totalNetto * 0.19;
+            const brutto = totalNetto + mwst;
 
-            doc.setFontSize(11);
-            doc.text("Nettobetrag:", 130, finalY); doc.text(nettoGesamt.toFixed(2) + " €", 190, finalY, { align: 'right' });
-            doc.text("MwSt 19%:", 130, finalY + 7); doc.text(mwst.toFixed(2) + " €", 190, finalY + 7, { align: 'right' });
-            doc.setFont(undefined, 'bold').setFontSize(13);
-            doc.text("RECHNUNGSBETRAG:", 130, finalY + 16); doc.text(brutto.toFixed(2) + " €", 190, finalY + 16, { align: 'right' });
+            doc.setFontSize(10).setFont(undefined, 'normal');
+            
+            // Labels (Left of the summary area)
+            doc.text("Netto-Summe:", 135, finalY);
+            doc.text("zzgl. 19% MwSt:", 135, finalY + 7);
+            
+            // Values (Right Aligned - THIS FIXES THE OVERLAP)
+            doc.text(totalNetto.toFixed(2) + " €", 190, finalY, { align: 'right' });
+            doc.text(mwst.toFixed(2) + " €", 190, finalY + 7, { align: 'right' });
 
-            // Footer
-            doc.setFont(undefined, 'normal').setFontSize(8);
-            doc.text("Zahlbar innerhalb von 14 Tagen ohne Abzug. Bankverbindung: " + v('prof_iban'), 20, finalY + 35);
-            doc.text("Steuernummer: " + v('prof_steuer') + " | Inhaber: " + v('prof_inhaber'), 20, finalY + 40);
+            // Total (Bold)
+            doc.setFontSize(12).setFont(undefined, 'bold');
+            doc.text("GESAMTBETRAG:", 135, finalY + 16);
+            doc.text(brutto.toFixed(2) + " €", 190, finalY + 16, { align: 'right' });
 
-            if (mailOut) {
-                const subject = encodeURIComponent(`${belegTyp} ${belegNr} von ${v('prof_firma')}`);
-                const body = encodeURIComponent(`Guten Tag,\n\nanbei erhalten Sie das Dokument ${belegNr}.\n\nMit freundlichen Grüßen,\n${v('prof_firma')}`);
-                window.location.href = `mailto:${v('cust_mail')}?subject=${subject}&body=${body}`;
+            // Footer info
+            doc.setFontSize(8).setFont(undefined, 'normal');
+            doc.text(`Zahlbar innerhalb 14 Tage an IBAN: ${v('p_iban')}`, 20, finalY + 35);
+            doc.text(`Steuernummer: ${v('p_tax')} | Inhaber: ${v('p_ceo')}`, 20, finalY + 40);
+
+            if (sendMail) {
+                const subj = encodeURIComponent(`${typ} ${nr}`);
+                const body = encodeURIComponent(`Guten Tag,\nanbei erhalten Sie das Dokument ${nr}.\n\nMit freundlichen Grüßen,\n${v('p_firma')}`);
+                window.location.href = `mailto:${v('c_mail')}?subject=${subj}&body=${body}`;
             }
 
-            doc.save(`${belegTyp}_${belegNr}.pdf`);
-            saveToLocalHistory(v('cust_name'), brutto.toFixed(2));
+            doc.save(`${typ}_${nr}.pdf`);
+            saveHistory(v('c_name'), brutto.toFixed(2));
         }
 
-        // --- AUX FUNCTIONS ---
-        function saveToLocalHistory(name, eur) {
-            let h = JSON.parse(localStorage.getItem('mb_hist_' + activeUser.id) || '[]');
+        // --- HELPERS ---
+        function saveHistory(name, eur) {
+            let h = JSON.parse(localStorage.getItem('mb_v7_history_' + sessionUser.id) || '[]');
             h.unshift({ name, eur, date: new Date().toLocaleDateString() });
-            localStorage.setItem('mb_hist_' + activeUser.id, JSON.stringify(h.slice(0, 8)));
-            loadLocalHistory();
+            localStorage.setItem('mb_v7_history_' + sessionUser.id, JSON.stringify(h.slice(0, 10)));
+            renderHistory();
         }
 
-        function loadLocalHistory() {
-            const h = JSON.parse(localStorage.getItem('mb_hist_' + activeUser.id) || '[]');
+        function renderHistory() {
+            const h = JSON.parse(localStorage.getItem('mb_v7_history_' + sessionUser.id) || '[]');
             if (h.length > 0) {
-                id('recent-history').innerHTML = h.map(x => `
-                    <div class="history-row">
-                        <div><strong>${x.name}</strong><br><small>${x.date}</small></div>
-                        <div style="font-weight:900; color:var(--primary);">${x.eur} €</div>
+                id('local-history-list').innerHTML = h.map(i => `
+                    <div class="history-list-item">
+                        <div>${i.name} <br><small style="color:var(--text-muted);">${i.date}</small></div>
+                        <div style="color:var(--primary); font-weight:900;">${i.eur} €</div>
                     </div>
                 `).join('');
             }
         }
 
-        async function checkPaymentStatus() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('payment') === 'success') {
+        async function syncPaymentStatus() {
+            if (new URLSearchParams(window.location.search).get('payment') === 'success') {
                 let d = new Date(); d.setDate(d.getDate() + 28);
-                proExpiry = d.toISOString();
-                await _client.from('profiles').update({ abo_bis: proExpiry }).eq('id', activeUser.id);
+                expiryDate = d.toISOString();
+                await _db.from('profiles').update({ abo_bis: expiryDate }).eq('id', sessionUser.id);
                 window.history.replaceState({}, '', '/');
-                refreshStatusDisplay();
+                refreshStatusBadge();
             }
         }
 
