@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ | Professional Business OS</title>
+    <title>MEISTER-BLITZ | Professional Terminal v15</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -14,87 +14,45 @@
     <style>
         :root { 
             --p-navy: #0f172a; --p-blue: #2563eb; --p-bg: #f8fafc; 
-            --p-border: #e2e8f0; --p-text-light: #64748b;
-            --radius: 16px;
+            --p-border: #e2e8f0; --p-text: #64748b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--p-bg); color: var(--p-navy); min-height: 100vh; }
 
-        /* AUTHENTICATION OVERLAY */
-        #gate { 
-            position: fixed; inset: 0; background: var(--p-navy); z-index: 9999; 
-            display: flex; align-items: center; justify-content: center;
-        }
-        .auth-card { 
-            background: white; padding: 60px; border-radius: 32px; width: 450px; 
-            text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        }
+        /* AUTH & HEADER */
+        #gate { position: fixed; inset: 0; background: var(--p-navy); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: white; padding: 50px; border-radius: 32px; width: 420px; text-align: center; }
+        
+        header { background: white; height: 90px; padding: 0 50px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--p-border); position: sticky; top: 0; z-index: 1000; }
+        .nav-right { display: flex; align-items: center; gap: 20px; }
 
-        /* NAVIGATION BAR */
-        header { 
-            background: white; height: 90px; padding: 0 60px; display: flex; 
-            align-items: center; justify-content: space-between; border-bottom: 1px solid var(--p-border);
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .brand { font-weight: 800; font-size: 26px; letter-spacing: -1.5px; color: var(--p-navy); }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
-
-        /* MAIN TERMINAL LAYOUT */
-        main { max-width: 1400px; margin: 40px auto; padding: 0 40px; display: none; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        /* MAIN */
+        main { max-width: 1400px; margin: 40px auto; padding: 0 40px; display: none; }
         .grid { display: grid; grid-template-columns: 1fr 420px; gap: 40px; }
 
-        .card { 
-            background: white; padding: 40px; border-radius: 24px; 
-            border: 1px solid var(--p-border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.02);
-            margin-bottom: 30px;
-        }
-        .card-label { font-size: 11px; font-weight: 800; color: var(--p-blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; display: block; }
+        .card { background: white; padding: 35px; border-radius: 24px; border: 1px solid var(--p-border); margin-bottom: 30px; }
+        .label { font-size: 11px; font-weight: 800; color: var(--p-blue); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; display: block; }
 
-        /* INPUT STYLING */
-        .input-group { margin-bottom: 20px; }
-        label { font-size: 12px; font-weight: 700; color: var(--p-text-light); margin-bottom: 8px; display: block; padding-left: 4px; }
-        input { 
-            width: 100%; padding: 18px; border: 1.5px solid #f1f5f9; border-radius: var(--radius); 
-            font-size: 15px; font-weight: 600; outline: none; transition: 0.2s; background: #fafafa;
+        /* KLICKBARE ELEMENTE */
+        .selector-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .chip { 
+            flex: 1; padding: 12px; border: 2px solid var(--p-border); border-radius: 12px; 
+            text-align: center; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; 
         }
-        input:focus { border-color: var(--p-blue); background: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08); }
+        .chip.active { border-color: var(--p-blue); background: #eff6ff; color: var(--p-blue); }
 
-        /* BUTTONS */
-        .btn { 
-            padding: 16px 28px; border-radius: 14px; font-weight: 700; border: none; 
-            cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-primary { background: var(--p-blue); color: white; box-shadow: 0 10px 15px rgba(37, 99, 235, 0.2); }
-        .btn-primary:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-2px); }
-        .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        input { width: 100%; padding: 15px; border: 1.5px solid #f1f5f9; border-radius: 12px; font-size: 15px; font-weight: 600; margin-bottom: 15px; outline: none; background: #fafafa; }
+        input:focus { border-color: var(--p-blue); background: #fff; }
+
+        /* POSITIONS */
+        .pos-row { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; margin-bottom: 10px; align-items: center; }
         
-        .btn-outline { background: transparent; border: 2px solid var(--p-border); color: var(--p-navy); }
-        .btn-outline:hover { background: #f8fafc; border-color: var(--p-blue); }
+        .summary-card { background: var(--p-navy); color: white; padding: 35px; border-radius: 28px; position: sticky; top: 120px; }
+        .sum-line { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 600; color: #94a3b8; }
+        .btn-gen { width: 100%; padding: 20px; background: var(--p-blue); color: white; border: none; border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 25px; }
 
-        .btn-logout { background: #fee2e2; color: #b91c1c; font-size: 12px; padding: 10px 20px; }
-        .btn-logout:hover { background: #fecaca; }
-
-        /* POSITIONS TABLE */
-        .pos-header { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; padding: 0 10px; margin-bottom: 15px; font-size: 11px; font-weight: 800; color: var(--p-text-light); }
-        .pos-row { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; margin-bottom: 12px; align-items: center; }
-
-        /* BADGES */
-        .badge { padding: 10px 20px; border-radius: 50px; font-size: 12px; font-weight: 800; border: 1px solid transparent; }
-        .badge-free { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
-        .badge-pro { background: #fef3c7; color: #92400e; border-color: #fde68a; }
-
-        /* LOGO BOX */
-        .logo-upload {
-            width: 220px; height: 70px; border: 2px dashed var(--p-blue); border-radius: 14px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            background: #f0f7ff; overflow: hidden; position: relative;
-        }
-        .logo-upload img { max-width: 90%; max-height: 90%; object-fit: contain; }
-        .logo-upload span { font-size: 10px; font-weight: 800; color: var(--p-blue); text-align: center; }
-
+        .badge { padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 800; background: #dcfce7; color: #166534; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -102,139 +60,115 @@
 
     <div id="gate">
         <div class="auth-card">
-            <h1 style="font-weight: 900; font-size: 36px; margin-bottom: 10px;">MEISTER-BLITZ</h1>
-            <p style="color: var(--p-text-light); font-size: 12px; font-weight: 800; margin-bottom: 40px; letter-spacing: 2px;">BUSINESS TERMINAL v1.0</p>
-            
-            <div class="input-group">
-                <input type="email" id="auth-mail" placeholder="E-Mail Adresse">
-            </div>
-            <div class="input-group">
-                <input type="password" id="auth-pass" placeholder="Passwort">
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                <button class="btn btn-primary" onclick="CORE.auth('login')">Einloggen</button>
-                <button class="btn btn-outline" onclick="CORE.auth('reg')">Registrieren</button>
-            </div>
+            <h2 style="font-weight:900; margin-bottom:30px;">MEISTER-BLITZ</h2>
+            <input type="email" id="a-mail" placeholder="E-Mail">
+            <input type="password" id="a-pass" placeholder="Passwort">
+            <button class="btn-gen" onclick="CORE.auth('login')" style="margin-top:10px;">Login / Register</button>
         </div>
     </div>
 
     <header>
-        <div style="display: flex; align-items: center; gap: 30px;">
-            <div class="logo-upload" onclick="document.getElementById('l-file').click()">
-                <span id="l-hint">LOGOTYP KLICKEN<br>& HOCHLADEN</span>
-                <img id="l-img" class="hidden">
-            </div>
-            <input type="file" id="l-file" class="hidden" accept="image/*">
-            <div class="brand">⚡ MEISTER-BLITZ</div>
-        </div>
-
+        <div style="font-weight:900; font-size:24px;">⚡ MEISTER-BLITZ</div>
         <div class="nav-right">
-            <div id="license-status" class="badge">PRÜFE STATUS...</div>
-            <button id="upgrade-btn" class="btn" style="background: #f59e0b; color: white; padding: 10px 20px;" onclick="window.open('https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200')">PRO VERSION (11,99€)</button>
-            <button class="btn btn-logout" onclick="CORE.logout()">Logout</button>
+            <div id="status" class="badge">3 GRATIS CREDITS</div>
+            <button onclick="CORE.logout()" style="background:none; border:none; color:red; font-weight:700; cursor:pointer;">Logout</button>
         </div>
     </header>
 
     <main id="app">
         <div class="grid">
-            
-            <div class="form-container">
+            <div class="left">
                 <div class="card">
-                    <span class="card-label">01. Absender & Cloud-Sync</span>
-                    <div class="input-group">
-                        <label>Firmenname / Inhaber</label>
-                        <input type="text" id="m-name" placeholder="z.B. Elektro Blitz GmbH" oninput="CORE.sync()">
+                    <span class="label">Dokumenten-Typ wählen</span>
+                    <div class="selector-group">
+                        <div class="chip active" onclick="UI.setType('RECHNUNG', this)">Rechnung</div>
+                        <div class="chip" onclick="UI.setType('QUITTUNG', this)">Quittung</div>
+                        <div class="chip" onclick="UI.setType('ANGEBOT', this)">Angebot</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="input-group">
-                            <label>Straße / Nr.</label>
-                            <input type="text" id="m-str" placeholder="Musterstraße 12" oninput="CORE.sync()">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#94a3b8;">Beleg-Nummer</label>
+                            <input type="text" id="doc-num" placeholder="z.B. 2024-001">
                         </div>
-                        <div class="input-group">
-                            <label>PLZ / Ort</label>
-                            <input type="text" id="m-ort" placeholder="12345 Stadt" oninput="CORE.sync()">
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#94a3b8;">Datum</label>
+                            <input type="date" id="doc-date">
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <label>IBAN (für deine Auszahlung)</label>
-                        <input type="text" id="m-iban" placeholder="DE00 0000 0000..." oninput="CORE.sync()">
                     </div>
                 </div>
 
                 <div class="card">
-                    <span class="card-label">02. Leistungen & Positionen</span>
-                    <div class="pos-header">
-                        <span>Beschreibung</span><span>Menge</span><span>Einheit</span><span>Preis</span><span></span>
-                    </div>
+                    <span class="label">Meine Firmendaten</span>
+                    <input type="text" id="m-name" placeholder="Firmenname" oninput="CORE.sync()">
+                    <input type="text" id="m-iban" placeholder="IBAN für Zahlungen" oninput="CORE.sync()">
+                </div>
+
+                <div class="card">
+                    <span class="label">Leistungspositionen</span>
                     <div id="pos-root"></div>
-                    <button class="btn btn-outline" style="width: 100%; border-style: dashed; margin-top: 20px;" onclick="UI.add('Neue Dienstleistung', 1, 0, 'Std.')">+ Zeile hinzufügen</button>
+                    <button onclick="UI.addRow()" style="width:100%; padding:15px; border:2px dashed var(--p-border); background:none; border-radius:12px; cursor:pointer; font-weight:700; color:#94a3b8;">+ Zeile hinzufügen</button>
                 </div>
             </div>
 
-            <div class="sidebar">
-                <div class="card" style="position: sticky; top: 120px; background: var(--p-navy); color: white; border: none;">
-                    <span class="card-label" style="color: #94a3b8; border-bottom: 1px solid #1e293b; padding-bottom: 15px;">03. Empfänger & Export</span>
+            <div class="right">
+                <div class="summary-card">
+                    <span class="label" style="color:#94a3b8;">Kalkulation</span>
                     
-                    <input type="text" id="c-name" placeholder="Kundenname" style="background: #1e293b; border: none; color: white; margin-top: 20px;">
-                    <input type="text" id="c-addr" placeholder="Anschrift des Kunden" style="background: #1e293b; border: none; color: white;">
+                    <label style="font-size:11px; font-weight:700; color:#94a3b8; display:block; margin-bottom:10px;">MwSt. Satz wählen</label>
+                    <div class="selector-group">
+                        <div class="chip active" onclick="UI.setTax(19, this)">19%</div>
+                        <div class="chip" onclick="UI.setTax(7, this)">7%</div>
+                        <div class="chip" onclick="UI.setTax(0, this)">0%</div>
+                    </div>
+
+                    <input type="text" id="c-name" placeholder="Kundenname" style="background:#1e293b; border:none; color:white; margin-top:20px;">
                     
-                    <div style="margin-top: 40px; border-top: 1px solid #1e293b; padding-top: 25px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: #94a3b8; font-weight: 600;">
-                            <span>Netto:</span><span id="v-net">0,00 €</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 28px; font-weight: 800; color: white;">
-                            <span>Gesamt:</span><span id="v-gross">0,00 €</span>
+                    <div style="margin-top:30px; border-top:1px solid #334155; padding-top:20px;">
+                        <div class="sum-line"><span>Netto:</span><span id="v-net">0,00 €</span></div>
+                        <div class="sum-line"><span>MwSt (<span id="tax-label">19</span>%):</span><span id="v-tax">0,00 €</span></div>
+                        <div style="display:flex; justify-content:space-between; font-size:26px; font-weight:800; margin-top:15px;">
+                            <span>Gesamt:</span><span id="v-total">0,00 €</span>
                         </div>
                     </div>
 
-                    <button id="gen-btn" class="btn btn-primary" style="width: 100%; margin-top: 30px; padding: 22px;" onclick="CORE.generatePDF()">
-                        PDF RECHNUNG ERSTELLEN
-                    </button>
-                    <p id="limit-msg" class="hidden" style="color: #ef4444; font-size: 11px; text-align: center; margin-top: 15px; font-weight: 800;">LIMIT ERREICHT. BITTE PRO FREISCHALTEN.</p>
+                    <button class="btn-gen" onclick="CORE.export()">PDF HERUNTERLADEN</button>
                 </div>
             </div>
-
         </div>
     </main>
 
     <script>
-        // Supabase Initialization
         const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
 
         const CORE = {
-            user: null, credits: 3, isPro: false, logo: null, timer: null,
+            user: null, creds: 3, tax: 19, type: 'RECHNUNG', timer: null,
 
             async auth(mode) {
-                const e = document.getElementById('auth-mail').value, p = document.getElementById('auth-pass').value;
-                const { data, error } = mode === 'login' ? 
-                    await _SB.auth.signInWithPassword({email: e, password: p}) : 
-                    await _SB.auth.signUp({email: e, password: p});
-                if(error) alert("Fehler: " + error.message); else location.reload();
+                const e = document.getElementById('a-mail').value, p = document.getElementById('a-pass').value;
+                const {data, error} = await _SB.auth.signInWithPassword({email:e, password:p});
+                if(error) {
+                    const {data:regData, error:regErr} = await _SB.auth.signUp({email:e, password:p});
+                    if(regErr) alert(regErr.message); else alert("Account erstellt! Logge dich jetzt ein.");
+                } else { location.reload(); }
             },
 
             async init() {
-                const { data: { session } } = await _SB.auth.getSession();
+                const {data:{session}} = await _SB.auth.getSession();
                 if(session) {
                     this.user = session.user;
                     document.getElementById('gate').style.display = 'none';
                     document.getElementById('app').style.display = 'block';
-                    
-                    const { data: p } = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
-                    if(p) {
-                        this.credits = p.credits ?? 3;
-                        this.isPro = p.is_pro ?? false;
-                        this.fill(p);
-                    }
-                    UI.add('Fachdienstleistung', 1, 65, 'Std.');
-                    this.updateUI();
+                    const {data:p} = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
+                    if(p) { this.creds = p.credits ?? 3; this.fill(p); }
+                    document.getElementById('doc-date').valueAsDate = new Date();
+                    document.getElementById('doc-num').value = 'MB-' + Date.now().toString().slice(-6);
+                    UI.addRow();
+                    this.upd();
                 }
             },
 
             fill(p) {
                 document.getElementById('m-name').value = p.firma_name || '';
-                document.getElementById('m-str').value = p.firma_strasse || '';
-                document.getElementById('m-ort').value = p.firma_ort || '';
                 document.getElementById('m-iban').value = p.firma_iban || '';
             },
 
@@ -244,100 +178,70 @@
                     await _SB.from('profiles').upsert({
                         id: this.user.id,
                         firma_name: document.getElementById('m-name').value,
-                        firma_strasse: document.getElementById('m-str').value,
-                        firma_ort: document.getElementById('m-ort').value,
                         firma_iban: document.getElementById('m-iban').value
                     });
-                }, 1200);
+                }, 1000);
             },
 
-            updateUI() {
-                const status = document.getElementById('license-status');
-                const genBtn = document.getElementById('gen-btn');
-                const upgrade = document.getElementById('upgrade-btn');
-
-                if(this.isPro) {
-                    status.innerText = "PRO ACCOUNT UNLIMITIERT";
-                    status.className = "badge badge-pro";
-                    upgrade.classList.add('hidden');
-                } else {
-                    status.innerText = `${this.credits} BELEGE VERFÜGBAR`;
-                    status.className = "badge badge-free";
-                    if(this.credits <= 0) {
-                        genBtn.disabled = true;
-                        document.getElementById('limit-msg').classList.remove('hidden');
-                    }
-                }
+            upd() {
+                document.getElementById('status').innerText = `${this.creds} CREDITS VERFÜGBAR`;
                 UI.calc();
             },
 
-            async generatePDF() {
-                if(!this.isPro && this.credits <= 0) return;
-
+            async export() {
+                if(this.creds <= 0) return alert("Credits leer!");
                 const doc = new jspdf.jsPDF();
-                if(this.logo) doc.addImage(this.logo, 'PNG', 150, 10, 45, 20);
-                
-                doc.setFontSize(24).setFont(undefined, 'bold').text("RECHNUNG", 20, 30);
-                doc.setFontSize(10).setFont(undefined, 'normal');
-                doc.text(`${document.getElementById('m-name').value}\n${document.getElementById('m-str').value}\n${document.getElementById('m-ort').value}`, 20, 42);
-                doc.text(`RECHNUNG AN:\n${document.getElementById('c-name').value}\n${document.getElementById('c-addr').value}`, 20, 65);
+                doc.setFontSize(22).setFont(undefined, 'bold').text(this.type, 20, 30);
+                doc.setFontSize(10).setFont(undefined, 'normal').text(`Nr: ${document.getElementById('doc-num').value} | Datum: ${document.getElementById('doc-date').value}`, 20, 38);
+                doc.text(`VON: ${document.getElementById('m-name').value}`, 20, 55);
+                doc.text(`AN: ${document.getElementById('c-name').value}`, 20, 65);
 
-                const data = [];
-                document.querySelectorAll('.p-row-item').forEach(r => {
+                const rows = [];
+                document.querySelectorAll('.p-row').forEach(r => {
                     const q = r.querySelector('.p-q').value, p = r.querySelector('.p-p').value;
-                    data.push([r.querySelector('.p-d').value, q, r.querySelector('.p-u').value, p + " €", (q*p).toFixed(2) + " €"]);
+                    rows.push([r.querySelector('.p-d').value, q, p + " €", (q*p).toFixed(2) + " €"]);
                 });
 
-                doc.autoTable({ startY: 90, head: [['Beschreibung', 'Menge', 'Einh.', 'Einzelpreis', 'Gesamt']], body: data, theme: 'striped' });
-                
-                const finalY = doc.lastAutoTable.finalY;
-                doc.setFontSize(12).setFont(undefined, 'bold').text(`Gesamtbetrag Brutto: ${document.getElementById('v-gross').innerText}`, 190, finalY + 15, {align: 'right'});
-                doc.setFontSize(9).setFont(undefined, 'normal').text(`Zahlbar an IBAN: ${document.getElementById('m-iban').value}`, 20, finalY + 30);
+                doc.autoTable({ startY: 75, head: [['Leistung', 'Menge', 'Preis', 'Gesamt']], body: rows });
+                doc.text(`Gesamtbetrag: ${document.getElementById('v-total').innerText}`, 190, doc.lastAutoTable.finalY + 15, {align:'right'});
+                doc.text(`Zahlbar an IBAN: ${document.getElementById('m-iban').value}`, 20, doc.lastAutoTable.finalY + 25);
 
-                doc.save("MeisterBlitz_Rechnung.pdf");
-
-                if(!this.isPro) {
-                    this.credits--;
-                    await _SB.from('profiles').update({credits: this.credits}).eq('id', this.user.id);
-                }
-                this.updateUI();
-                confetti();
+                doc.save(`${this.type}_${document.getElementById('doc-num').value}.pdf`);
+                this.creds--;
+                await _SB.from('profiles').update({credits: this.creds}).eq('id', this.user.id);
+                this.upd(); confetti();
             },
 
             logout() { _SB.auth.signOut(); location.reload(); }
         };
 
         const UI = {
-            add(d, q, p, u) {
+            addRow() {
                 const div = document.createElement('div');
-                div.className = 'pos-row p-row-item';
-                div.innerHTML = `
-                    <input type="text" class="p-d" value="${d}">
-                    <input type="number" class="p-q" value="${q}" oninput="UI.calc()">
-                    <input type="text" class="p-u" value="${u}">
-                    <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
-                    <button onclick="this.parentElement.remove(); UI.calc()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size:18px;">✕</button>
-                `;
+                div.className = 'pos-row';
+                div.innerHTML = `<input type="text" class="p-d" placeholder="Leistung..."><input type="number" class="p-q" value="1" oninput="UI.calc()"><input type="text" value="Std."><input type="number" class="p-p" value="0" oninput="UI.calc()"><button onclick="this.parentElement.remove(); UI.calc()" style="border:none;background:none;color:red;font-weight:bold;">✕</button>`;
                 document.getElementById('pos-root').appendChild(div);
+            },
+            setType(t, el) {
+                CORE.type = t;
+                document.querySelectorAll('.selector-group:first-child .chip').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+            },
+            setTax(v, el) {
+                CORE.tax = v;
+                document.getElementById('tax-label').innerText = v;
+                document.querySelectorAll('.summary-card .chip').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
                 this.calc();
             },
             calc() {
                 let n = 0;
-                document.querySelectorAll('.p-row-item').forEach(r => { n += (r.querySelector('.p-q').value * r.querySelector('.p-p').value); });
+                document.querySelectorAll('.pos-row').forEach(r => { n += (r.querySelector('.p-q').value * r.querySelector('.p-p').value); });
+                const taxVal = n * (CORE.tax / 100);
                 document.getElementById('v-net').innerText = n.toFixed(2) + " €";
-                document.getElementById('v-gross').innerText = (n * 1.19).toFixed(2) + " €";
+                document.getElementById('v-tax').innerText = taxVal.toFixed(2) + " €";
+                document.getElementById('v-total').innerText = (n + taxVal).toFixed(2) + " €";
             }
-        };
-
-        document.getElementById('l-file').onchange = (e) => {
-            const r = new FileReader();
-            r.onload = (v) => {
-                CORE.logo = v.target.result;
-                document.getElementById('l-img').src = CORE.logo;
-                document.getElementById('l-img').classList.remove('hidden');
-                document.getElementById('l-hint').classList.add('hidden');
-            };
-            r.readAsDataURL(e.target.files[0]);
         };
 
         CORE.init();
