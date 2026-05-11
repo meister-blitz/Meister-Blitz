@@ -3,701 +3,703 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ v7.0 | SUPREME ENTERPRISE CONTROL</title>
+    <title>MEISTER-BLITZ v12.0 | TITANIUM ULTIMATE (1K+ EDITION)</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* --- HIGH-END DESIGN SYSTEM V7 --- */
+        /* --- TITANIUM ARCHITECTURE (CSS VARIABLE SYSTEM) --- */
         :root { 
-            --primary: #3b82f6; 
-            --primary-glow: rgba(59, 130, 246, 0.5);
-            --primary-dark: #1d4ed8; 
-            --bg: #f1f5f9; 
-            --dark-surface: #0f172a; 
-            --dark-card: #1e293b;
-            --accent: #facc15; 
-            --white: #ffffff;
-            --border: #e2e8f0;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --success: #10b981;
+            --p-color: #6366f1; 
+            --p-color-hover: #4f46e5;
+            --p-color-soft: rgba(99, 102, 241, 0.15);
+            --s-color: #10b981; 
+            --a-color: #f59e0b;
+            --bg-base: #f1f5f9; 
+            --bg-card: #ffffff;
+            --txt-bold: #0f172a; 
+            --txt-thin: #64748b;
             --danger: #ef4444;
-            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --border: #e2e8f0;
+            --radius-xl: 32px;
+            --radius-lg: 20px;
+            --shadow-hd: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
         }
 
-        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg); 
-            margin: 0; 
-            color: var(--text-main);
+            font-family: var(--font-main); 
+            background-color: var(--bg-base); 
+            margin: 0; color: var(--txt-bold);
             overflow-x: hidden;
         }
 
-        /* AUTHENTICATION LAYER */
-        #login-screen { 
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            padding: 30px;
-            position: fixed;
-            width: 100%;
-            z-index: 9999;
+        /* --- AUTHENTICATION MODULE --- */
+        #auth-layer { 
+            min-height: 100vh; width: 100%; display: flex; 
+            align-items: center; justify-content: center;
+            background: radial-gradient(circle at top right, #4f46e5, #0f172a);
+            position: fixed; top: 0; left: 0; z-index: 10000; padding: 20px;
         }
 
-        .auth-panel {
-            background: var(--white);
-            padding: 80px 60px;
-            border-radius: 45px;
-            width: 100%;
-            max-width: 550px;
-            text-align: center;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        .auth-container {
+            background: var(--bg-card); padding: 60px; border-radius: var(--radius-xl);
+            width: 100%; max-width: 520px; text-align: center;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
         }
 
-        .auth-panel h1 { font-size: 48px; font-weight: 900; letter-spacing: -3px; color: var(--dark-surface); margin: 0; }
-        .auth-panel p { color: var(--text-muted); margin-bottom: 40px; font-size: 16px; font-weight: 500; }
+        .auth-icon { font-size: 60px; margin-bottom: 20px; display: inline-block; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
 
-        .input-auth {
-            width: 100%;
-            padding: 22px 28px;
-            margin-bottom: 20px;
-            border-radius: 20px;
-            border: 2px solid var(--border);
-            background: #f8fafc;
-            font-size: 17px;
-            font-weight: 600;
+        .auth-title { font-size: 42px; font-weight: 800; letter-spacing: -2px; margin: 0; color: var(--txt-bold); }
+        .auth-desc { color: var(--txt-thin); margin-bottom: 40px; font-weight: 500; font-size: 15px; }
+
+        .auth-input-group { position: relative; margin-bottom: 20px; text-align: left; }
+        .auth-input-group label { display: block; font-size: 12px; font-weight: 800; color: var(--p-color); margin-bottom: 8px; text-transform: uppercase; }
+        
+        .form-control {
+            width: 100%; padding: 18px 24px; border-radius: var(--radius-lg);
+            border: 2px solid var(--border); background: #f8fafc;
+            font-size: 16px; font-weight: 600; transition: all 0.3s;
         }
+        .form-control:focus { border-color: var(--p-color); box-shadow: 0 0 0 5px var(--p-color-soft); background: #fff; }
 
-        /* DASHBOARD COMPONENTS */
-        #main-dashboard { display: none; }
+        /* --- DASHBOARD NAVIGATION --- */
+        #app-root { display: none; padding-top: 100px; }
         
         .top-navigation {
-            background: var(--dark-surface);
-            color: white;
-            padding: 25px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px);
+            padding: 15px 50px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            position: fixed; top: 0; width: 100%; z-index: 1000;
         }
 
-        .brand-zone { font-weight: 900; font-size: 28px; display: flex; align-items: center; gap: 15px; }
-        .brand-zone span { background: var(--primary); padding: 5px 12px; border-radius: 12px; }
+        .brand-label { font-weight: 800; font-size: 22px; display: flex; align-items: center; gap: 12px; }
+        .brand-tag { background: var(--txt-bold); color: white; padding: 4px 12px; border-radius: 10px; font-size: 11px; }
 
-        .user-status-pill {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            background: rgba(255,255,255,0.07);
-            padding: 10px 10px 10px 25px;
-            border-radius: 100px;
-            border: 1px solid rgba(255,255,255,0.1);
+        .nav-profile {
+            display: flex; align-items: center; gap: 20px;
+            background: #f1f5f9; padding: 6px 6px 6px 20px;
+            border-radius: 100px; border: 1px solid var(--border);
         }
 
-        /* GRID SYSTEM */
-        .dashboard-container {
-            max-width: 1600px;
-            margin: 60px auto;
-            padding: 0 50px;
-            display: grid;
-            grid-template-columns: 450px 1fr;
-            gap: 60px;
+        /* --- LAYOUT ENGINE --- */
+        .master-grid {
+            max-width: 1500px; margin: 0 auto; padding: 40px;
+            display: grid; grid-template-columns: 440px 1fr; gap: 40px;
         }
 
-        @media (max-width: 1300px) { .dashboard-container { grid-template-columns: 1fr; } }
+        @media (max-width: 1200px) { .master-grid { grid-template-columns: 1fr; } }
 
-        /* CARDS */
-        .glass-ui-card {
-            background: var(--white);
-            border-radius: 40px;
-            border: 1px solid var(--border);
-            padding: 45px;
-            box-shadow: var(--shadow-xl);
-            margin-bottom: 45px;
-            position: relative;
+        /* --- COMPONENT CARDS --- */
+        .glass-box {
+            background: var(--bg-card); border-radius: var(--radius-xl);
+            border: 1px solid var(--border); padding: 40px;
+            box-shadow: var(--shadow-hd); margin-bottom: 40px;
+            position: relative; overflow: hidden;
         }
 
-        .label-group {
-            font-size: 14px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            margin-bottom: 35px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+        .box-label {
+            font-size: 13px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--p-color); margin-bottom: 30px;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .box-label::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--border), transparent); }
+
+        /* --- POSITION ROW ENGINE (FIXED) --- */
+        .invoice-row {
+            background: #f8fafc; padding: 25px; border-radius: var(--radius-lg);
+            border: 1px solid var(--border); margin-bottom: 15px;
+            display: grid; grid-template-columns: 2.2fr 0.8fr 1.1fr 1.1fr 50px; gap: 15px;
+            align-items: end; position: relative;
         }
 
-        .label-group::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--border), transparent); }
+        .input-stack { position: relative; }
+        .input-stack label { display: block; font-size: 11px; font-weight: 800; color: var(--txt-thin); margin-bottom: 6px; }
 
-        /* FORM ELEMENTS */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 25px; }
-        
-        .field-box label { display: block; font-size: 14px; font-weight: 800; color: var(--dark-surface); margin-bottom: 12px; }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 18px 24px;
-            border-radius: 18px;
-            border: 2px solid var(--border);
-            background: #f8fafc;
-            font-size: 16px;
-            font-weight: 500;
+        /* Die Hybrid-Logik für Leistung und Einheit */
+        .hybrid-box { position: relative; }
+        .hybrid-input { 
+            position: absolute; top: 22px; left: 0; width: 85%; height: 52px; 
+            border: none; background: transparent; padding: 0 18px; z-index: 5; font-weight: 700;
+            color: var(--txt-bold);
         }
 
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 6px var(--primary-glow); background: white; outline: none; }
+        /* Menge und Preis sind reine Inputs */
+        .plain-input { font-weight: 700; font-size: 15px; }
 
-        /* POSITION ROWS */
-        .pos-entry {
-            background: #fcfcfd;
-            padding: 30px;
-            border-radius: 30px;
-            border: 1px solid var(--border);
-            margin-bottom: 25px;
-            display: grid;
-            grid-template-columns: 2.2fr 0.8fr 1.2fr 1fr 60px;
-            gap: 20px;
-            align-items: end;
+        .row-delete {
+            background: #fee2e2; color: var(--danger); border: none; height: 52px;
+            border-radius: 14px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;
+        }
+        .row-delete:hover { background: var(--danger); color: white; }
+
+        /* --- PRIMARY ACTIONS --- */
+        .btn-supreme {
+            padding: 20px 35px; border-radius: var(--radius-lg); font-weight: 800; font-size: 16px;
+            cursor: pointer; border: none; display: flex; align-items: center; justify-content: center;
+            gap: 12px; width: 100%; text-transform: uppercase; letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .combo-box { position: relative; }
-        .combo-input { 
-            position: absolute; 
-            top: 31px; left: 0; width: 85%; height: 58px; 
-            border: none; background: transparent; 
-            padding: 0 24px; z-index: 2; font-weight: 600;
+        .btn-indigo { background: var(--p-color); color: white; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
+        .btn-indigo:hover { transform: scale(1.02) translateY(-5px); box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4); }
+
+        .btn-secondary { background: var(--bg-base); color: var(--txt-thin); border: 2px dashed var(--border); margin-top: 15px; }
+        .btn-secondary:hover { border-color: var(--p-color); color: var(--p-color); }
+
+        /* --- STATUS & FINANCE MONITOR --- */
+        .status-pill {
+            padding: 30px; border-radius: var(--radius-lg); text-align: center; margin-bottom: 35px;
+            border: 2px solid transparent; position: relative;
+        }
+        .status-pro { background: #ecfdf5; border-color: #10b981; color: #064e3b; }
+        .status-free { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
+
+        .stripe-card {
+            background: linear-gradient(135deg, var(--p-color), var(--s-color));
+            color: white; padding: 40px; border-radius: var(--radius-xl); text-align: center; margin-bottom: 40px;
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.5);
         }
 
-        .btn-remove {
-            background: #fee2e2;
-            color: var(--danger);
-            border: none;
-            height: 58px;
-            width: 58px;
-            border-radius: 18px;
-            cursor: pointer;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-remove:hover { background: var(--danger); color: white; transform: rotate(90deg); }
-
-        /* BUTTONS */
-        .action-btn {
-            padding: 24px 35px;
-            border-radius: 22px;
-            font-weight: 900;
-            font-size: 17px;
-            cursor: pointer;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .btn-blue { background: var(--primary); color: white; box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4); }
-        .btn-blue:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.5); }
-        
-        .btn-outline { background: #f1f5f9; color: var(--dark-surface); border: 3px dashed var(--border); margin-top: 15px; }
-
-        .pro-badge-card {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            padding: 35px;
-            border-radius: 35px;
-            color: white;
-            text-align: center;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
-        }
-
-        /* LOGO HANDLING */
+        /* --- IMAGE UPLOADER --- */
         .logo-dropzone {
-            width: 100%;
-            height: 200px;
-            border: 4px dashed var(--border);
-            border-radius: 35px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background: #f8fafc;
-            overflow: hidden;
+            width: 100%; height: 200px; border: 3px dashed var(--border); border-radius: var(--radius-lg);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; background: #fafafa; overflow: hidden; position: relative;
         }
+        .logo-dropzone:hover { border-color: var(--p-color); background: var(--p-color-soft); }
+        .logo-dropzone img { max-width: 90%; max-height: 90%; object-fit: contain; z-index: 2; }
 
-        .logo-dropzone img { max-width: 90%; max-height: 90%; object-fit: contain; }
-        .logo-dropzone:hover { border-color: var(--primary); background: #f0f7ff; }
-
-        .history-list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
+        /* --- LOGGING TERMINAL --- */
+        .terminal-box {
+            background: #0f172a; color: #10b981; border-radius: var(--radius-lg); padding: 25px;
+            font-family: var(--font-code); font-size: 11px; height: 250px;
+            overflow-y: auto; margin-top: 20px; border: 1px solid #1e293b;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
         }
+        .terminal-box::-webkit-scrollbar { width: 4px; }
+        .terminal-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
 
-        #status-light { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 10px; }
-        .light-green { background: #10b981; box-shadow: 0 0 10px #10b981; }
-        .light-red { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .log-line { margin-bottom: 6px; border-left: 2px solid #1e293b; padding-left: 10px; }
+        .log-time { color: #6366f1; font-weight: bold; }
 
+        /* --- HISTORY VIEW --- */
+        .history-row {
+            display: flex; justify-content: space-between; padding: 20px;
+            border-bottom: 1px solid var(--border); font-weight: 700; font-size: 14px;
+        }
+        .history-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="auth-panel">
-            <div style="font-size: 80px; margin-bottom: 15px;">⚡</div>
-            <h1>MEISTER-BLITZ</h1>
-            <p>Enterprise Level Invoicing & Automation</p>
+    <div id="auth-layer">
+        <div class="auth-container">
+            <span class="auth-icon">⚡</span>
+            <h1 class="auth-title">MEISTER-BLITZ</h1>
+            <p class="auth-desc">Die Titanium Enterprise Lösung für Handwerk & Business</p>
             
-            <input type="email" id="email" class="input-auth" placeholder="E-Mail Adresse">
-            <input type="password" id="password" class="input-auth" placeholder="Passwort">
-            
-            <button class="action-btn btn-blue" onclick="execLogin()" style="margin-top: 15px;">SYSTEM STARTEN</button>
-            
-            <div style="margin-top: 40px; font-size: 15px; color: var(--text-muted);">
-                Kein Zugang? 
-                <span onclick="execSignUp()" style="color: var(--primary); cursor: pointer; font-weight: 800; text-decoration: underline;">
-                    Jetzt registrieren (+3 Gratis Belege)
-                </span>
+            <div class="auth-input-group">
+                <label>Benutzerkonto (E-Mail)</label>
+                <input type="email" id="auth-email" class="form-control" placeholder="ihre@mail.de">
             </div>
+            <div class="auth-input-group">
+                <label>Sicherheitsschlüssel</label>
+                <input type="password" id="auth-pass" class="form-control" placeholder="••••••••">
+            </div>
+            
+            <button class="btn-supreme btn-indigo" onclick="triggerLogin()" style="margin-top: 15px;">DASHBOARD STARTEN</button>
+            
+            <p style="margin-top: 30px; font-size: 14px; color: var(--txt-thin); font-weight: 600;">
+                Noch kein Titanium-Nutzer? 
+                <span onclick="triggerSignUp()" style="color: var(--p-color); cursor: pointer; text-decoration: underline;">
+                    Jetzt registrieren & 3 Freibelege sichern
+                </span>
+            </p>
         </div>
     </div>
 
-    <div id="main-dashboard">
+    <div id="app-root">
         <nav class="top-navigation">
-            <div class="brand-zone"><span>⚡</span> MEISTER-BLITZ V7</div>
-            <div class="user-status-pill">
-                <span id="user-mail-info" style="font-weight: 700;">...</span>
-                <button onclick="execLogout()" style="background: var(--danger); border: none; color: white; padding: 12px 22px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 12px;">LOGOUT</button>
+            <div class="brand-label">⚡ MEISTER-BLITZ <span class="brand-tag">V12.0 TITANIUM</span></div>
+            <div class="nav-profile">
+                <span id="user-identity" style="font-weight: 800; font-size: 14px; color: var(--txt-bold);">...</span>
+                <button onclick="triggerLogout()" style="background: var(--danger); border: none; color: white; padding: 10px 20px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 11px;">ABMELDEN</button>
             </div>
         </nav>
 
-        <div class="dashboard-container">
-            <div class="sidebar">
-                <div id="pro-status-box" class="pro-badge-card">
-                    <div id="status-text-large" style="font-weight: 900; font-size: 26px;">INITIALISIERE...</div>
-                    <div id="status-sub-text" style="font-size: 14px; margin-top: 5px; opacity: 0.9;">Sync mit Cloud...</div>
+        <div class="master-grid">
+            <aside class="sidebar-panel">
+                <div id="status-monitor" class="status-pill status-free">
+                    <div id="monitor-title" style="font-weight: 900; font-size: 24px;">INITIALISIERUNG</div>
+                    <div id="monitor-desc" style="font-size: 13px; margin-top: 5px; opacity: 0.8;">Cloud-Verbindung wird geprüft...</div>
                 </div>
 
-                <div id="upgrade-promo" class="glass-ui-card" style="display: none; background: #fffbeb; border-color: #fef3c7;">
-                    <div class="label-group">Upgrade verfügbar</div>
-                    <p style="font-size: 14px; font-weight: 600;">Ihr Kontingent ist erschöpft. Schalten Sie unlimitierte Belege frei.</p>
-                    <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="action-btn btn-blue" style="font-size: 14px; padding: 18px;">PRO VERSION AKTIVIEREN</a>
+                <div id="payment-offer" class="stripe-card" style="display: none;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">👑</div>
+                    <div style="font-weight: 900; font-size: 18px; margin-bottom: 20px;">UPGRADE ZUR UNLIMITIERTEN PRO VERSION</div>
+                    <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-supreme" style="background: white; color: var(--txt-bold); font-size: 13px;">
+                        JETZT FÜR 11,99€ AKTIVIEREN
+                    </a>
                 </div>
 
-                <div class="glass-ui-card">
-                    <div class="label-group">Branding</div>
-                    <input type="file" id="logo-upload-input" accept="image/*" style="display: none;">
-                    <div class="logo-dropzone" onclick="document.getElementById('logo-upload-input').click()">
-                        <div id="logo-empty-state">
-                            <div style="font-size: 40px;">📂</div>
-                            <div style="font-size: 13px; font-weight: 800; margin-top: 10px;">LOGO HOCHLADEN</div>
+                <div class="glass-box">
+                    <div class="box-label">Corporate Identity</div>
+                    <input type="file" id="logo-input" accept="image/*" style="display: none;">
+                    <div class="logo-dropzone" onclick="document.getElementById('logo-input').click()">
+                        <div id="logo-placeholder">
+                            <div style="font-size: 45px;">🏙️</div>
+                            <div style="font-size: 12px; font-weight: 900; margin-top: 15px; color: var(--txt-thin);">FIRMENLOGO HOCHLADEN</div>
                         </div>
-                        <img id="logo-final-preview" src="" style="display: none;">
+                        <img id="logo-render" style="display: none;">
                     </div>
                 </div>
 
-                <div class="glass-ui-card">
-                    <div class="label-group">Eigene Firmendaten</div>
-                    <div class="field-box">
-                        <label>Name der Firma / Shop</label>
-                        <input type="text" id="p_firma" oninput="triggerAutoSave()">
+                <div class="glass-box">
+                    <div class="box-label">Stammdaten (Cloud)</div>
+                    <div class="auth-input-group">
+                        <label>Unternehmen</label>
+                        <input type="text" id="m_firma" class="form-control" oninput="debouncedCloudSave()">
                     </div>
-                    <div class="field-box" style="margin-top: 20px;">
-                        <label>Geschäftsführer / Inhaber</label>
-                        <input type="text" id="p_ceo" oninput="triggerAutoSave()">
+                    <div class="auth-input-group">
+                        <label>Vertreten durch</label>
+                        <input type="text" id="m_ceo" class="form-control" oninput="debouncedCloudSave()">
                     </div>
-                    <div class="form-grid" style="margin-top: 20px;">
-                        <div class="field-box">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="auth-input-group">
                             <label>Straße / Nr.</label>
-                            <input type="text" id="p_street" oninput="triggerAutoSave()">
+                            <input type="text" id="m_str" class="form-control" oninput="debouncedCloudSave()">
                         </div>
-                        <div class="field-box">
-                            <label>PLZ / Stadt</label>
-                            <input type="text" id="p_city" oninput="triggerAutoSave()">
-                        </div>
-                    </div>
-                    <div class="field-box">
-                        <label>IBAN für Überweisungen</label>
-                        <input type="text" id="p_iban" oninput="triggerAutoSave()">
-                    </div>
-                    <div class="field-box" style="margin-top: 20px;">
-                        <label>Steuernummer / UST-ID</label>
-                        <input type="text" id="p_tax" oninput="triggerAutoSave()">
-                    </div>
-                    <div class="field-box" style="margin-top: 20px;">
-                        <label>Telefon</label>
-                        <input type="text" id="p_phone" oninput="triggerAutoSave()">
-                    </div>
-                </div>
-            </div>
-
-            <div class="main-content">
-                <div class="glass-ui-card">
-                    <div class="label-group">Beleg-Einstellungen</div>
-                    <div class="form-grid">
-                        <div class="field-box">
-                            <label>Art des Belegs</label>
-                            <select id="cfg_type">
-                                <option value="RECHNUNG">Rechnung</option>
-                                <option value="KOSTENVORANSCHLAG">Kostenvoranschlag</option>
-                                <option value="QUITTUNG">Quittung</option>
-                                <option value="PROFORMA">Proforma-Rechnung</option>
-                            </select>
-                        </div>
-                        <div class="field-box">
-                            <label>Vorgangs-Nummer</label>
-                            <input type="text" id="cfg_nr">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-ui-card">
-                    <div class="label-group">Rechnungsempfänger</div>
-                    <div class="field-box">
-                        <label>Kunde / Organisation</label>
-                        <input type="text" id="c_name" placeholder="Max Mustermann">
-                    </div>
-                    <div class="form-grid" style="margin-top: 25px;">
-                        <div class="field-box">
-                            <label>Straße</label>
-                            <input type="text" id="c_street">
-                        </div>
-                        <div class="field-box">
+                        <div class="auth-input-group">
                             <label>PLZ / Ort</label>
-                            <input type="text" id="c_city">
+                            <input type="text" id="m_ort" class="form-control" oninput="debouncedCloudSave()">
                         </div>
                     </div>
-                    <div class="field-box">
-                        <label>Kunden-E-Mail (für Versand)</label>
-                        <input type="email" id="c_mail" placeholder="kunde@beispiel.de">
+                    <div class="auth-input-group">
+                        <label>IBAN (für Überweisungen)</label>
+                        <input type="text" id="m_iban" class="form-control" oninput="debouncedCloudSave()">
+                    </div>
+                    <div class="auth-input-group">
+                        <label>Steuernummer / USt-ID</label>
+                        <input type="text" id="m_tax" class="form-control" oninput="debouncedCloudSave()">
+                    </div>
+                    <div class="auth-input-group">
+                        <label>Zentral-Rufnummer</label>
+                        <input type="text" id="m_tel" class="form-control" oninput="debouncedCloudSave()">
                     </div>
                 </div>
 
-                <div class="glass-ui-card">
-                    <div class="label-group">Leistungen & Artikel</div>
-                    <div id="position-container">
+                <div class="terminal-box" id="sys-log">
+                    <div class="log-line">> Meister-Blitz Titanium v12.0 Ready...</div>
+                </div>
+            </aside>
+
+            <main class="main-workspace">
+                <div class="glass-box">
+                    <div class="box-label">Debitoren-Stamm (Kunde)</div>
+                    <div class="auth-input-group">
+                        <label>Rechnungsempfänger / Firma</label>
+                        <input type="text" id="c_name" class="form-control" placeholder="Max Mustermann GmbH">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="auth-input-group">
+                            <label>Anschrift (Straße)</label>
+                            <input type="text" id="c_str" class="form-control">
                         </div>
-                    <button class="action-btn btn-outline" onclick="addPositionRow()">
+                        <div class="auth-input-group">
+                            <label>Standort (PLZ / Ort)</label>
+                            <input type="text" id="c_ort" class="form-control">
+                        </div>
+                    </div>
+                    <div class="auth-input-group">
+                        <label>Empfänger E-Mail (für Versand)</label>
+                        <input type="email" id="c_mail" class="form-control" placeholder="beispiel@kunde.de">
+                    </div>
+                </div>
+
+                <div class="glass-box">
+                    <div class="box-label">Leistungsnachweis & Kalkulation</div>
+                    <div id="position-list">
+                        </div>
+                    <button class="btn-supreme btn-secondary" onclick="addInvoicePosition()">
                         + NEUE POSITION HINZUFÜGEN
                     </button>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 80px;">
-                    <button class="action-btn btn-blue" style="background: var(--dark-surface);" onclick="buildFinalPDF(false)">
-                        <span>💾</span> PDF ERSTELLEN
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 100px;">
+                    <button class="btn-supreme btn-indigo" style="background: var(--txt-bold);" onclick="masterPDFGenerator(false)">
+                        <span>💾</span> PDF EXPORTIEREN
                     </button>
-                    <button class="action-btn btn-blue" onclick="buildFinalPDF(true)">
-                        <span>✉️</span> AN KUNDE SENDEN
+                    <button class="btn-supreme btn-indigo" onclick="masterPDFGenerator(true)">
+                        <span>✉️</span> PER MAIL VERSENDEN
                     </button>
                 </div>
 
-                <div class="glass-ui-card">
-                    <div class="label-group">Historie (Lokal)</div>
-                    <div id="local-history-list">
-                        <p style="text-align: center; color: var(--text-muted); padding: 30px;">Keine Belege in diesem Browser gefunden.</p>
+                <div class="glass-box">
+                    <div class="box-label">Journal & Historie</div>
+                    <div id="journal-container">
+                        <p style="text-align:center; padding:40px; color:var(--txt-thin); font-size: 14px;">Keine Journal-Einträge gefunden.</p>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 
     <script>
-        const _db = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
+        /**
+         * MEISTER-BLITZ v12.0 TITANIUM ENTERPRISE
+         * GLOBAL CONTROLLER & DATABASE BRIDGE
+         */
         
-        let sessionUser = null;
-        let cloudCredits = 0;
-        let expiryDate = null;
-        let cachedLogo = null;
+        const _CLIENT = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
+        
+        let sys_user = null;
+        let sys_credits = 0;
+        let sys_abo_expiry = null;
+        let sys_logo_base64 = null;
+        let sys_serial = "RE-" + Math.floor(Math.random() * 899999 + 100000);
+        let sys_save_timer = null;
 
-        // Configuration
-        const WORK_TYPES = ["Facharbeit Elektro", "Arbeitszeit Sanitär", "Pauschale Anfahrt", "Materialkosten", "Entsorgungspauschale", "Maschinenstunden", "Notdienst Zuschlag", "Kleinteile/Zubehör"];
-        const UNIT_TYPES = ["Std", "Stk", "lfm", "m²", "Paus.", "Einheit", "Fahrt"];
+        // Smart Presets
+        const PRESETS_SERVICE = ["Handwerker-Arbeitsstunden", "Anfahrt & Rüstzeit", "Pauschalreparatur", "Materialkostenanteil", "Wartungsvertrag Monatlich", "Sonderreinigung", "Montage-Service", "Fahrtkosten"];
+        const PRESETS_UNIT = ["Std", "Paus.", "Stk", "lfm", "m²", "Einheit", "Set", "Tag"];
 
+        /**
+         * ENGINE STARTUP
+         */
         window.onload = async () => {
-            const { data: { session } } = await _db.auth.getSession();
+            writeLog("Initialisierung der Titanium-Engine...");
+            const { data: { session } } = await _CLIENT.auth.getSession();
             if (session) { 
-                sessionUser = session.user; 
-                await initializeCore(); 
+                sys_user = session.user; 
+                await runBootstrap(); 
+            } else {
+                writeLog("Warte auf Benutzer-Authentifizierung...");
             }
-            id('cfg_nr').value = "INV-" + Date.now().toString().slice(-6);
         };
 
-        async function initializeCore() {
-            id('login-screen').style.display = 'none';
-            id('main-dashboard').style.display = 'block';
-            id('user-mail-info').innerText = sessionUser.email;
+        async function runBootstrap() {
+            document.getElementById('auth-layer').style.display = 'none';
+            document.getElementById('app-root').style.display = 'block';
+            document.getElementById('user-identity').innerText = sys_user.email;
 
-            const { data: prof } = await _db.from('profiles').select('*').eq('id', sessionUser.id).maybeSingle();
+            writeLog("Cloud-Synchronisierung wird gestartet...");
+            const { data: profile, error } = await _CLIENT.from('profiles').select('*').eq('id', sys_user.id).maybeSingle();
             
-            if (prof) {
-                cloudCredits = prof.credits;
-                expiryDate = prof.abo_bis;
+            if (profile) {
+                sys_credits = profile.credits;
+                sys_abo_expiry = profile.abo_bis;
                 
-                id('p_firma').value = prof.firma_name || '';
-                id('p_ceo').value = prof.firma_inhaber || '';
-                id('p_street').value = prof.firma_strasse || '';
-                id('p_city').value = prof.firma_ort || '';
-                id('p_iban').value = prof.firma_iban || '';
-                id('p_tax').value = prof.firma_steuer || '';
-                id('p_phone').value = prof.firma_tel || '';
+                // UI Mapping
+                mapField('m_firma', profile.firma_name);
+                mapField('m_ceo', profile.firma_inhaber);
+                mapField('m_str', profile.firma_strasse);
+                mapField('m_ort', profile.firma_ort);
+                mapField('m_iban', profile.firma_iban);
+                mapField('m_tax', profile.firma_steuer);
+                mapField('m_tel', profile.firma_tel);
             }
             
-            await syncPaymentStatus();
-            refreshStatusBadge();
-            addPositionRow();
-            renderHistory();
+            await verifyStripeTransaction();
+            updateSystemUI();
+            addInvoicePosition(); // Start mit einer Zeile
+            renderJournal();
+            writeLog("System erfolgreich gebootet.");
         }
 
-        async function execLogin() {
-            const { error } = await _db.auth.signInWithPassword({ email: v('email'), password: v('password') });
-            if (error) alert("Login Fehler: " + error.message); else location.reload();
+        /**
+         * AUTHENTICATION MODULES
+         */
+        async function triggerLogin() {
+            writeLog("Authentifizierungsversuch...");
+            const email = getVal('auth-email');
+            const pass = getVal('auth-pass');
+            const { error } = await _CLIENT.auth.signInWithPassword({ email, password: pass });
+            if (error) {
+                alert("Login fehlgeschlagen: " + error.message);
+                writeLog("FEHLER: Login abgelehnt.");
+            } else {
+                location.reload();
+            }
         }
 
-        async function execSignUp() {
-            const { data, error } = await _db.auth.signUp({ email: v('email'), password: v('password') });
+        async function triggerSignUp() {
+            writeLog("Erstelle neues Titanium-Konto...");
+            const email = getVal('auth-email');
+            const pass = getVal('auth-pass');
+            const { data, error } = await _CLIENT.auth.signUp({ email, password: pass });
             if (error) return alert(error.message);
             if (data.user) {
-                await _db.from('profiles').insert({ id: data.user.id, credits: 3 });
-                alert("Erfolgreich registriert! Bitte loggen Sie sich ein.");
+                await _CLIENT.from('profiles').insert({ id: data.user.id, credits: 3 });
+                alert("Registrierung erfolgreich! Bitte loggen Sie sich jetzt ein.");
+                writeLog("SUCCESS: Profil in Cloud angelegt.");
             }
         }
 
-        async function execLogout() {
-            await _db.auth.signOut();
-            location.reload();
+        async function triggerLogout() { 
+            writeLog("Sicheres Abmelden...");
+            await _CLIENT.auth.signOut(); 
+            location.reload(); 
         }
 
-        async function triggerAutoSave() {
-            if (!sessionUser) return;
-            await _db.from('profiles').upsert({
-                id: sessionUser.id,
-                firma_name: v('p_firma'),
-                firma_inhaber: v('p_ceo'),
-                firma_strasse: v('p_street'),
-                firma_ort: v('p_city'),
-                firma_iban: v('p_iban'),
-                firma_steuer: v('p_tax'),
-                firma_tel: v('p_phone')
+        /**
+         * CLOUD PERSISTENCE
+         */
+        function debouncedCloudSave() {
+            clearTimeout(sys_save_timer);
+            sys_save_timer = setTimeout(performCloudSave, 1500);
+        }
+
+        async function performCloudSave() {
+            if (!sys_user) return;
+            writeLog("Auto-Save in die Titanium-Cloud...");
+            await _CLIENT.from('profiles').upsert({
+                id: sys_user.id,
+                firma_name: getVal('m_firma'),
+                firma_inhaber: getVal('m_ceo'),
+                firma_strasse: getVal('m_str'),
+                firma_ort: getVal('m_ort'),
+                firma_iban: getVal('m_iban'),
+                firma_steuer: getVal('m_tax'),
+                firma_tel: getVal('m_tel')
             });
         }
 
-        function refreshStatusBadge() {
-            const isPro = expiryDate && new Date(expiryDate) > new Date();
-            const badge = id('pro-status-box');
-            const txt = id('status-text-large');
-            const sub = id('status-sub-text');
+        function updateSystemUI() {
+            const isPro = sys_abo_expiry && new Date(sys_abo_expiry) > new Date();
+            const monitor = document.getElementById('status-monitor');
+            const title = document.getElementById('monitor-title');
+            const desc = document.getElementById('monitor-desc');
 
             if (isPro) {
-                badge.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
-                txt.innerText = "PRO ACCOUNT AKTIV";
-                sub.innerText = "Unlimitiert bis: " + new Date(expiryDate).toLocaleDateString();
-                id('upgrade-promo').style.display = "none";
+                monitor.className = "status-pill status-pro";
+                title.innerText = "TITANIUM PRO";
+                desc.innerText = "Lizenz gültig bis " + new Date(sys_abo_expiry).toLocaleDateString();
+                document.getElementById('payment-offer').style.display = "none";
+                writeLog("Account-Status: Enterprise Pro.");
             } else {
-                badge.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
-                txt.innerText = (cloudCredits > 0 ? cloudCredits : 0) + " FREI-BELEGE";
-                sub.innerText = "Kontingent für diesen Account";
-                if (cloudCredits <= 0) id('upgrade-promo').style.display = "block";
+                monitor.className = "status-pill status-free";
+                title.innerText = (sys_credits > 0 ? sys_credits : 0) + " FREIBELEGE";
+                desc.innerText = "Ihr Kontingent ist begrenzt.";
+                if (sys_credits <= 0) document.getElementById('payment-offer').style.display = "block";
+                writeLog("Account-Status: Free Tier.");
             }
         }
 
-        // --- DYNAMIC POSITION ROWS ---
-        function addPositionRow() {
-            const container = id('position-container');
-            const div = document.createElement('div');
-            div.className = 'pos-entry';
-
-            div.innerHTML = `
-                <div class="combo-box">
-                    <label>Leistung / Artikel</label>
-                    <input type="text" class="p-text combo-input" placeholder="Wählen oder schreiben...">
-                    <select onchange="this.previousElementSibling.value = this.value">
+        /**
+         * DYNAMIC ROW CONTROLLER
+         */
+        function addInvoicePosition() {
+            const list = document.getElementById('position-list');
+            const row = document.createElement('div');
+            row.className = 'invoice-row';
+            row.innerHTML = `
+                <div class="input-stack hybrid-box">
+                    <label>Leistungsbeschreibung</label>
+                    <input type="text" class="p-text hybrid-input" placeholder="Suchen oder schreiben...">
+                    <select class="form-control" onchange="this.previousElementSibling.value = this.value">
                         <option value="">Wählen...</option>
-                        ${WORK_TYPES.map(w => `<option value="${w}">${w}</option>`).join('')}
+                        ${PRESETS_SERVICE.map(s => `<option value="${s}">${s}</option>`).join('')}
                     </select>
                 </div>
-                <div>
+                <div class="input-stack">
                     <label>Menge</label>
-                    <input type="number" class="p-qty" value="1">
+                    <input type="number" class="p-qty form-control plain-input" value="1">
                 </div>
-                <div class="combo-box">
+                <div class="input-stack hybrid-box">
                     <label>Einheit</label>
-                    <input type="text" class="p-unit combo-input" placeholder="...">
-                    <select onchange="this.previousElementSibling.value = this.value">
+                    <input type="text" class="p-unit hybrid-input" placeholder="...">
+                    <select class="form-control" onchange="this.previousElementSibling.value = this.value">
                         <option value="">...</option>
-                        ${UNIT_TYPES.map(u => `<option value="${u}">${u}</option>`).join('')}
+                        ${PRESETS_UNIT.map(u => `<option value="${u}">${u}</option>`).join('')}
                     </select>
                 </div>
-                <div>
-                    <label>Einzelpreis €</label>
-                    <input type="number" class="p-price" placeholder="0.00">
+                <div class="input-stack">
+                    <label>Einzel (€)</label>
+                    <input type="number" class="p-price form-control plain-input" placeholder="0,00">
                 </div>
-                <button class="btn-remove" onclick="this.parentElement.remove()">✕</button>
+                <button class="row-delete" onclick="this.parentElement.remove(); writeLog('Position entfernt.');">✕</button>
             `;
-            container.appendChild(div);
+            list.appendChild(row);
+            writeLog("Position zur Liste hinzugefügt.");
         }
 
-        // --- LOGO ENGINE ---
-        id('logo-upload-input').addEventListener('change', function(e) {
+        /**
+         * MEDIA HANDLER
+         */
+        document.getElementById('logo-input').onchange = (e) => {
             const file = e.target.files[0];
-            if (!file) return;
             const reader = new FileReader();
-            reader.onload = (event) => {
-                cachedLogo = event.target.result;
-                id('logo-final-preview').src = cachedLogo;
-                id('logo-final-preview').style.display = 'block';
-                id('logo-empty-state').style.display = 'none';
+            reader.onload = (ev) => {
+                sys_logo_base64 = ev.target.result;
+                const r = document.getElementById('logo-render');
+                r.src = sys_logo_base64;
+                r.style.display = 'block';
+                document.getElementById('logo-placeholder').style.display = 'none';
+                writeLog("Firmenlogo erfolgreich aktualisiert.");
             };
             reader.readAsDataURL(file);
-        });
+        };
 
-        // --- PDF ENGINE V7 (LAYOUT FIX) ---
-        async function buildFinalPDF(sendMail) {
-            const isPro = expiryDate && new Date(expiryDate) > new Date();
+        /**
+         * PDF GENERATOR V12 (TITANIUM PRECISION)
+         */
+        async function masterPDFGenerator(mailMode) {
+            writeLog("Start der PDF-Kompilierung...");
+            const isPro = sys_abo_expiry && new Date(sys_abo_expiry) > new Date();
+            
             if (!isPro) {
-                if (cloudCredits <= 0) return alert("Upgrade erforderlich!");
-                cloudCredits--;
-                await _db.from('profiles').update({ credits: cloudCredits }).eq('id', sessionUser.id);
+                if (sys_credits <= 0) {
+                    writeLog("FEHLER: Keine Credits verfügbar.");
+                    return alert("Dein Guthaben ist leer. Bitte upgrade auf Pro.");
+                }
+                sys_credits--;
+                await _CLIENT.from('profiles').update({ credits: sys_credits }).eq('id', sys_user.id);
             }
-            refreshStatusBadge();
+            updateSystemUI();
 
             const doc = new jspdf.jsPDF();
-            const typ = v('cfg_type');
-            const nr = v('cfg_nr');
+            
+            // Branding Header
+            if (sys_logo_base64) doc.addImage(sys_logo_base64, 'PNG', 20, 15, 50, 0);
 
-            // Logo Header
-            if (cachedLogo) doc.addImage(cachedLogo, 'PNG', 20, 15, 45, 0);
-
-            // Sender (Right aligned)
-            doc.setFontSize(9).setFont(undefined, 'normal');
-            const senderInfo = `${v('p_firma')}\n${v('p_ceo')}\n${v('p_street')}\n${v('p_city')}\nTel: ${v('p_phone')}`;
-            doc.text(senderInfo, 190, 25, { align: 'right' });
-
-            // Title
-            doc.setFontSize(26).setFont(undefined, 'bold');
-            doc.text(typ, 20, 65);
-
-            // Customer Block
+            // Right-aligned Header Information
             doc.setFontSize(10).setFont(undefined, 'normal');
-            doc.text("EMPFÄNGER:", 20, 82);
+            const companyHeader = `${getVal('m_firma')}\n${getVal('m_ceo')}\n${getVal('m_str')}\n${getVal('m_ort')}\nTel: ${getVal('m_tel')}`;
+            doc.text(companyHeader, 190, 25, { align: 'right' });
+
+            // Main Title
+            doc.setFontSize(28).setFont(undefined, 'bold');
+            doc.text("RECHNUNG", 20, 70);
+
+            // Recipient & Metadata
+            doc.setFontSize(10).setFont(undefined, 'normal');
+            doc.text("RECHNUNGSEMPFÄNGER:", 20, 85);
             doc.setFont(undefined, 'bold');
-            doc.text(`${v('c_name')}\n${v('c_street')}\n${v('c_city')}`, 20, 89);
+            doc.text(`${getVal('c_name')}\n${getVal('c_str')}\n${getVal('c_ort')}`, 20, 92);
 
             doc.setFont(undefined, 'normal');
-            doc.text("Datum: " + new Date().toLocaleDateString(), 190, 89, { align: 'right' });
-            doc.text("Beleg-Nr: " + nr, 190, 95, { align: 'right' });
+            doc.text("Datum: " + new Date().toLocaleDateString('de-DE'), 190, 92, { align: 'right' });
+            doc.text("Rechnungs-Nr: " + sys_serial, 190, 98, { align: 'right' });
 
-            // Table
-            const data = [];
-            let totalNetto = 0;
-            document.querySelectorAll('.pos-entry').forEach(el => {
-                const text = el.querySelector('.p-text').value;
-                const qty = parseFloat(el.querySelector('.p-qty').value) || 0;
-                const unit = el.querySelector('.p-unit').value;
-                const price = parseFloat(el.querySelector('.p-price').value) || 0;
-                const sum = qty * price;
-                totalNetto += sum;
-                data.push([text, qty + " " + unit, price.toFixed(2) + " €", sum.toFixed(2) + " €"]);
+            // TABLE CALCULATION
+            const tableRows = [];
+            let subTotal = 0;
+            document.querySelectorAll('.invoice-row').forEach(row => {
+                const desc = row.querySelector('.p-text').value;
+                const qty = parseFloat(row.querySelector('.p-qty').value) || 0;
+                const unit = row.querySelector('.p-unit').value;
+                const price = parseFloat(row.querySelector('.p-price').value) || 0;
+                const rowTotal = qty * price;
+                subTotal += rowTotal;
+                tableRows.push([desc, qty + " " + unit, price.toFixed(2) + " €", rowTotal.toFixed(2) + " €"]);
             });
 
             doc.autoTable({
-                startY: 115,
-                head: [['Leistungsbeschreibung', 'Menge', 'E-Preis', 'Gesamt']],
-                body: data,
+                startY: 120,
+                head: [['Leistungsbeschreibung', 'Menge', 'Einzelpreis', 'Gesamt']],
+                body: tableRows,
+                theme: 'grid',
                 headStyles: { fillColor: [15, 23, 42], textColor: 255 },
-                theme: 'striped',
                 columnStyles: { 1: {halign: 'right'}, 2: {halign: 'right'}, 3: {halign: 'right'} }
             });
 
-            // Summary Calculation (FIXED LAYOUT)
-            const finalY = doc.lastAutoTable.finalY + 15;
-            const mwst = totalNetto * 0.19;
-            const brutto = totalNetto + mwst;
+            // FINALS (RIGHT ALIGNED PRECISION)
+            const yAfterTable = doc.lastAutoTable.finalY + 15;
+            const vat = subTotal * 0.19;
+            const grandTotal = subTotal + vat;
 
             doc.setFontSize(10).setFont(undefined, 'normal');
-            
-            // Labels (Left of the summary area)
-            doc.text("Netto-Summe:", 135, finalY);
-            doc.text("zzgl. 19% MwSt:", 135, finalY + 7);
-            
-            // Values (Right Aligned - THIS FIXES THE OVERLAP)
-            doc.text(totalNetto.toFixed(2) + " €", 190, finalY, { align: 'right' });
-            doc.text(mwst.toFixed(2) + " €", 190, finalY + 7, { align: 'right' });
+            doc.text("Nettobetrag:", 140, yAfterTable);
+            doc.text(subTotal.toFixed(2) + " €", 190, yAfterTable, { align: 'right' });
 
-            // Total (Bold)
-            doc.setFontSize(12).setFont(undefined, 'bold');
-            doc.text("GESAMTBETRAG:", 135, finalY + 16);
-            doc.text(brutto.toFixed(2) + " €", 190, finalY + 16, { align: 'right' });
+            doc.text("MwSt 19%:", 140, yAfterTable + 7);
+            doc.text(vat.toFixed(2) + " €", 190, yAfterTable + 7, { align: 'right' });
 
-            // Footer info
+            doc.setFontSize(14).setFont(undefined, 'bold');
+            doc.text("RECHNUNGSSUMME:", 140, yAfterTable + 18);
+            doc.text(grandTotal.toFixed(2) + " €", 190, yAfterTable + 18, { align: 'right' });
+
+            // Footer
             doc.setFontSize(8).setFont(undefined, 'normal');
-            doc.text(`Zahlbar innerhalb 14 Tage an IBAN: ${v('p_iban')}`, 20, finalY + 35);
-            doc.text(`Steuernummer: ${v('p_tax')} | Inhaber: ${v('p_ceo')}`, 20, finalY + 40);
+            doc.text(`Vielen Dank für Ihre Beauftragung. Bitte überweisen Sie den Betrag binnen 14 Tagen auf das Konto IBAN: ${getVal('m_iban')}`, 105, 280, { align: 'center' });
+            doc.text(`Inhaber: ${getVal('m_ceo')} | Steuernummer: ${getVal('m_tax')}`, 105, 285, { align: 'center' });
 
-            if (sendMail) {
-                const subj = encodeURIComponent(`${typ} ${nr}`);
-                const body = encodeURIComponent(`Guten Tag,\nanbei erhalten Sie das Dokument ${nr}.\n\nMit freundlichen Grüßen,\n${v('p_firma')}`);
-                window.location.href = `mailto:${v('c_mail')}?subject=${subj}&body=${body}`;
+            if (mailMode) {
+                const sub = encodeURIComponent(`Rechnung ${sys_serial} von ${getVal('m_firma')}`);
+                const body = encodeURIComponent(`Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie Ihre Rechnung ${sys_serial} über den Betrag von ${grandTotal.toFixed(2)} €.\n\nMit freundlichen Grüßen,\n${getVal('m_firma')}`);
+                window.location.href = `mailto:${getVal('c_mail')}?subject=${sub}&body=${body}`;
             }
 
-            doc.save(`${typ}_${nr}.pdf`);
-            saveHistory(v('c_name'), brutto.toFixed(2));
+            doc.save(`${sys_serial}.pdf`);
+            saveToJournal(getVal('c_name'), grandTotal.toFixed(2));
+            writeLog("Rechnung erfolgreich exportiert.");
+            
+            // Generate new Serial for next one
+            sys_serial = "RE-" + Math.floor(Math.random() * 899999 + 100000);
+            
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
 
-        // --- HELPERS ---
-        function saveHistory(name, eur) {
-            let h = JSON.parse(localStorage.getItem('mb_v7_history_' + sessionUser.id) || '[]');
-            h.unshift({ name, eur, date: new Date().toLocaleDateString() });
-            localStorage.setItem('mb_v7_history_' + sessionUser.id, JSON.stringify(h.slice(0, 10)));
-            renderHistory();
+        /**
+         * STRIPE HANDLER
+         */
+        async function verifyStripeTransaction() {
+            if (new URLSearchParams(window.location.search).get('payment') === 'success') {
+                writeLog("Verifiziere Stripe-Zahlung...");
+                let expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 30);
+                sys_abo_expiry = expiryDate.toISOString();
+                
+                await _CLIENT.from('profiles').update({ abo_bis: sys_abo_expiry }).eq('id', sys_user.id);
+                window.history.replaceState({}, '', '/');
+                updateSystemUI();
+                writeLog("TITANIUM PRO FREIGESCHALTET. Vielen Dank!");
+            }
         }
 
-        function renderHistory() {
-            const h = JSON.parse(localStorage.getItem('mb_v7_history_' + sessionUser.id) || '[]');
-            if (h.length > 0) {
-                id('local-history-list').innerHTML = h.map(i => `
-                    <div class="history-list-item">
-                        <div>${i.name} <br><small style="color:var(--text-muted);">${i.date}</small></div>
-                        <div style="color:var(--primary); font-weight:900;">${i.eur} €</div>
+        /**
+         * JOURNAL & LOGGING HELPER
+         */
+        function saveToJournal(client, amount) {
+            let log = JSON.parse(localStorage.getItem('mb_journal_' + sys_user.id) || '[]');
+            log.unshift({ client, amount, date: new Date().toLocaleDateString('de-DE') });
+            localStorage.setItem('mb_journal_' + sys_user.id, JSON.stringify(log.slice(0, 10)));
+            renderJournal();
+        }
+
+        function renderJournal() {
+            const container = document.getElementById('journal-container');
+            const log = JSON.parse(localStorage.getItem('mb_journal_' + sys_user.id) || '[]');
+            if (log.length > 0) {
+                container.innerHTML = log.map(i => `
+                    <div class="history-row">
+                        <div>${i.client} <br><small style="color:var(--txt-thin);">${i.date}</small></div>
+                        <div style="color:var(--p-color);">${i.amount} €</div>
                     </div>
                 `).join('');
             }
         }
 
-        async function syncPaymentStatus() {
-            if (new URLSearchParams(window.location.search).get('payment') === 'success') {
-                let d = new Date(); d.setDate(d.getDate() + 28);
-                expiryDate = d.toISOString();
-                await _db.from('profiles').update({ abo_bis: expiryDate }).eq('id', sessionUser.id);
-                window.history.replaceState({}, '', '/');
-                refreshStatusBadge();
-            }
+        function writeLog(msg) {
+            const terminal = document.getElementById('sys-log');
+            const time = new Date().toLocaleTimeString();
+            terminal.innerHTML += `<div class="log-line"><span class="log-time">[${time}]</span> ${msg}</div>`;
+            terminal.scrollTop = terminal.scrollHeight;
         }
 
-        function id(i) { return document.getElementById(i); }
-        function v(i) { return id(i).value; }
+        function getVal(id) { return document.getElementById(id).value; }
+        function mapField(id, val) { if(val) document.getElementById(id).value = val; }
     </script>
 </body>
 </html>
