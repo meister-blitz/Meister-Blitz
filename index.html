@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ | Professional Terminal</title>
+    <title>MEISTER-BLITZ | Professional Business OS</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -14,66 +14,86 @@
     <style>
         :root { 
             --p-navy: #0f172a; --p-blue: #2563eb; --p-bg: #f8fafc; 
-            --p-border: #e2e8f0; --p-accent: #334155;
+            --p-border: #e2e8f0; --p-text-light: #64748b;
+            --radius: 16px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         body { background: var(--p-bg); color: var(--p-navy); min-height: 100vh; }
 
-        /* AUTH GATEWAY */
+        /* AUTHENTICATION OVERLAY */
         #gate { 
-            position: fixed; inset: 0; background: var(--p-navy); z-index: 2000; 
+            position: fixed; inset: 0; background: var(--p-navy); z-index: 9999; 
             display: flex; align-items: center; justify-content: center;
         }
         .auth-card { 
-            background: white; padding: 50px; border-radius: 32px; width: 420px; 
+            background: white; padding: 60px; border-radius: 32px; width: 450px; 
             text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
 
-        /* HEADER NAVIGATION */
+        /* NAVIGATION BAR */
         header { 
-            background: white; height: 90px; padding: 0 50px; display: flex; 
+            background: white; height: 90px; padding: 0 60px; display: flex; 
             align-items: center; justify-content: space-between; border-bottom: 1px solid var(--p-border);
             position: sticky; top: 0; z-index: 1000;
         }
+        .brand { font-weight: 800; font-size: 26px; letter-spacing: -1.5px; color: var(--p-navy); }
+        .nav-right { display: flex; align-items: center; gap: 25px; }
 
-        .brand { font-weight: 800; font-size: 24px; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
-        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        /* MAIN TERMINAL LAYOUT */
+        main { max-width: 1400px; margin: 40px auto; padding: 0 40px; display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TERMINAL WORKSPACE */
-        main { max-width: 1300px; margin: 40px auto; padding: 0 40px; display: none; }
-        .grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 420px; gap: 40px; }
 
         .card { 
-            background: white; padding: 35px; border-radius: 24px; 
-            border: 1px solid var(--p-border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            background: white; padding: 40px; border-radius: 24px; 
+            border: 1px solid var(--p-border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.02);
             margin-bottom: 30px;
         }
-        .card-h { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; }
+        .card-label { font-size: 11px; font-weight: 800; color: var(--p-blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; display: block; }
 
-        /* INPUTS */
+        /* INPUT STYLING */
+        .input-group { margin-bottom: 20px; }
+        label { font-size: 12px; font-weight: 700; color: var(--p-text-light); margin-bottom: 8px; display: block; padding-left: 4px; }
         input { 
-            width: 100%; padding: 16px; border: 1.5px solid var(--p-border); border-radius: 12px; 
-            font-size: 15px; margin-bottom: 15px; outline: none; transition: 0.2s;
+            width: 100%; padding: 18px; border: 1.5px solid #f1f5f9; border-radius: var(--radius); 
+            font-size: 15px; font-weight: 600; outline: none; transition: 0.2s; background: #fafafa;
         }
-        input:focus { border-color: var(--p-blue); background: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        input:focus { border-color: var(--p-blue); background: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08); }
 
         /* BUTTONS */
         .btn { 
-            padding: 16px 24px; border-radius: 12px; font-weight: 700; border: none; 
-            cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center;
+            padding: 16px 28px; border-radius: 14px; font-weight: 700; border: none; 
+            cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-primary { background: var(--p-blue); color: white; }
-        .btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); }
-        .btn-outline { background: transparent; border: 1.5px solid var(--p-border); color: var(--p-accent); }
-        .btn-outline:hover { background: #f1f5f9; }
-        .btn-logout { font-size: 13px; color: #ef4444; border: 1px solid #fee2e2; background: #fef2f2; padding: 8px 16px; }
+        .btn-primary { background: var(--p-blue); color: white; box-shadow: 0 10px 15px rgba(37, 99, 235, 0.2); }
+        .btn-primary:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-2px); }
+        .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        
+        .btn-outline { background: transparent; border: 2px solid var(--p-border); color: var(--p-navy); }
+        .btn-outline:hover { background: #f8fafc; border-color: var(--p-blue); }
+
+        .btn-logout { background: #fee2e2; color: #b91c1c; font-size: 12px; padding: 10px 20px; }
+        .btn-logout:hover { background: #fecaca; }
 
         /* POSITIONS TABLE */
-        .pos-row { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; margin-bottom: 10px; }
-        
-        .badge { padding: 8px 16px; border-radius: 99px; font-size: 12px; font-weight: 800; }
-        .badge-pro { background: #fef3c7; color: #92400e; }
+        .pos-header { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; padding: 0 10px; margin-bottom: 15px; font-size: 11px; font-weight: 800; color: var(--p-text-light); }
+        .pos-row { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; margin-bottom: 12px; align-items: center; }
+
+        /* BADGES */
+        .badge { padding: 10px 20px; border-radius: 50px; font-size: 12px; font-weight: 800; border: 1px solid transparent; }
+        .badge-free { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .badge-pro { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+
+        /* LOGO BOX */
+        .logo-upload {
+            width: 220px; height: 70px; border: 2px dashed var(--p-blue); border-radius: 14px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            background: #f0f7ff; overflow: hidden; position: relative;
+        }
+        .logo-upload img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .logo-upload span { font-size: 10px; font-weight: 800; color: var(--p-blue); text-align: center; }
 
         .hidden { display: none !important; }
     </style>
@@ -82,10 +102,17 @@
 
     <div id="gate">
         <div class="auth-card">
-            <h2 style="margin-bottom: 30px; font-weight: 900;">MEISTER-BLITZ</h2>
-            <input type="email" id="a-mail" placeholder="E-Mail Adresse">
-            <input type="password" id="a-pass" placeholder="Passwort">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <h1 style="font-weight: 900; font-size: 36px; margin-bottom: 10px;">MEISTER-BLITZ</h1>
+            <p style="color: var(--p-text-light); font-size: 12px; font-weight: 800; margin-bottom: 40px; letter-spacing: 2px;">BUSINESS TERMINAL v1.0</p>
+            
+            <div class="input-group">
+                <input type="email" id="auth-mail" placeholder="E-Mail Adresse">
+            </div>
+            <div class="input-group">
+                <input type="password" id="auth-pass" placeholder="Passwort">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
                 <button class="btn btn-primary" onclick="CORE.auth('login')">Einloggen</button>
                 <button class="btn btn-outline" onclick="CORE.auth('reg')">Registrieren</button>
             </div>
@@ -93,67 +120,97 @@
     </div>
 
     <header>
-        <div class="brand">⚡ MEISTER-BLITZ</div>
-        <div class="nav-actions">
-            <div id="status" class="badge">3 GRATIS-BELEGE</div>
-            <button class="btn btn-primary" style="padding: 10px 20px; font-size: 13px;" onclick="window.open('https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200')">PRO VERSION (11,99€)</button>
-            <button class="btn btn-logout" onclick="CORE.logout()">Abmelden</button>
+        <div style="display: flex; align-items: center; gap: 30px;">
+            <div class="logo-upload" onclick="document.getElementById('l-file').click()">
+                <span id="l-hint">LOGOTYP KLICKEN<br>& HOCHLADEN</span>
+                <img id="l-img" class="hidden">
+            </div>
+            <input type="file" id="l-file" class="hidden" accept="image/*">
+            <div class="brand">⚡ MEISTER-BLITZ</div>
+        </div>
+
+        <div class="nav-right">
+            <div id="license-status" class="badge">PRÜFE STATUS...</div>
+            <button id="upgrade-btn" class="btn" style="background: #f59e0b; color: white; padding: 10px 20px;" onclick="window.open('https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200')">PRO VERSION (11,99€)</button>
+            <button class="btn btn-logout" onclick="CORE.logout()">Logout</button>
         </div>
     </header>
 
     <main id="app">
         <div class="grid">
-            <div class="left">
+            
+            <div class="form-container">
                 <div class="card">
-                    <div class="card-h">Absenderdaten (Automatisch gespeichert)</div>
-                    <input type="text" id="m-firma" placeholder="Firmenname" oninput="CORE.sync()">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <input type="text" id="m-str" placeholder="Straße / Nr." oninput="CORE.sync()">
-                        <input type="text" id="m-ort" placeholder="PLZ / Ort" oninput="CORE.sync()">
+                    <span class="card-label">01. Absender & Cloud-Sync</span>
+                    <div class="input-group">
+                        <label>Firmenname / Inhaber</label>
+                        <input type="text" id="m-name" placeholder="z.B. Elektro Blitz GmbH" oninput="CORE.sync()">
                     </div>
-                    <input type="text" id="m-iban" placeholder="Deine IBAN" oninput="CORE.sync()">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="input-group">
+                            <label>Straße / Nr.</label>
+                            <input type="text" id="m-str" placeholder="Musterstraße 12" oninput="CORE.sync()">
+                        </div>
+                        <div class="input-group">
+                            <label>PLZ / Ort</label>
+                            <input type="text" id="m-ort" placeholder="12345 Stadt" oninput="CORE.sync()">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>IBAN (für deine Auszahlung)</label>
+                        <input type="text" id="m-iban" placeholder="DE00 0000 0000..." oninput="CORE.sync()">
+                    </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-h">Leistungen</div>
-                    <div id="pos-area"></div>
-                    <button class="btn btn-outline" style="width: 100%; border-style: dashed;" onclick="UI.add('Neue Leistung', 1, 0, 'Std.')">+ Zeile hinzufügen</button>
+                    <span class="card-label">02. Leistungen & Positionen</span>
+                    <div class="pos-header">
+                        <span>Beschreibung</span><span>Menge</span><span>Einheit</span><span>Preis</span><span></span>
+                    </div>
+                    <div id="pos-root"></div>
+                    <button class="btn btn-outline" style="width: 100%; border-style: dashed; margin-top: 20px;" onclick="UI.add('Neue Dienstleistung', 1, 0, 'Std.')">+ Zeile hinzufügen</button>
                 </div>
             </div>
 
-            <div class="right">
-                <div class="card" style="position: sticky; top: 120px;">
-                    <div class="card-h">Kunde & Summe</div>
-                    <input type="text" id="c-name" placeholder="Kundenname">
-                    <input type="text" id="c-addr" placeholder="Anschrift">
+            <div class="sidebar">
+                <div class="card" style="position: sticky; top: 120px; background: var(--p-navy); color: white; border: none;">
+                    <span class="card-label" style="color: #94a3b8; border-bottom: 1px solid #1e293b; padding-bottom: 15px;">03. Empfänger & Export</span>
                     
-                    <div style="margin: 30px 0; border-top: 1px solid var(--p-border); padding-top: 20px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 600; color: #64748b;">
-                            <span>Netto:</span><span id="sum-net">0,00 €</span>
+                    <input type="text" id="c-name" placeholder="Kundenname" style="background: #1e293b; border: none; color: white; margin-top: 20px;">
+                    <input type="text" id="c-addr" placeholder="Anschrift des Kunden" style="background: #1e293b; border: none; color: white;">
+                    
+                    <div style="margin-top: 40px; border-top: 1px solid #1e293b; padding-top: 25px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: #94a3b8; font-weight: 600;">
+                            <span>Netto:</span><span id="v-net">0,00 €</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 24px; font-weight: 800;">
-                            <span>Gesamt:</span><span id="sum-total">0,00 €</span>
+                        <div style="display: flex; justify-content: space-between; font-size: 28px; font-weight: 800; color: white;">
+                            <span>Gesamt:</span><span id="v-gross">0,00 €</span>
                         </div>
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%;" onclick="CORE.genPDF()">PDF JETZT ERSTELLEN</button>
+                    <button id="gen-btn" class="btn btn-primary" style="width: 100%; margin-top: 30px; padding: 22px;" onclick="CORE.generatePDF()">
+                        PDF RECHNUNG ERSTELLEN
+                    </button>
+                    <p id="limit-msg" class="hidden" style="color: #ef4444; font-size: 11px; text-align: center; margin-top: 15px; font-weight: 800;">LIMIT ERREICHT. BITTE PRO FREISCHALTEN.</p>
                 </div>
             </div>
+
         </div>
     </main>
 
     <script>
+        // Supabase Initialization
         const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
 
         const CORE = {
-            user: null, credits: 3, pro: false, timer: null,
+            user: null, credits: 3, isPro: false, logo: null, timer: null,
 
-            async auth(type) {
-                const e = document.getElementById('a-mail').value, p = document.getElementById('a-pass').value;
-                const { data, error } = type === 'login' ? 
+            async auth(mode) {
+                const e = document.getElementById('auth-mail').value, p = document.getElementById('auth-pass').value;
+                const { data, error } = mode === 'login' ? 
                     await _SB.auth.signInWithPassword({email: e, password: p}) : 
                     await _SB.auth.signUp({email: e, password: p});
-                if(error) alert(error.message); else location.reload();
+                if(error) alert("Fehler: " + error.message); else location.reload();
             },
 
             async init() {
@@ -166,16 +223,16 @@
                     const { data: p } = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
                     if(p) {
                         this.credits = p.credits ?? 3;
-                        this.pro = p.is_pro ?? false;
-                        this.load(p);
+                        this.isPro = p.is_pro ?? false;
+                        this.fill(p);
                     }
-                    UI.add('Dienstleistung', 1, 65, 'Std.');
+                    UI.add('Fachdienstleistung', 1, 65, 'Std.');
                     this.updateUI();
                 }
             },
 
-            load(p) {
-                document.getElementById('m-firma').value = p.firma_name || '';
+            fill(p) {
+                document.getElementById('m-name').value = p.firma_name || '';
                 document.getElementById('m-str').value = p.firma_strasse || '';
                 document.getElementById('m-ort').value = p.firma_ort || '';
                 document.getElementById('m-iban').value = p.firma_iban || '';
@@ -186,42 +243,60 @@
                 this.timer = setTimeout(async () => {
                     await _SB.from('profiles').upsert({
                         id: this.user.id,
-                        firma_name: document.getElementById('m-firma').value,
+                        firma_name: document.getElementById('m-name').value,
                         firma_strasse: document.getElementById('m-str').value,
                         firma_ort: document.getElementById('m-ort').value,
                         firma_iban: document.getElementById('m-iban').value
                     });
-                }, 1000);
+                }, 1200);
             },
 
             updateUI() {
-                const s = document.getElementById('status');
-                if(this.pro) {
-                    s.innerText = "PRO ACCOUNT"; s.className = "badge badge-pro";
+                const status = document.getElementById('license-status');
+                const genBtn = document.getElementById('gen-btn');
+                const upgrade = document.getElementById('upgrade-btn');
+
+                if(this.isPro) {
+                    status.innerText = "PRO ACCOUNT UNLIMITIERT";
+                    status.className = "badge badge-pro";
+                    upgrade.classList.add('hidden');
                 } else {
-                    s.innerText = `${this.credits} GRATIS-BELEGE`;
+                    status.innerText = `${this.credits} BELEGE VERFÜGBAR`;
+                    status.className = "badge badge-free";
+                    if(this.credits <= 0) {
+                        genBtn.disabled = true;
+                        document.getElementById('limit-msg').classList.remove('hidden');
+                    }
                 }
                 UI.calc();
             },
 
-            async genPDF() {
-                if(!this.pro && this.credits <= 0) return alert("Limit erreicht!");
+            async generatePDF() {
+                if(!this.isPro && this.credits <= 0) return;
+
                 const doc = new jspdf.jsPDF();
-                doc.setFontSize(22).text("RECHNUNG", 20, 30);
-                doc.setFontSize(10).text(document.getElementById('m-firma').value, 20, 45);
+                if(this.logo) doc.addImage(this.logo, 'PNG', 150, 10, 45, 20);
                 
-                const rows = [];
+                doc.setFontSize(24).setFont(undefined, 'bold').text("RECHNUNG", 20, 30);
+                doc.setFontSize(10).setFont(undefined, 'normal');
+                doc.text(`${document.getElementById('m-name').value}\n${document.getElementById('m-str').value}\n${document.getElementById('m-ort').value}`, 20, 42);
+                doc.text(`RECHNUNG AN:\n${document.getElementById('c-name').value}\n${document.getElementById('c-addr').value}`, 20, 65);
+
+                const data = [];
                 document.querySelectorAll('.p-row-item').forEach(r => {
                     const q = r.querySelector('.p-q').value, p = r.querySelector('.p-p').value;
-                    rows.push([r.querySelector('.p-d').value, q, r.querySelector('.p-u').value, p + " €"]);
+                    data.push([r.querySelector('.p-d').value, q, r.querySelector('.p-u').value, p + " €", (q*p).toFixed(2) + " €"]);
                 });
 
-                doc.autoTable({ startY: 70, head: [['Beschreibung', 'Menge', 'Einh.', 'Preis']], body: rows });
-                doc.text("Gesamt Brutto: " + document.getElementById('sum-total').innerText, 20, doc.lastAutoTable.finalY + 20);
+                doc.autoTable({ startY: 90, head: [['Beschreibung', 'Menge', 'Einh.', 'Einzelpreis', 'Gesamt']], body: data, theme: 'striped' });
                 
+                const finalY = doc.lastAutoTable.finalY;
+                doc.setFontSize(12).setFont(undefined, 'bold').text(`Gesamtbetrag Brutto: ${document.getElementById('v-gross').innerText}`, 190, finalY + 15, {align: 'right'});
+                doc.setFontSize(9).setFont(undefined, 'normal').text(`Zahlbar an IBAN: ${document.getElementById('m-iban').value}`, 20, finalY + 30);
+
                 doc.save("MeisterBlitz_Rechnung.pdf");
 
-                if(!this.pro) {
+                if(!this.isPro) {
                     this.credits--;
                     await _SB.from('profiles').update({credits: this.credits}).eq('id', this.user.id);
                 }
@@ -241,17 +316,28 @@
                     <input type="number" class="p-q" value="${q}" oninput="UI.calc()">
                     <input type="text" class="p-u" value="${u}">
                     <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
-                    <button onclick="this.parentElement.remove(); UI.calc()" style="border:none;background:none;color:red;cursor:pointer;font-weight:bold;">✕</button>
+                    <button onclick="this.parentElement.remove(); UI.calc()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size:18px;">✕</button>
                 `;
-                document.getElementById('pos-area').appendChild(div);
+                document.getElementById('pos-root').appendChild(div);
                 this.calc();
             },
             calc() {
                 let n = 0;
                 document.querySelectorAll('.p-row-item').forEach(r => { n += (r.querySelector('.p-q').value * r.querySelector('.p-p').value); });
-                document.getElementById('sum-net').innerText = n.toFixed(2) + " €";
-                document.getElementById('sum-total').innerText = (n * 1.19).toFixed(2) + " €";
+                document.getElementById('v-net').innerText = n.toFixed(2) + " €";
+                document.getElementById('v-gross').innerText = (n * 1.19).toFixed(2) + " €";
             }
+        };
+
+        document.getElementById('l-file').onchange = (e) => {
+            const r = new FileReader();
+            r.onload = (v) => {
+                CORE.logo = v.target.result;
+                document.getElementById('l-img').src = CORE.logo;
+                document.getElementById('l-img').classList.remove('hidden');
+                document.getElementById('l-hint').classList.add('hidden');
+            };
+            r.readAsDataURL(e.target.files[0]);
         };
 
         CORE.init();
