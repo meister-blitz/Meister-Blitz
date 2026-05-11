@@ -45,6 +45,12 @@
         .summary-card { background: var(--p-navy); color: white; padding: 40px; border-radius: 28px; position: sticky; top: 130px; }
         .tax-line { display: flex; justify-content: space-between; margin-bottom: 8px; color: #94a3b8; font-weight: 600; font-size: 13px; }
         .hidden { display: none !important; }
+
+        /* NEU: Impressum Styles */
+        .impr-btn { color: var(--p-text); font-size: 12px; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .impr-btn:hover { color: var(--p-blue); }
+        #impr-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .impr-card { background: white; padding: 40px; border-radius: 24px; max-width: 500px; width: 100%; position: relative; }
     </style>
 </head>
 <body>
@@ -135,7 +141,29 @@
                 </div>
             </div>
         </div>
+
+        <footer style="margin-top: 50px; text-align: center; padding-bottom: 40px;">
+            <span class="impr-btn" onclick="UI.toggleImpr(true)">Impressum & Datenschutz</span>
+        </footer>
     </main>
+
+    <div id="impr-overlay">
+        <div class="impr-card">
+            <button onclick="UI.toggleImpr(false)" style="position:absolute; top:20px; right:20px; border:none; background:none; font-size:20px; cursor:pointer;">✕</button>
+            <h2 style="margin-bottom:20px; font-weight:900;">Impressum</h2>
+            <p style="margin-bottom:10px;"><strong>Betreiber:</strong> Jamie Leitner</p>
+            <p style="margin-bottom:10px;"><strong>Anschrift:</strong> Burgstraße 5, 75305 Neuenbürg</p>
+            <p style="margin-bottom:10px;"><strong>Kontakt:</strong><br>Tel: 016092534278<br>E-Mail: jamieiosl07@gmail.com</p>
+            <hr style="margin:20px 0; border:none; border-top:1px solid var(--p-border);">
+            <p style="font-size:12px; color:var(--p-text); line-height:1.5;">
+                <strong>Kleinunternehmerregelung:</strong><br>
+                Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.
+                <br><br>
+                <strong>Gewerbe:</strong><br>
+                Angemeldet beim Gewerbeamt der Stadt Neuenbürg.
+            </p>
+        </div>
+    </div>
 
     <script>
         const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
@@ -249,7 +277,6 @@
                     ]);
                 });
 
-                // PDF Fußzeile dynamisch bauen (Nur befüllte Steuersätze)
                 const footRows = [];
                 if(calc.n19 > 0) {
                     footRows.push(['', '', '', 'Netto 19%:', calc.n19.toFixed(2) + " €"]);
@@ -326,7 +353,6 @@
                 
                 this.lastCalc = { n19, t19, n7, t7, n0, total };
 
-                // Anzeige rechts nur füllen, wenn Werte vorhanden sind
                 let html = "";
                 if(n19 > 0) {
                     html += `<div class="tax-line"><span>Netto (19%):</span><span>${n19.toFixed(2)} €</span></div>`;
@@ -342,6 +368,10 @@
                 
                 document.getElementById('v-tax-details').innerHTML = html;
                 document.getElementById('v-total').innerText = total.toFixed(2) + " €";
+            },
+            // NEU: Impressum Toggle Funktion
+            toggleImpr(show) {
+                document.getElementById('impr-overlay').style.display = show ? 'flex' : 'none';
             }
         };
 
