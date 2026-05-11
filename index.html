@@ -116,7 +116,7 @@
                         <button id="btn-export" class="btn-main" onclick="CORE.export()">PDF ERSTELLEN</button>
                         <div id="lock-box" class="hidden">
                             <p style="color:#f87171; text-align:center; font-weight:800; font-size:12px; margin-bottom:15px;">LIMIT ERREICHT (3/3)</p>
-                            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" target="_blank" class="btn-main btn-upgrade">PRO FREISCHALTEN</a>
+                            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" id="stripe-link" target="_blank" class="btn-main btn-upgrade">PRO FREISCHALTEN</a>
                         </div>
                     </div>
                 </div>
@@ -134,11 +134,20 @@
             async init() {
                 const {data:{session}} = await _SB.auth.getSession();
                 if(session) {
-                    this.user = session.user; document.getElementById('gate').classList.add('hidden'); document.getElementById('app').style.display='block';
+                    this.user = session.user; 
+                    document.getElementById('gate').classList.add('hidden'); 
+                    document.getElementById('app').style.display='block';
+
+                    // AUTOMATISIERUNG: User-ID an Stripe-Link hängen
+                    const sLink = document.getElementById('stripe-link');
+                    if(sLink && this.user) {
+                        sLink.href = `https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200?client_reference_id=${this.user.id}`;
+                    }
+
                     const {data:p} = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
                     if(p) { 
                         this.creds = p.credits ?? 3; 
-                        this.abo_bis = p.abo_bis; // Nutzt deine Spalte abo_bis
+                        this.abo_bis = p.abo_bis; 
                         this.fill(p); 
                     }
                     this.status(); UI.addRow('Handwerksleistung', 1, 65, 'Std.');
@@ -153,11 +162,9 @@
                 const b = document.getElementById('status-badge');
                 const lockBox = document.getElementById('lock-box');
                 const btnExport = document.getElementById('btn-export');
-                
                 const jetzt = new Date();
                 const ablaufDatum = this.abo_bis ? new Date(this.abo_bis) : null;
 
-                // Prüfen ob Datum in der Zukunft liegt
                 if (ablaufDatum && ablaufDatum > jetzt) {
                     this.pro = true;
                     const opt = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -181,18 +188,14 @@
             sync() { _SB.from('profiles').upsert({ id: this.user.id, firma_name: document.getElementById('m-name').value, firma_strasse: document.getElementById('m-addr').value, firma_tel: document.getElementById('m-tel').value, firma_iban: document.getElementById('m-iban').value, firma_steuer: document.getElementById('m-tax').value }); },
             async export() {
                 if(!this.pro && this.creds <= 0) return;
-
                 const doc = new jspdf.jsPDF(); doc.setFontSize(22).text(this.type, 20, 30);
                 const table = []; document.querySelectorAll('.pos-row').forEach(r => { table.push([r.querySelector('.p-d').value, r.querySelector('.p-q').value, r.querySelector('.p-u').value, r.querySelector('.p-p').value + " €"]); });
                 doc.autoTable({ startY: 60, head: [['Beschreibung', 'Menge', 'Einh.', 'Preis']], body: table });
                 doc.save(`${this.type}.pdf`);
-                
-                // Nur abziehen wenn kein Pro
                 if(!this.pro) { 
                     this.creds--; 
                     await _SB.from('profiles').update({credits: this.creds}).eq('id', this.user.id); 
                 }
-                
                 this.status(); confetti();
             }
         };
