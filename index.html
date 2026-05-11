@@ -249,18 +249,26 @@
                     ]);
                 });
 
+                // PDF Fußzeile dynamisch bauen (Nur befüllte Steuersätze)
+                const footRows = [];
+                if(calc.n19 > 0) {
+                    footRows.push(['', '', '', 'Netto 19%:', calc.n19.toFixed(2) + " €"]);
+                    footRows.push(['', '', '', 'MwSt 19%:', calc.t19.toFixed(2) + " €"]);
+                }
+                if(calc.n7 > 0) {
+                    footRows.push(['', '', '', 'Netto 7%:', calc.n7.toFixed(2) + " €"]);
+                    footRows.push(['', '', '', 'MwSt 7%:', calc.t7.toFixed(2) + " €"]);
+                }
+                if(calc.n0 > 0) {
+                    footRows.push(['', '', '', 'Netto 0%:', calc.n0.toFixed(2) + " €"]);
+                }
+                footRows.push(['', '', '', 'GESAMT:', calc.total.toFixed(2) + " €"]);
+
                 doc.autoTable({
                     startY: 85,
                     head: [['Beschreibung', 'Menge', 'Einh.', 'Preis', 'MwSt']],
                     body: rows,
-                    foot: [
-                        ['', '', '', 'Netto 19%:', calc.n19.toFixed(2) + " €"],
-                        ['', '', '', 'MwSt 19%:', calc.t19.toFixed(2) + " €"],
-                        ['', '', '', 'Netto 7%:', calc.n7.toFixed(2) + " €"],
-                        ['', '', '', 'MwSt 7%:', calc.t7.toFixed(2) + " €"],
-                        ['', '', '', 'Netto 0%:', calc.n0.toFixed(2) + " €"],
-                        ['', '', '', 'GESAMT:', calc.total.toFixed(2) + " €"]
-                    ],
+                    foot: footRows,
                     footStyles: { fillColor: [15, 23, 42] }
                 });
 
@@ -318,13 +326,21 @@
                 
                 this.lastCalc = { n19, t19, n7, t7, n0, total };
 
-                document.getElementById('v-tax-details').innerHTML = `
-                    <div class="tax-line"><span>Netto (19%):</span><span>${n19.toFixed(2)} €</span></div>
-                    <div class="tax-line"><span>MwSt (19%):</span><span>${t19.toFixed(2)} €</span></div>
-                    <div class="tax-line"><span>Netto (7%):</span><span>${n7.toFixed(2)} €</span></div>
-                    <div class="tax-line"><span>MwSt (7%):</span><span>${t7.toFixed(2)} €</span></div>
-                    <div class="tax-line" style="border-bottom: 1px solid #334155; padding-bottom:10px;"><span>Steuerfrei (0%):</span><span>${n0.toFixed(2)} €</span></div>
-                `;
+                // Anzeige rechts nur füllen, wenn Werte vorhanden sind
+                let html = "";
+                if(n19 > 0) {
+                    html += `<div class="tax-line"><span>Netto (19%):</span><span>${n19.toFixed(2)} €</span></div>`;
+                    html += `<div class="tax-line"><span>MwSt (19%):</span><span>${t19.toFixed(2)} €</span></div>`;
+                }
+                if(n7 > 0) {
+                    html += `<div class="tax-line"><span>Netto (7%):</span><span>${n7.toFixed(2)} €</span></div>`;
+                    html += `<div class="tax-line"><span>MwSt (7%):</span><span>${t7.toFixed(2)} €</span></div>`;
+                }
+                if(n0 > 0) {
+                    html += `<div class="tax-line"><span>Steuerfrei (0%):</span><span>${n0.toFixed(2)} €</span></div>`;
+                }
+                
+                document.getElementById('v-tax-details').innerHTML = html;
                 document.getElementById('v-total').innerText = total.toFixed(2) + " €";
             }
         };
