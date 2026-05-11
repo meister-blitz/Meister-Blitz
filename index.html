@@ -3,110 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ PRO TITAN</title>
+    <title>MEISTER-BLITZ TITAN v700</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        :root { --brand: #4f46e5; --gold: #f59e0b; --bg: #f1f5f9; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); font-size: 12px; }
+        :root { 
+            --p-brand: #4f46e5; 
+            --p-gold: #f59e0b;
+            --p-bg: #f8fafc; 
+            --p-border: #e2e8f0;
+            --p-txt: #0f172a;
+        }
 
-        header { background: #fff; padding: 5px 20px; border-bottom: 2px solid var(--brand); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; height: 50px; }
-        
-        /* LOGO UPLOAD AREA */
-        .logo-upload { width: 120px; height: 40px; border: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; background: #f8fafc; border-radius: 4px; }
-        .logo-upload img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
-        .upgrade-btn { background: var(--gold); color: #000; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: 900; font-size: 11px; box-shadow: 0 3px 0 #b45309; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--p-bg); color: var(--p-txt); font-size: 13px; line-height: 1.4; }
 
-        #main { max-width: 1100px; margin: 10px auto; padding: 0 10px; display: none; }
-        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .card { background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; }
-        .card-h { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+        /* HEADER */
+        header { 
+            background: #fff; height: 70px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 30px; border-bottom: 1px solid var(--p-border); position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
 
-        input { width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; margin-bottom: 4px; font-weight: 600; }
-        
-        /* SMART CLICK TEMPLATES */
-        .templates { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-        .temp-btn { background: #e2e8f0; border: none; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .temp-btn:hover { background: var(--brand); color: white; }
+        .logo-box {
+            width: 150px; height: 50px; border: 2px dashed var(--p-border); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            overflow: hidden; background: #fafafa; transition: 0.2s;
+        }
+        .logo-box:hover { border-color: var(--p-brand); background: #fff; }
+        .logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .logo-box span { font-size: 10px; font-weight: 800; color: #94a3b8; text-align: center; line-height: 1.1; }
 
-        .pos-grid { display: grid; grid-template-columns: 3fr 60px 60px 80px 30px; gap: 5px; align-items: center; margin-bottom: 4px; }
-        
-        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: 900; cursor: pointer; color: white; margin-top: 10px; }
-        .bg-dark { background: #1e293b; }
-        .bg-brand { background: var(--brand); }
+        .btn-upgrade { 
+            background: var(--p-gold); color: #000; padding: 12px 20px; border-radius: 10px; 
+            text-decoration: none; font-weight: 800; font-size: 13px; box-shadow: 0 4px 0 #b45309;
+            transition: 0.2s;
+        }
+        .btn-upgrade:active { transform: translateY(3px); box-shadow: 0 1px 0 #b45309; }
 
-        #auth-layer { position: fixed; inset: 0; background: #0f172a; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        /* CONTENT */
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; display: none; }
+        .card { background: #fff; padding: 20px; border-radius: 16px; border: 1px solid var(--p-border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card-h { font-size: 11px; font-weight: 800; color: var(--p-brand); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
+
+        .f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input { 
+            width: 100%; padding: 12px; border: 1px solid var(--p-border); border-radius: 10px; 
+            font-size: 14px; margin-bottom: 10px; font-weight: 600; background: #fdfdfd; transition: 0.2s;
+        }
+        input:focus { border-color: var(--p-brand); background: #fff; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+
+        /* SCHNELL-AUSWAHL */
+        .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-bottom: 20px; }
+        .t-btn { 
+            background: #f1f5f9; border: 1px solid var(--p-border); padding: 10px; border-radius: 8px; 
+            font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s;
+        }
+        .t-btn:hover { background: var(--p-brand); color: white; border-color: var(--p-brand); }
+
+        /* POSITIONEN */
+        .pos-row { display: grid; grid-template-columns: 3fr 80px 80px 100px 40px; gap: 10px; margin-bottom: 8px; align-items: center; }
+        .pos-head { font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 5px; padding: 0 5px; }
+
+        .btn-main { 
+            width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; 
+            cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .bg-dark { background: #0f172a; }
+        .bg-brand { background: var(--p-brand); }
+
+        #auth-layer { position: fixed; inset: 0; background: #0f172a; z-index: 5000; display: flex; align-items: center; justify-content: center; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div id="auth-layer">
-        <div style="background:#fff; padding:30px; border-radius:12px; width:320px; text-align:center;">
-            <h2 style="margin-bottom:20px">Meister-Blitz Login</h2>
-            <input type="email" id="a-email" placeholder="E-Mail">
+        <div style="background:#fff; padding:40px; border-radius:24px; width:380px; text-align:center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <h1 style="font-weight:900; font-size:28px; margin-bottom:5px;">Meister-Blitz</h1>
+            <p style="color:#64748b; font-weight:700; font-size:12px; margin-bottom:30px; letter-spacing:1px;">TITANIUM ACCESS</p>
+            <input type="email" id="a-mail" placeholder="E-Mail">
             <input type="password" id="a-pass" placeholder="Passwort">
-            <button onclick="APP.auth()" class="btn-action bg-brand">TERMINAL STARTEN</button>
+            <button onclick="APP.auth()" class="btn-main bg-brand" style="margin-top:10px;">TERMINAL ÖFFNEN</button>
         </div>
     </div>
 
     <header>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <div class="logo-upload" onclick="document.getElementById('l-in').click()">
-                <span id="l-txt">LOGO HOCHLADEN</span>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <div class="logo-box" onclick="document.getElementById('l-in').click()">
+                <span id="l-txt">LOGO<br>HOCHLADEN</span>
                 <img id="l-img" class="hidden">
             </div>
-            <input type="file" id="l-in" style="display:none" accept="image/*">
-            <span style="font-weight:900; color:var(--brand); font-size:16px;">MEISTER-BLITZ</span>
+            <input type="file" id="l-in" class="hidden" accept="image/*">
+            <div style="font-weight:900; font-size:22px; color:var(--p-brand); letter-spacing:-1px;">MEISTER-BLITZ</div>
         </div>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <span id="creds" style="font-weight:bold;">...</span>
-            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="upgrade-btn">UPGRADE (11,99€)</a>
+        
+        <div style="display:flex; align-items:center; gap:25px;">
+            <div id="lic-info" style="font-weight:800; font-size:12px; color:#10b981;">LADE LIZENZ...</div>
+            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-upgrade">PRO FREISCHALTEN (11,99€)</a>
         </div>
     </header>
 
-    <div id="main">
-        <div class="row">
+    <div id="main-app" class="container">
+        
+        <div class="f-grid">
             <div class="card">
-                <div class="card-h">Meine Firmendaten (Sync)</div>
-                <input type="text" id="m-fn" placeholder="Firma" oninput="APP.sync()">
-                <div style="display:flex; gap:4px">
-                    <input type="text" id="m-st" placeholder="Straße" oninput="APP.sync()">
+                <div class="card-h">01. Meine Firmendaten</div>
+                <input type="text" id="m-fn" placeholder="Firmenname" oninput="APP.sync()">
+                <div class="f-grid">
+                    <input type="text" id="m-st" placeholder="Straße / Nr." oninput="APP.sync()">
                     <input type="text" id="m-ot" placeholder="PLZ / Ort" oninput="APP.sync()">
                 </div>
-                <input type="text" id="m-ib" placeholder="IBAN" oninput="APP.sync()">
+                <input type="text" id="m-ib" placeholder="IBAN für Zahlungen" oninput="APP.sync()">
+                <input type="text" id="m-tx" placeholder="Steuernummer" oninput="APP.sync()">
             </div>
+
             <div class="card">
-                <div class="card-h">Empfänger</div>
-                <input type="text" id="c-nm" placeholder="Name / Firma">
-                <div style="display:flex; gap:4px">
+                <div class="card-h">02. Rechnungsempfänger</div>
+                <input type="text" id="c-nm" placeholder="Kunde / Firma">
+                <div class="f-grid">
                     <input type="text" id="c-st" placeholder="Straße">
-                    <input type="text" id="c-ot" placeholder="Ort">
+                    <input type="text" id="c-ot" placeholder="PLZ / Ort">
                 </div>
-                <input type="email" id="c-ml" placeholder="Kunden E-Mail">
+                <input type="email" id="c-ml" placeholder="E-Mail für Versand">
             </div>
         </div>
 
         <div class="card">
-            <div class="card-h">Leistungen & Schnell-Auswahl</div>
-            <div class="templates">
-                <button class="temp-btn" onclick="UI.add('Arbeitsstunden Elektrik', 1, 65)">+ Arbeit</button>
-                <button class="temp-btn" onclick="UI.add('Anfahrtspauschale', 1, 25)">+ Anfahrt</button>
-                <button class="temp-btn" onclick="UI.add('Kleinmaterial & Sicherungen', 1, 15)">+ Material</button>
-                <button class="temp-btn" onclick="UI.add('Notdienst-Zuschlag', 1, 80)">+ Notdienst</button>
-                <button class="temp-btn" onclick="UI.add('Wartung laut Protokoll', 1, 120)">+ Wartung</button>
-                <button class="temp-btn" onclick="UI.add('Messprotokoll Erstellung', 1, 45)">+ Messung</button>
-                <button class="temp-btn" onclick="UI.add('Entsorgung Altmaterial', 1, 20)">+ Entsorgung</button>
+            <div class="card-h">03. Leistungen & Material (Schnell-Auswahl)</div>
+            
+            <div class="template-grid">
+                <button class="t-btn" onclick="UI.add('Facharbeitsstunden Elektrotechnik', 1, 69, 'Std.')">⚡ Arbeit</button>
+                <button class="t-btn" onclick="UI.add('Anfahrtspauschale inkl. Rüstzeit', 1, 35, 'Psch.')">🚗 Anfahrt</button>
+                <button class="t-btn" onclick="UI.add('Kleinmaterial & Zubehör', 1, 15, 'Psch.')">📦 Material</button>
+                <button class="t-btn" onclick="UI.add('Notdienst-Zuschlag (50%)', 1, 85, 'Std.')">🚨 Notdienst</button>
+                <button class="t-btn" onclick="UI.add('Messprotokoll nach DGUV V3', 1, 45, 'Stk.')">📋 Protokoll</button>
+                <button class="t-btn" onclick="UI.add('E-Check Prüfung (Wohnung)', 1, 159, 'Psch.')">🛡️ E-Check</button>
+                <button class="t-btn" onclick="UI.add('Schalter/Steckdose Montage', 1, 12, 'Stk.')">🔌 Montage</button>
+                <button class="t-btn" onclick="UI.add('Entsorgung Altmaterial', 1, 20, 'Psch.')">♻️ Entsorgung</button>
             </div>
-            <div id="pos-list"></div>
-            <button onclick="UI.add('',1,0)" style="width:100%; padding:5px; margin-top:5px; border:1px dashed var(--brand); background:none; color:var(--brand); font-weight:bold; cursor:pointer;">+ Leere Zeile (selber schreiben)</button>
+
+            <div class="pos-head">
+                <div class="pos-row">
+                    <span>BESCHREIBUNG</span><span>MENGE</span><span>EINHEIT</span><span>PREIS (€)</span><span></span>
+                </div>
+            </div>
+            <div id="pos-root"></div>
+            
+            <button onclick="UI.add('',1,0,'Std.')" style="width:100%; padding:12px; margin-top:15px; border:2px dashed var(--p-brand); background:#f8fafc; color:var(--p-brand); font-weight:800; cursor:pointer; border-radius:12px;">
+                + EIGENE ZEILE HINZUFÜGEN
+            </button>
         </div>
 
-        <div class="row" style="margin-top:10px;">
-            <button class="btn-action bg-dark" onclick="APP.gen(false)">📥 PDF SPEICHERN</button>
-            <button class="btn-action bg-brand" onclick="APP.gen(true)">✉️ RECHNUNG SENDEN</button>
+        <div class="f-grid">
+            <button class="btn-main bg-dark" onclick="APP.gen(false)">📥 PDF HERUNTERLADEN</button>
+            <button class="btn-main bg-brand" onclick="APP.gen(true)">✉️ RECHNUNG SENDEN</button>
+        </div>
+
+        <div style="text-align:center; margin:30px 0; color:#94a3b8; font-size:11px; font-weight:700;">
+            MEISTER-BLITZ TITANIUM OS • VERSION 700.0 • SECURE CLOUD SYNC
         </div>
     </div>
 
@@ -114,9 +174,9 @@
         const _DB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
         
         const APP = {
-            user: null, creds: 3, logo: null,
+            user: null, creds: 3, logo: null, timer: null,
             async auth() {
-                const e = document.getElementById('a-email').value, p = document.getElementById('a-pass').value;
+                const e = document.getElementById('a-mail').value, p = document.getElementById('a-pass').value;
                 const {data, error} = await _DB.auth.signInWithPassword({email:e, password:p});
                 if(error) await _DB.auth.signUp({email:e, password:p});
                 location.reload();
@@ -126,10 +186,10 @@
                 if(session) {
                     this.user = session.user;
                     document.getElementById('auth-layer').style.display = 'none';
-                    document.getElementById('main').style.display = 'block';
+                    document.getElementById('main-app').style.display = 'block';
                     const {data:p} = await _DB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
                     if(p) { this.creds = p.credits ?? 3; this.fill(p); }
-                    UI.add('Arbeitsstunden', 1, 0); UI.upd();
+                    UI.add('Facharbeitsstunden', 1, 0, 'Std.'); UI.upd();
                 }
             },
             fill(p) {
@@ -137,47 +197,66 @@
                 document.getElementById('m-st').value = p.firma_strasse || '';
                 document.getElementById('m-ot').value = p.firma_ort || '';
                 document.getElementById('m-ib').value = p.firma_iban || '';
+                document.getElementById('m-tx').value = p.firma_steuer || '';
             },
             sync() {
-                setTimeout(async () => {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(async () => {
                     await _DB.from('profiles').upsert({
                         id: this.user.id,
                         firma_name: document.getElementById('m-fn').value,
                         firma_strasse: document.getElementById('m-st').value,
                         firma_ort: document.getElementById('m-ot').value,
-                        firma_iban: document.getElementById('m-ib').value
+                        firma_iban: document.getElementById('m-ib').value,
+                        firma_steuer: document.getElementById('m-tx').value
                     });
-                }, 500);
+                }, 1000);
             },
             async gen(mail) {
-                if(this.creds <= 0) { alert("Limit erreicht!"); return; }
+                if(this.creds <= 0) return alert("Limit erreicht! Bitte Titanium Abo abschließen.");
                 const doc = new jspdf.jsPDF();
-                if(this.logo) doc.addImage(this.logo, 'PNG', 150, 10, 40, 20);
-                doc.setFontSize(20).text("RECHNUNG", 15, 25);
-                doc.setFontSize(10).text(`${document.getElementById('m-fn').value}\n${document.getElementById('m-st').value}\n${document.getElementById('m-ot').value}`, 15, 35);
-                doc.text(`An: ${document.getElementById('c-nm').value}`, 15, 60);
+                if(this.logo) doc.addImage(this.logo, 'PNG', 150, 10, 45, 25);
+                
+                doc.setFont("helvetica", "bold").setFontSize(24).text("RECHNUNG", 15, 25);
+                doc.setFontSize(10).setFont("helvetica", "normal");
+                doc.text(`${document.getElementById('m-fn').value}\n${document.getElementById('m-st').value}\n${document.getElementById('m-ot').value}`, 15, 35);
+                doc.text(`KUNDE:\n${document.getElementById('c-nm').value}\n${document.getElementById('c-st').value}\n${document.getElementById('c-ot').value}`, 15, 60);
+                doc.text(`Datum: ${new Date().toLocaleDateString()}\nNr: RE-${Date.now().toString().slice(-6)}`, 195, 35, {align:'right'});
+
                 const rows = []; let sum = 0;
-                document.querySelectorAll('.pos-grid').forEach(r => {
-                    const q = r.querySelector('.p-q').value, p = r.querySelector('.p-p').value;
-                    sum += (q*p); rows.push([r.querySelector('.p-d').value, q, p + " €", (q*p).toFixed(2) + " €"]);
+                document.querySelectorAll('.pos-row-data').forEach(r => {
+                    const d = r.querySelector('.p-d').value, q = r.querySelector('.p-q').value, e = r.querySelector('.p-e').value, p = r.querySelector('.p-p').value;
+                    sum += (q*p); rows.push([d, q, e, p + " €", (q*p).toFixed(2) + " €"]);
                 });
-                doc.autoTable({startY: 75, head:[['Leistung', 'Menge', 'Einzel', 'Gesamt']], body: rows});
-                doc.text(`Gesamtbetrag: ${(sum*1.19).toFixed(2)} € (inkl. MwSt)`, 15, doc.lastAutoTable.finalY + 10);
-                doc.save("rechnung.pdf");
+
+                doc.autoTable({startY: 90, head:[['Beschreibung', 'Menge', 'Einh.', 'Einzel', 'Gesamt']], body: rows, theme:'grid', headStyles:{fillColor:[79,70,229]}});
+                doc.setFontSize(12).setFont(undefined, 'bold').text(`Gesamtbetrag inkl. MwSt: ${(sum*1.19).toFixed(2)} €`, 195, doc.lastAutoTable.finalY + 15, {align:'right'});
+                doc.save("Rechnung.pdf");
                 if(mail) window.location.href = `mailto:${document.getElementById('c-ml').value}?subject=Rechnung`;
+                
                 this.creds--;
                 await _DB.from('profiles').update({credits:this.creds}).eq('id', this.user.id);
-                UI.upd();
+                UI.upd(); confetti();
             }
         };
 
         const UI = {
-            add(txt, q, p) {
-                const div = document.createElement('div'); div.className = 'pos-grid';
-                div.innerHTML = `<input type="text" class="p-d" value="${txt}" placeholder="Leistung..."><input type="number" class="p-q" value="${q}"><input type="text" value="Std."><input type="number" class="p-p" value="${p}" placeholder="€"><button onclick="this.parentElement.remove()" style="border:none;background:none;color:red;font-weight:bold;cursor:pointer;">×</button>`;
-                document.getElementById('pos-list').appendChild(div);
+            add(txt, q, p, unit) {
+                const div = document.createElement('div'); div.className = 'pos-row pos-row-data';
+                div.innerHTML = `
+                    <input type="text" class="p-d" value="${txt}" placeholder="Leistung...">
+                    <input type="number" class="p-q" value="${q}">
+                    <input type="text" class="p-e" value="${unit}">
+                    <input type="number" class="p-p" value="${p}">
+                    <button onclick="this.parentElement.remove()" style="border:none;background:none;color:#ef4444;font-weight:bold;cursor:pointer;font-size:18px;">✕</button>
+                `;
+                document.getElementById('pos-root').appendChild(div);
             },
-            upd() { document.getElementById('creds').innerText = this.creds <= 0 ? "LIMIT!" : this.creds + " FREI"; }
+            upd() { 
+                const s = document.getElementById('lic-info');
+                s.innerText = APP.creds > 0 ? APP.creds + " RECHNUNGEN FREI" : "LIMIT ERREICHT";
+                s.style.color = APP.creds > 0 ? "#10b981" : "#ef4444";
+            }
         };
 
         document.getElementById('l-in').onchange = (e) => {
