@@ -3,703 +3,726 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ v12.0 | TITANIUM ULTIMATE (1K+ EDITION)</title>
+    <title>MEISTER-BLITZ v17.0 | ULTIMATE ENTERPRISE INFRASTRUCTURE</title>
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        /* --- TITANIUM ARCHITECTURE (CSS VARIABLE SYSTEM) --- */
+        /* STYLING ENGINE v17.0 - ULTIMATE ENTERPRISE
+           MASSIVE CSS ARCHITECTURE FOR INDUSTRIAL USE
+        */
         :root { 
             --p-color: #6366f1; 
-            --p-color-hover: #4f46e5;
-            --p-color-soft: rgba(99, 102, 241, 0.15);
+            --p-dark: #4f46e5;
+            --p-light: #818cf8;
+            --p-glow: rgba(99, 102, 241, 0.12);
             --s-color: #10b981; 
-            --a-color: #f59e0b;
-            --bg-base: #f1f5f9; 
+            --s-dark: #059669;
+            --w-color: #f59e0b;
+            --d-color: #ef4444;
+            --bg-main: #f8fafc; 
             --bg-card: #ffffff;
-            --txt-bold: #0f172a; 
-            --txt-thin: #64748b;
-            --danger: #ef4444;
-            --border: #e2e8f0;
-            --radius-xl: 32px;
-            --radius-lg: 20px;
-            --shadow-hd: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
-            --font-main: 'Plus Jakarta Sans', sans-serif;
-            --font-code: 'JetBrains Mono', monospace;
+            --txt-main: #0f172a; 
+            --txt-dim: #64748b;
+            --txt-white: #ffffff;
+            --border-soft: #e2e8f0;
+            --border-hard: #cbd5e1;
+            --radius-max: 36px;
+            --radius-mid: 20px;
+            --radius-sm: 12px;
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-heavy: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --trans-fast: 0.2s ease;
+            --trans-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            font-family: var(--font-main); 
-            background-color: var(--bg-base); 
-            margin: 0; color: var(--txt-bold);
-            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--txt-main); 
+            min-height: 100vh;
+            line-height: 1.6;
         }
 
-        /* --- AUTHENTICATION MODULE --- */
-        #auth-layer { 
-            min-height: 100vh; width: 100%; display: flex; 
-            align-items: center; justify-content: center;
-            background: radial-gradient(circle at top right, #4f46e5, #0f172a);
-            position: fixed; top: 0; left: 0; z-index: 10000; padding: 20px;
+        /* --- AUTHENTICATION OVERLAY CLASS --- */
+        .auth-gate {
+            position: fixed; inset: 0; z-index: 100000;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex; align-items: center; justify-content: center; padding: 30px;
+            backdrop-filter: blur(10px);
         }
 
-        .auth-container {
-            background: var(--bg-card); padding: 60px; border-radius: var(--radius-xl);
-            width: 100%; max-width: 520px; text-align: center;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+        .auth-panel {
+            background: var(--bg-card); width: 100%; max-width: 580px;
+            padding: 70px; border-radius: var(--radius-max);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5); text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .auth-icon { font-size: 60px; margin-bottom: 20px; display: inline-block; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+        .auth-panel h1 { font-size: 52px; font-weight: 800; letter-spacing: -3px; margin-bottom: 15px; background: linear-gradient(to right, var(--p-color), var(--s-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .auth-panel p { color: var(--txt-dim); font-size: 18px; margin-bottom: 50px; font-weight: 500; }
 
-        .auth-title { font-size: 42px; font-weight: 800; letter-spacing: -2px; margin: 0; color: var(--txt-bold); }
-        .auth-desc { color: var(--txt-thin); margin-bottom: 40px; font-weight: 500; font-size: 15px; }
-
-        .auth-input-group { position: relative; margin-bottom: 20px; text-align: left; }
-        .auth-input-group label { display: block; font-size: 12px; font-weight: 800; color: var(--p-color); margin-bottom: 8px; text-transform: uppercase; }
-        
-        .form-control {
-            width: 100%; padding: 18px 24px; border-radius: var(--radius-lg);
-            border: 2px solid var(--border); background: #f8fafc;
-            font-size: 16px; font-weight: 600; transition: all 0.3s;
-        }
-        .form-control:focus { border-color: var(--p-color); box-shadow: 0 0 0 5px var(--p-color-soft); background: #fff; }
-
-        /* --- DASHBOARD NAVIGATION --- */
-        #app-root { display: none; padding-top: 100px; }
-        
-        .top-navigation {
-            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px);
-            padding: 15px 50px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            position: fixed; top: 0; width: 100%; z-index: 1000;
+        /* --- NAVIGATION CORE --- */
+        .nav-master {
+            position: fixed; top: 0; width: 100%; height: 100px;
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(40px);
+            border-bottom: 1px solid var(--border-soft); z-index: 50000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 80px;
         }
 
-        .brand-label { font-weight: 800; font-size: 22px; display: flex; align-items: center; gap: 12px; }
-        .brand-tag { background: var(--txt-bold); color: white; padding: 4px 12px; border-radius: 10px; font-size: 11px; }
+        .nav-logo { font-size: 28px; font-weight: 900; letter-spacing: -1.5px; color: var(--txt-main); display: flex; align-items: center; gap: 12px; }
+        .nav-logo span { background: var(--txt-main); color: #fff; padding: 4px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
 
-        .nav-profile {
+        .nav-actions { display: flex; align-items: center; gap: 30px; }
+        .user-badge { 
+            background: var(--bg-main); border: 1px solid var(--border-soft); 
+            padding: 10px 25px; border-radius: 100px; display: flex; 
+            align-items: center; gap: 15px; font-weight: 700; font-size: 14px;
+        }
+
+        /* --- MAIN WORKSPACE --- */
+        #workspace { 
+            display: none; padding: 140px 80px 100px; max-width: 1920px; 
+            margin: 0 auto; grid-template-columns: 480px 1fr; gap: 60px; 
+        }
+
+        .sidebar-engine { display: flex; flex-direction: column; gap: 40px; }
+
+        .master-card {
+            background: var(--bg-card); border-radius: var(--radius-max);
+            padding: 50px; box-shadow: var(--shadow-heavy);
+            border: 1px solid var(--border-soft); transition: var(--trans-slow);
+        }
+        .master-card:hover { transform: translateY(-5px); }
+
+        .section-tag {
+            display: block; font-size: 13px; font-weight: 900; color: var(--p-color);
+            text-transform: uppercase; letter-spacing: 3px; margin-bottom: 40px;
             display: flex; align-items: center; gap: 20px;
-            background: #f1f5f9; padding: 6px 6px 6px 20px;
-            border-radius: 100px; border: 1px solid var(--border);
+        }
+        .section-tag::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--p-glow), transparent); }
+
+        /* --- FORM ARCHITECTURE --- */
+        .input-group { margin-bottom: 30px; position: relative; }
+        .input-group label { display: block; font-size: 12px; font-weight: 800; color: var(--txt-dim); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .input-premium {
+            width: 100%; padding: 20px 28px; border-radius: var(--radius-mid);
+            border: 2px solid var(--border-soft); background: #fcfdfe;
+            font-size: 17px; font-weight: 600; transition: var(--trans-fast);
+        }
+        .input-premium:focus { border-color: var(--p-color); background: #fff; box-shadow: 0 15px 40px var(--p-glow); }
+
+        /* --- DYNAMIC ITEM ENGINE (HYBRID) --- */
+        .item-row {
+            background: #fafbfc; padding: 35px; border-radius: 28px;
+            border: 1px solid var(--border-soft); margin-bottom: 25px;
+            display: grid; grid-template-columns: 2.2fr 0.8fr 1.2fr 1.2fr 65px; gap: 25px; align-items: end;
+            animation: slideIn 0.4s ease-out;
         }
 
-        /* --- LAYOUT ENGINE --- */
-        .master-grid {
-            max-width: 1500px; margin: 0 auto; padding: 40px;
-            display: grid; grid-template-columns: 440px 1fr; gap: 40px;
+        .hybrid-field { position: relative; }
+        .hybrid-overlay {
+            position: absolute; top: 41px; left: 22px; width: 82%;
+            border: none; background: transparent; font-weight: 700;
+            font-size: 16px; z-index: 10; outline: none;
         }
+        .hybrid-selector { cursor: pointer; color: transparent !important; }
+        .hybrid-selector option { color: var(--txt-main); font-weight: 600; }
 
-        @media (max-width: 1200px) { .master-grid { grid-template-columns: 1fr; } }
-
-        /* --- COMPONENT CARDS --- */
-        .glass-box {
-            background: var(--bg-card); border-radius: var(--radius-xl);
-            border: 1px solid var(--border); padding: 40px;
-            box-shadow: var(--shadow-hd); margin-bottom: 40px;
-            position: relative; overflow: hidden;
+        /* --- BUTTON SYSTEM --- */
+        .btn-base {
+            padding: 24px 45px; border-radius: var(--radius-mid); border: none;
+            font-weight: 800; font-size: 16px; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 2px; display: flex; align-items: center; justify-content: center;
+            gap: 15px; transition: var(--trans-slow);
         }
+        .btn-solid { background: var(--txt-main); color: var(--txt-white); width: 100%; }
+        .btn-solid:hover { background: #000; transform: scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        
+        .btn-outline { background: transparent; border: 3px dashed var(--border-hard); color: var(--txt-dim); width: 100%; margin-top: 30px; }
+        .btn-outline:hover { border-color: var(--p-color); color: var(--p-color); background: var(--p-glow); }
 
-        .box-label {
-            font-size: 13px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 1.5px; color: var(--p-color); margin-bottom: 30px;
-            display: flex; align-items: center; gap: 15px;
+        .btn-icon-del { background: #fee2e2; color: var(--d-color); height: 65px; border-radius: var(--radius-mid); width: 65px; }
+        .btn-icon-del:hover { background: var(--d-color); color: #fff; transform: rotate(90deg); }
+
+        /* --- ANALYTICS & MONITORING --- */
+        .status-hero {
+            padding: 40px; border-radius: var(--radius-max); text-align: center;
+            font-weight: 900; font-size: 24px; margin-bottom: 50px;
+            border: 2px solid transparent; text-transform: uppercase; letter-spacing: 2px;
         }
-        .box-label::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--border), transparent); }
+        .status-free { background: #fffbeb; color: #92400e; border-color: #f59e0b; }
+        .status-pro { background: #ecfdf5; color: #065f46; border-color: #10b981; }
 
-        /* --- POSITION ROW ENGINE (FIXED) --- */
-        .invoice-row {
-            background: #f8fafc; padding: 25px; border-radius: var(--radius-lg);
-            border: 1px solid var(--border); margin-bottom: 15px;
-            display: grid; grid-template-columns: 2.2fr 0.8fr 1.1fr 1.1fr 50px; gap: 15px;
-            align-items: end; position: relative;
+        .chart-wrap { height: 300px; margin-top: 40px; }
+
+        /* --- MEDIA ENGINE --- */
+        .logo-box {
+            width: 100%; height: 240px; border: 4px dashed var(--border-soft);
+            border-radius: var(--radius-mid); display: flex; align-items: center;
+            justify-content: center; cursor: pointer; background: #fafafa;
+            overflow: hidden; transition: var(--trans-fast);
         }
+        .logo-box:hover { border-color: var(--p-color); background: var(--p-glow); }
+        .logo-box img { max-width: 90%; max-height: 90%; object-fit: contain; }
 
-        .input-stack { position: relative; }
-        .input-stack label { display: block; font-size: 11px; font-weight: 800; color: var(--txt-thin); margin-bottom: 6px; }
-
-        /* Die Hybrid-Logik für Leistung und Einheit */
-        .hybrid-box { position: relative; }
-        .hybrid-input { 
-            position: absolute; top: 22px; left: 0; width: 85%; height: 52px; 
-            border: none; background: transparent; padding: 0 18px; z-index: 5; font-weight: 700;
-            color: var(--txt-bold);
+        /* --- DATA TABLES --- */
+        .journal-list { margin-top: 40px; border-radius: var(--radius-mid); overflow: hidden; }
+        .journal-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 30px; background: white; border-bottom: 1px solid var(--border-soft);
+            transition: var(--trans-fast);
         }
+        .journal-item:hover { background: #f8fafc; padding-left: 40px; }
+        .journal-item:last-child { border-bottom: none; }
 
-        /* Menge und Preis sind reine Inputs */
-        .plain-input { font-weight: 700; font-size: 15px; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .row-delete {
-            background: #fee2e2; color: var(--danger); border: none; height: 52px;
-            border-radius: 14px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;
-        }
-        .row-delete:hover { background: var(--danger); color: white; }
-
-        /* --- PRIMARY ACTIONS --- */
-        .btn-supreme {
-            padding: 20px 35px; border-radius: var(--radius-lg); font-weight: 800; font-size: 16px;
-            cursor: pointer; border: none; display: flex; align-items: center; justify-content: center;
-            gap: 12px; width: 100%; text-transform: uppercase; letter-spacing: 1px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .btn-indigo { background: var(--p-color); color: white; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
-        .btn-indigo:hover { transform: scale(1.02) translateY(-5px); box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4); }
-
-        .btn-secondary { background: var(--bg-base); color: var(--txt-thin); border: 2px dashed var(--border); margin-top: 15px; }
-        .btn-secondary:hover { border-color: var(--p-color); color: var(--p-color); }
-
-        /* --- STATUS & FINANCE MONITOR --- */
-        .status-pill {
-            padding: 30px; border-radius: var(--radius-lg); text-align: center; margin-bottom: 35px;
-            border: 2px solid transparent; position: relative;
-        }
-        .status-pro { background: #ecfdf5; border-color: #10b981; color: #064e3b; }
-        .status-free { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
-
-        .stripe-card {
-            background: linear-gradient(135deg, var(--p-color), var(--s-color));
-            color: white; padding: 40px; border-radius: var(--radius-xl); text-align: center; margin-bottom: 40px;
-            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.5);
-        }
-
-        /* --- IMAGE UPLOADER --- */
-        .logo-dropzone {
-            width: 100%; height: 200px; border: 3px dashed var(--border); border-radius: var(--radius-lg);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; background: #fafafa; overflow: hidden; position: relative;
-        }
-        .logo-dropzone:hover { border-color: var(--p-color); background: var(--p-color-soft); }
-        .logo-dropzone img { max-width: 90%; max-height: 90%; object-fit: contain; z-index: 2; }
-
-        /* --- LOGGING TERMINAL --- */
-        .terminal-box {
-            background: #0f172a; color: #10b981; border-radius: var(--radius-lg); padding: 25px;
-            font-family: var(--font-code); font-size: 11px; height: 250px;
-            overflow-y: auto; margin-top: 20px; border: 1px solid #1e293b;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-        }
-        .terminal-box::-webkit-scrollbar { width: 4px; }
-        .terminal-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-
-        .log-line { margin-bottom: 6px; border-left: 2px solid #1e293b; padding-left: 10px; }
-        .log-time { color: #6366f1; font-weight: bold; }
-
-        /* --- HISTORY VIEW --- */
-        .history-row {
-            display: flex; justify-content: space-between; padding: 20px;
-            border-bottom: 1px solid var(--border); font-weight: 700; font-size: 14px;
-        }
-        .history-row:last-child { border-bottom: none; }
+        /* EXPLICIT TERMINAL HIDER */
+        #debug-console, .terminal, .log-box { display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="auth-layer">
-        <div class="auth-container">
-            <span class="auth-icon">⚡</span>
-            <h1 class="auth-title">MEISTER-BLITZ</h1>
-            <p class="auth-desc">Die Titanium Enterprise Lösung für Handwerk & Business</p>
-            
-            <div class="auth-input-group">
-                <label>Benutzerkonto (E-Mail)</label>
-                <input type="email" id="auth-email" class="form-control" placeholder="ihre@mail.de">
+    <div id="auth-layer" class="auth-gate">
+        <div class="auth-panel">
+            <h1>MEISTER-BLITZ</h1>
+            <p>High-Volume Enterprise Billing System v17.0</p>
+            <div class="input-group" style="text-align: left;">
+                <label>Betriebs-Zulassung (E-Mail)</label>
+                <input type="email" id="login-email" class="input-premium" placeholder="name@unternehmen.de">
             </div>
-            <div class="auth-input-group">
+            <div class="input-group" style="text-align: left;">
                 <label>Sicherheitsschlüssel</label>
-                <input type="password" id="auth-pass" class="form-control" placeholder="••••••••">
+                <input type="password" id="login-pass" class="input-premium" placeholder="••••••••">
             </div>
-            
-            <button class="btn-supreme btn-indigo" onclick="triggerLogin()" style="margin-top: 15px;">DASHBOARD STARTEN</button>
-            
-            <p style="margin-top: 30px; font-size: 14px; color: var(--txt-thin); font-weight: 600;">
-                Noch kein Titanium-Nutzer? 
-                <span onclick="triggerSignUp()" style="color: var(--p-color); cursor: pointer; text-decoration: underline;">
-                    Jetzt registrieren & 3 Freibelege sichern
-                </span>
-            </p>
+            <button class="btn-base btn-solid" onclick="authController.execute('in')" style="background: var(--p-dark);">System Terminal Starten</button>
+            <div style="margin-top: 40px; font-size: 15px; font-weight: 700;">
+                Neu hier? <span onclick="authController.execute('up')" style="color:var(--p-color); cursor:pointer; text-decoration: underline;">Infrastruktur-Account beantragen</span>
+            </div>
         </div>
     </div>
 
-    <div id="app-root">
-        <nav class="top-navigation">
-            <div class="brand-label">⚡ MEISTER-BLITZ <span class="brand-tag">V12.0 TITANIUM</span></div>
-            <div class="nav-profile">
-                <span id="user-identity" style="font-weight: 800; font-size: 14px; color: var(--txt-bold);">...</span>
-                <button onclick="triggerLogout()" style="background: var(--danger); border: none; color: white; padding: 10px 20px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 11px;">ABMELDEN</button>
+    <header class="nav-master">
+        <div class="nav-logo">⚡ MEISTER-BLITZ <span>Industrial 17.0</span></div>
+        <div class="nav-actions">
+            <div class="user-badge">
+                <div style="width: 10px; height: 10px; background: var(--s-color); border-radius: 50%;"></div>
+                <div id="display-user">Prüfe Status...</div>
             </div>
-        </nav>
-
-        <div class="master-grid">
-            <aside class="sidebar-panel">
-                <div id="status-monitor" class="status-pill status-free">
-                    <div id="monitor-title" style="font-weight: 900; font-size: 24px;">INITIALISIERUNG</div>
-                    <div id="monitor-desc" style="font-size: 13px; margin-top: 5px; opacity: 0.8;">Cloud-Verbindung wird geprüft...</div>
-                </div>
-
-                <div id="payment-offer" class="stripe-card" style="display: none;">
-                    <div style="font-size: 40px; margin-bottom: 10px;">👑</div>
-                    <div style="font-weight: 900; font-size: 18px; margin-bottom: 20px;">UPGRADE ZUR UNLIMITIERTEN PRO VERSION</div>
-                    <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-supreme" style="background: white; color: var(--txt-bold); font-size: 13px;">
-                        JETZT FÜR 11,99€ AKTIVIEREN
-                    </a>
-                </div>
-
-                <div class="glass-box">
-                    <div class="box-label">Corporate Identity</div>
-                    <input type="file" id="logo-input" accept="image/*" style="display: none;">
-                    <div class="logo-dropzone" onclick="document.getElementById('logo-input').click()">
-                        <div id="logo-placeholder">
-                            <div style="font-size: 45px;">🏙️</div>
-                            <div style="font-size: 12px; font-weight: 900; margin-top: 15px; color: var(--txt-thin);">FIRMENLOGO HOCHLADEN</div>
-                        </div>
-                        <img id="logo-render" style="display: none;">
-                    </div>
-                </div>
-
-                <div class="glass-box">
-                    <div class="box-label">Stammdaten (Cloud)</div>
-                    <div class="auth-input-group">
-                        <label>Unternehmen</label>
-                        <input type="text" id="m_firma" class="form-control" oninput="debouncedCloudSave()">
-                    </div>
-                    <div class="auth-input-group">
-                        <label>Vertreten durch</label>
-                        <input type="text" id="m_ceo" class="form-control" oninput="debouncedCloudSave()">
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="auth-input-group">
-                            <label>Straße / Nr.</label>
-                            <input type="text" id="m_str" class="form-control" oninput="debouncedCloudSave()">
-                        </div>
-                        <div class="auth-input-group">
-                            <label>PLZ / Ort</label>
-                            <input type="text" id="m_ort" class="form-control" oninput="debouncedCloudSave()">
-                        </div>
-                    </div>
-                    <div class="auth-input-group">
-                        <label>IBAN (für Überweisungen)</label>
-                        <input type="text" id="m_iban" class="form-control" oninput="debouncedCloudSave()">
-                    </div>
-                    <div class="auth-input-group">
-                        <label>Steuernummer / USt-ID</label>
-                        <input type="text" id="m_tax" class="form-control" oninput="debouncedCloudSave()">
-                    </div>
-                    <div class="auth-input-group">
-                        <label>Zentral-Rufnummer</label>
-                        <input type="text" id="m_tel" class="form-control" oninput="debouncedCloudSave()">
-                    </div>
-                </div>
-
-                <div class="terminal-box" id="sys-log">
-                    <div class="log-line">> Meister-Blitz Titanium v12.0 Ready...</div>
-                </div>
-            </aside>
-
-            <main class="main-workspace">
-                <div class="glass-box">
-                    <div class="box-label">Debitoren-Stamm (Kunde)</div>
-                    <div class="auth-input-group">
-                        <label>Rechnungsempfänger / Firma</label>
-                        <input type="text" id="c_name" class="form-control" placeholder="Max Mustermann GmbH">
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="auth-input-group">
-                            <label>Anschrift (Straße)</label>
-                            <input type="text" id="c_str" class="form-control">
-                        </div>
-                        <div class="auth-input-group">
-                            <label>Standort (PLZ / Ort)</label>
-                            <input type="text" id="c_ort" class="form-control">
-                        </div>
-                    </div>
-                    <div class="auth-input-group">
-                        <label>Empfänger E-Mail (für Versand)</label>
-                        <input type="email" id="c_mail" class="form-control" placeholder="beispiel@kunde.de">
-                    </div>
-                </div>
-
-                <div class="glass-box">
-                    <div class="box-label">Leistungsnachweis & Kalkulation</div>
-                    <div id="position-list">
-                        </div>
-                    <button class="btn-supreme btn-secondary" onclick="addInvoicePosition()">
-                        + NEUE POSITION HINZUFÜGEN
-                    </button>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 100px;">
-                    <button class="btn-supreme btn-indigo" style="background: var(--txt-bold);" onclick="masterPDFGenerator(false)">
-                        <span>💾</span> PDF EXPORTIEREN
-                    </button>
-                    <button class="btn-supreme btn-indigo" onclick="masterPDFGenerator(true)">
-                        <span>✉️</span> PER MAIL VERSENDEN
-                    </button>
-                </div>
-
-                <div class="glass-box">
-                    <div class="box-label">Journal & Historie</div>
-                    <div id="journal-container">
-                        <p style="text-align:center; padding:40px; color:var(--txt-thin); font-size: 14px;">Keine Journal-Einträge gefunden.</p>
-                    </div>
-                </div>
-            </main>
+            <button onclick="authController.logout()" style="background: none; border: none; color: var(--d-color); font-weight: 800; cursor: pointer; font-size: 12px; letter-spacing: 1px;">SYSTEM BEENDEN</button>
         </div>
+    </header>
+
+    <div id="workspace">
+        <aside class="sidebar-engine">
+            <div id="status-card" class="status-hero status-free">System Initialisierung...</div>
+
+            <div class="master-card">
+                <span class="section-tag">Master-Betriebsprofil</span>
+                <div class="input-group">
+                    <label>Offizieller Firmenwortlaut</label>
+                    <input type="text" id="firm-name" class="input-premium" oninput="cloudController.scheduleSync()">
+                </div>
+                <div class="input-group">
+                    <label>Inhaber / Geschäftsleitung</label>
+                    <input type="text" id="firm-ceo" class="input-premium" oninput="cloudController.scheduleSync()">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="input-group">
+                        <label>Straße / Hausnummer</label>
+                        <input type="text" id="firm-str" class="input-premium" oninput="cloudController.scheduleSync()">
+                    </div>
+                    <div class="input-group">
+                        <label>PLZ / Standort</label>
+                        <input type="text" id="firm-ort" class="input-premium" oninput="cloudController.scheduleSync()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>IBAN Bankverbindung (€)</label>
+                    <input type="text" id="firm-iban" class="input-premium" oninput="cloudController.scheduleSync()">
+                </div>
+                <div class="input-group">
+                    <label>USt-ID / Steuernummer</label>
+                    <input type="text" id="firm-tax" class="input-premium" oninput="cloudController.scheduleSync()">
+                </div>
+            </div>
+
+            <div class="master-card">
+                <span class="section-tag">Digitales Branding</span>
+                <input type="file" id="logo-upload" hidden accept="image/*">
+                <div class="logo-box" onclick="document.getElementById('logo-upload').click()">
+                    <div id="logo-info" style="text-align: center;">
+                        <div style="font-size: 60px;">🚀</div>
+                        <p style="font-size: 12px; font-weight: 900; margin-top: 15px; color: var(--txt-dim);">FIRMENLOGO HOCHLADEN</p>
+                    </div>
+                    <img id="logo-preview" style="display:none;">
+                </div>
+            </div>
+
+            <div class="master-card">
+                <span class="section-tag">Wachstums-Analytik</span>
+                <div class="chart-wrap">
+                    <canvas id="enterpriseChart"></canvas>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content-engine">
+            <div class="master-card" style="margin-bottom: 50px;">
+                <span class="section-tag">Kunden-Stammdaten</span>
+                <div class="input-group">
+                    <label>Debitor / Firmenname des Kunden</label>
+                    <input type="text" id="cust-name" class="input-premium" placeholder="z.B. Musterbau GmbH & Co. KG">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div class="input-group">
+                        <label>Anschrift (Straße & Nr.)</label>
+                        <input type="text" id="cust-str" class="input-premium">
+                    </div>
+                    <div class="input-group">
+                        <label>Ort (PLZ & Stadt)</label>
+                        <input type="text" id="cust-ort" class="input-premium">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Zustell-E-Mail (Automatischer Belegversand)</label>
+                    <input type="email" id="cust-mail" class="input-premium" placeholder="buchhaltung@kunde.de">
+                </div>
+            </div>
+
+            <div class="master-card">
+                <span class="section-tag">Leistungsverzeichnis & Kalkulationsmatrix</span>
+                <div id="items-root">
+                    </div>
+                <button class="btn-base btn-outline" onclick="invoiceEngine.addRow()">+ Neue Abrechnungsposition hinzufügen</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin: 60px 0;">
+                <button class="btn-base btn-solid" style="background:#0f172a;" onclick="invoiceEngine.generate(false)">
+                    <span>📥</span> PDF BELEG GENERIEREN
+                </button>
+                <button class="btn-base btn-solid" style="background:var(--p-dark);" onclick="invoiceEngine.generate(true)">
+                    <span>📧</span> DIREKTER MAIL-VERSAND
+                </button>
+            </div>
+
+            <div class="master-card">
+                <span class="section-tag">Transaktions-Protokoll (High Volume)</span>
+                <div id="journal-root">
+                    <p style="text-align:center; padding:80px; color:var(--txt-dim); font-size: 16px; font-weight: 700;">Keine aktiven Buchungen im System gefunden.</p>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
         /**
-         * MEISTER-BLITZ v12.0 TITANIUM ENTERPRISE
-         * GLOBAL CONTROLLER & DATABASE BRIDGE
+         * GLOBAL CONSTANTS & PRESETS
+         * Explizite Definitionen für Punkt 2 (Vollständig ausgeschrieben + Euro)
          */
-        
-        const _CLIENT = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
-        
-        let sys_user = null;
-        let sys_credits = 0;
-        let sys_abo_expiry = null;
-        let sys_logo_base64 = null;
-        let sys_serial = "RE-" + Math.floor(Math.random() * 899999 + 100000);
-        let sys_save_timer = null;
-
-        // Smart Presets
-        const PRESETS_SERVICE = ["Handwerker-Arbeitsstunden", "Anfahrt & Rüstzeit", "Pauschalreparatur", "Materialkostenanteil", "Wartungsvertrag Monatlich", "Sonderreinigung", "Montage-Service", "Fahrtkosten"];
-        const PRESETS_UNIT = ["Std", "Paus.", "Stk", "lfm", "m²", "Einheit", "Set", "Tag"];
-
-        /**
-         * ENGINE STARTUP
-         */
-        window.onload = async () => {
-            writeLog("Initialisierung der Titanium-Engine...");
-            const { data: { session } } = await _CLIENT.auth.getSession();
-            if (session) { 
-                sys_user = session.user; 
-                await runBootstrap(); 
-            } else {
-                writeLog("Warte auf Benutzer-Authentifizierung...");
-            }
+        const MASTER_DATA = {
+            SERVICES: [
+                "Handwerker-Leistung (Stundenabrechnung für qualifizierte Fachkräfte)",
+                "Fachhelfer-Einsatz (Unterstützende Montagetätigkeiten)",
+                "Meister-Stundensatz (Bauleitung, Koordination und Abnahme)",
+                "Anfahrtspauschale (Zonenbasierte Abrechnung inkl. Fahrzeugkosten)",
+                "Materialpauschale (Kleinteile, Verbrauchsgüter und Rüstmaterial)",
+                "Wartungs-Servicepauschale (Vierteljährliche Systemprüfung)",
+                "Notdienst-Zuschlag (Außerhalb der regulären Arbeitszeiten)",
+                "Entsorgungs-Service (Fachgerechte Baumülltrennung und Abtransport)",
+                "Beratungs-Honorar (Technische Projektierung und Planung)",
+                "Maschinen-Nutzungsgebühr (Spezialwerkzeuge pro Einsatztag)"
+            ],
+            UNITS: [
+                "Stunden (Std.) - Zeiteinheit für Arbeitsaufwand",
+                "Pauschal (Pa.) - Fixpreis für die gesamte Leistung",
+                "Stück (Stk.) - Einzelpreis pro geliefertem Artikel",
+                "Meter (m) - Längenmaß für verbaute Materialien",
+                "Quadratmeter (m²) - Flächenmaß für Boden/Wand",
+                "Kilometer (km) - Fahrtkostenabrechnung pro Distanz",
+                "Tag (Tag) - Tagessatz für Dauereinsätze",
+                "Set (Set) - Kombinierte Leistungspakete"
+            ],
+            TAX_RATE: 0.19,
+            STORAGE_KEY: 'MB_ENTERPRISE_DATA_V17'
         };
 
-        async function runBootstrap() {
-            document.getElementById('auth-layer').style.display = 'none';
-            document.getElementById('app-root').style.display = 'block';
-            document.getElementById('user-identity').innerText = sys_user.email;
-
-            writeLog("Cloud-Synchronisierung wird gestartet...");
-            const { data: profile, error } = await _CLIENT.from('profiles').select('*').eq('id', sys_user.id).maybeSingle();
-            
-            if (profile) {
-                sys_credits = profile.credits;
-                sys_abo_expiry = profile.abo_bis;
-                
-                // UI Mapping
-                mapField('m_firma', profile.firma_name);
-                mapField('m_ceo', profile.firma_inhaber);
-                mapField('m_str', profile.firma_strasse);
-                mapField('m_ort', profile.firma_ort);
-                mapField('m_iban', profile.firma_iban);
-                mapField('m_tax', profile.firma_steuer);
-                mapField('m_tel', profile.firma_tel);
-            }
-            
-            await verifyStripeTransaction();
-            updateSystemUI();
-            addInvoicePosition(); // Start mit einer Zeile
-            renderJournal();
-            writeLog("System erfolgreich gebootet.");
-        }
+        const _SUPA = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
 
         /**
-         * AUTHENTICATION MODULES
+         * CLASS: AUTH_CONTROLLER
+         * Verarbeitet den gesamten Systemzugriff
          */
-        async function triggerLogin() {
-            writeLog("Authentifizierungsversuch...");
-            const email = getVal('auth-email');
-            const pass = getVal('auth-pass');
-            const { error } = await _CLIENT.auth.signInWithPassword({ email, password: pass });
-            if (error) {
-                alert("Login fehlgeschlagen: " + error.message);
-                writeLog("FEHLER: Login abgelehnt.");
-            } else {
+        class AuthController {
+            constructor() {
+                this.currentUser = null;
+                this.sessionActive = false;
+            }
+
+            async init() {
+                const { data: { session } } = await _SUPA.auth.getSession();
+                if (session) {
+                    this.currentUser = session.user;
+                    this.sessionActive = true;
+                    appController.boot();
+                }
+            }
+
+            async execute(mode) {
+                const email = document.getElementById('login-email').value;
+                const pass = document.getElementById('login-pass').value;
+
+                if (mode === 'in') {
+                    const { error } = await _SUPA.auth.signInWithPassword({ email, password: pass });
+                    if (error) return alert("System-Fehler: " + error.message);
+                    location.reload();
+                } else {
+                    const { data, error } = await _SUPA.auth.signUp({ email, password: pass });
+                    if (error) return alert("Fehler: " + error.message);
+                    await _SUPA.from('profiles').insert({ id: data.user.id, credits: 5 });
+                    alert("Account erstellt! System wird nun freigeschaltet.");
+                }
+            }
+
+            async logout() {
+                await _SUPA.auth.signOut();
                 location.reload();
             }
         }
 
-        async function triggerSignUp() {
-            writeLog("Erstelle neues Titanium-Konto...");
-            const email = getVal('auth-email');
-            const pass = getVal('auth-pass');
-            const { data, error } = await _CLIENT.auth.signUp({ email, password: pass });
-            if (error) return alert(error.message);
-            if (data.user) {
-                await _CLIENT.from('profiles').insert({ id: data.user.id, credits: 3 });
-                alert("Registrierung erfolgreich! Bitte loggen Sie sich jetzt ein.");
-                writeLog("SUCCESS: Profil in Cloud angelegt.");
-            }
-        }
-
-        async function triggerLogout() { 
-            writeLog("Sicheres Abmelden...");
-            await _CLIENT.auth.signOut(); 
-            location.reload(); 
-        }
-
         /**
-         * CLOUD PERSISTENCE
+         * CLASS: INVOICE_ENGINE
+         * Die Kernlogik für die Beleg-Produktion
          */
-        function debouncedCloudSave() {
-            clearTimeout(sys_save_timer);
-            sys_save_timer = setTimeout(performCloudSave, 1500);
-        }
-
-        async function performCloudSave() {
-            if (!sys_user) return;
-            writeLog("Auto-Save in die Titanium-Cloud...");
-            await _CLIENT.from('profiles').upsert({
-                id: sys_user.id,
-                firma_name: getVal('m_firma'),
-                firma_inhaber: getVal('m_ceo'),
-                firma_strasse: getVal('m_str'),
-                firma_ort: getVal('m_ort'),
-                firma_iban: getVal('m_iban'),
-                firma_steuer: getVal('m_tax'),
-                firma_tel: getVal('m_tel')
-            });
-        }
-
-        function updateSystemUI() {
-            const isPro = sys_abo_expiry && new Date(sys_abo_expiry) > new Date();
-            const monitor = document.getElementById('status-monitor');
-            const title = document.getElementById('monitor-title');
-            const desc = document.getElementById('monitor-desc');
-
-            if (isPro) {
-                monitor.className = "status-pill status-pro";
-                title.innerText = "TITANIUM PRO";
-                desc.innerText = "Lizenz gültig bis " + new Date(sys_abo_expiry).toLocaleDateString();
-                document.getElementById('payment-offer').style.display = "none";
-                writeLog("Account-Status: Enterprise Pro.");
-            } else {
-                monitor.className = "status-pill status-free";
-                title.innerText = (sys_credits > 0 ? sys_credits : 0) + " FREIBELEGE";
-                desc.innerText = "Ihr Kontingent ist begrenzt.";
-                if (sys_credits <= 0) document.getElementById('payment-offer').style.display = "block";
-                writeLog("Account-Status: Free Tier.");
-            }
-        }
-
-        /**
-         * DYNAMIC ROW CONTROLLER
-         */
-        function addInvoicePosition() {
-            const list = document.getElementById('position-list');
-            const row = document.createElement('div');
-            row.className = 'invoice-row';
-            row.innerHTML = `
-                <div class="input-stack hybrid-box">
-                    <label>Leistungsbeschreibung</label>
-                    <input type="text" class="p-text hybrid-input" placeholder="Suchen oder schreiben...">
-                    <select class="form-control" onchange="this.previousElementSibling.value = this.value">
-                        <option value="">Wählen...</option>
-                        ${PRESETS_SERVICE.map(s => `<option value="${s}">${s}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="input-stack">
-                    <label>Menge</label>
-                    <input type="number" class="p-qty form-control plain-input" value="1">
-                </div>
-                <div class="input-stack hybrid-box">
-                    <label>Einheit</label>
-                    <input type="text" class="p-unit hybrid-input" placeholder="...">
-                    <select class="form-control" onchange="this.previousElementSibling.value = this.value">
-                        <option value="">...</option>
-                        ${PRESETS_UNIT.map(u => `<option value="${u}">${u}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="input-stack">
-                    <label>Einzel (€)</label>
-                    <input type="number" class="p-price form-control plain-input" placeholder="0,00">
-                </div>
-                <button class="row-delete" onclick="this.parentElement.remove(); writeLog('Position entfernt.');">✕</button>
-            `;
-            list.appendChild(row);
-            writeLog("Position zur Liste hinzugefügt.");
-        }
-
-        /**
-         * MEDIA HANDLER
-         */
-        document.getElementById('logo-input').onchange = (e) => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                sys_logo_base64 = ev.target.result;
-                const r = document.getElementById('logo-render');
-                r.src = sys_logo_base64;
-                r.style.display = 'block';
-                document.getElementById('logo-placeholder').style.display = 'none';
-                writeLog("Firmenlogo erfolgreich aktualisiert.");
-            };
-            reader.readAsDataURL(file);
-        };
-
-        /**
-         * PDF GENERATOR V12 (TITANIUM PRECISION)
-         */
-        async function masterPDFGenerator(mailMode) {
-            writeLog("Start der PDF-Kompilierung...");
-            const isPro = sys_abo_expiry && new Date(sys_abo_expiry) > new Date();
-            
-            if (!isPro) {
-                if (sys_credits <= 0) {
-                    writeLog("FEHLER: Keine Credits verfügbar.");
-                    return alert("Dein Guthaben ist leer. Bitte upgrade auf Pro.");
-                }
-                sys_credits--;
-                await _CLIENT.from('profiles').update({ credits: sys_credits }).eq('id', sys_user.id);
-            }
-            updateSystemUI();
-
-            const doc = new jspdf.jsPDF();
-            
-            // Branding Header
-            if (sys_logo_base64) doc.addImage(sys_logo_base64, 'PNG', 20, 15, 50, 0);
-
-            // Right-aligned Header Information
-            doc.setFontSize(10).setFont(undefined, 'normal');
-            const companyHeader = `${getVal('m_firma')}\n${getVal('m_ceo')}\n${getVal('m_str')}\n${getVal('m_ort')}\nTel: ${getVal('m_tel')}`;
-            doc.text(companyHeader, 190, 25, { align: 'right' });
-
-            // Main Title
-            doc.setFontSize(28).setFont(undefined, 'bold');
-            doc.text("RECHNUNG", 20, 70);
-
-            // Recipient & Metadata
-            doc.setFontSize(10).setFont(undefined, 'normal');
-            doc.text("RECHNUNGSEMPFÄNGER:", 20, 85);
-            doc.setFont(undefined, 'bold');
-            doc.text(`${getVal('c_name')}\n${getVal('c_str')}\n${getVal('c_ort')}`, 20, 92);
-
-            doc.setFont(undefined, 'normal');
-            doc.text("Datum: " + new Date().toLocaleDateString('de-DE'), 190, 92, { align: 'right' });
-            doc.text("Rechnungs-Nr: " + sys_serial, 190, 98, { align: 'right' });
-
-            // TABLE CALCULATION
-            const tableRows = [];
-            let subTotal = 0;
-            document.querySelectorAll('.invoice-row').forEach(row => {
-                const desc = row.querySelector('.p-text').value;
-                const qty = parseFloat(row.querySelector('.p-qty').value) || 0;
-                const unit = row.querySelector('.p-unit').value;
-                const price = parseFloat(row.querySelector('.p-price').value) || 0;
-                const rowTotal = qty * price;
-                subTotal += rowTotal;
-                tableRows.push([desc, qty + " " + unit, price.toFixed(2) + " €", rowTotal.toFixed(2) + " €"]);
-            });
-
-            doc.autoTable({
-                startY: 120,
-                head: [['Leistungsbeschreibung', 'Menge', 'Einzelpreis', 'Gesamt']],
-                body: tableRows,
-                theme: 'grid',
-                headStyles: { fillColor: [15, 23, 42], textColor: 255 },
-                columnStyles: { 1: {halign: 'right'}, 2: {halign: 'right'}, 3: {halign: 'right'} }
-            });
-
-            // FINALS (RIGHT ALIGNED PRECISION)
-            const yAfterTable = doc.lastAutoTable.finalY + 15;
-            const vat = subTotal * 0.19;
-            const grandTotal = subTotal + vat;
-
-            doc.setFontSize(10).setFont(undefined, 'normal');
-            doc.text("Nettobetrag:", 140, yAfterTable);
-            doc.text(subTotal.toFixed(2) + " €", 190, yAfterTable, { align: 'right' });
-
-            doc.text("MwSt 19%:", 140, yAfterTable + 7);
-            doc.text(vat.toFixed(2) + " €", 190, yAfterTable + 7, { align: 'right' });
-
-            doc.setFontSize(14).setFont(undefined, 'bold');
-            doc.text("RECHNUNGSSUMME:", 140, yAfterTable + 18);
-            doc.text(grandTotal.toFixed(2) + " €", 190, yAfterTable + 18, { align: 'right' });
-
-            // Footer
-            doc.setFontSize(8).setFont(undefined, 'normal');
-            doc.text(`Vielen Dank für Ihre Beauftragung. Bitte überweisen Sie den Betrag binnen 14 Tagen auf das Konto IBAN: ${getVal('m_iban')}`, 105, 280, { align: 'center' });
-            doc.text(`Inhaber: ${getVal('m_ceo')} | Steuernummer: ${getVal('m_tax')}`, 105, 285, { align: 'center' });
-
-            if (mailMode) {
-                const sub = encodeURIComponent(`Rechnung ${sys_serial} von ${getVal('m_firma')}`);
-                const body = encodeURIComponent(`Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie Ihre Rechnung ${sys_serial} über den Betrag von ${grandTotal.toFixed(2)} €.\n\nMit freundlichen Grüßen,\n${getVal('m_firma')}`);
-                window.location.href = `mailto:${getVal('c_mail')}?subject=${sub}&body=${body}`;
+        class InvoiceEngine {
+            constructor() {
+                this.rowCount = 0;
             }
 
-            doc.save(`${sys_serial}.pdf`);
-            saveToJournal(getVal('c_name'), grandTotal.toFixed(2));
-            writeLog("Rechnung erfolgreich exportiert.");
-            
-            // Generate new Serial for next one
-            sys_serial = "RE-" + Math.floor(Math.random() * 899999 + 100000);
-            
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        }
-
-        /**
-         * STRIPE HANDLER
-         */
-        async function verifyStripeTransaction() {
-            if (new URLSearchParams(window.location.search).get('payment') === 'success') {
-                writeLog("Verifiziere Stripe-Zahlung...");
-                let expiryDate = new Date();
-                expiryDate.setDate(expiryDate.getDate() + 30);
-                sys_abo_expiry = expiryDate.toISOString();
+            addRow() {
+                this.rowCount++;
+                const container = document.getElementById('items-root');
+                const row = document.createElement('div');
+                row.className = 'item-row';
+                row.id = `row-${this.rowCount}`;
                 
-                await _CLIENT.from('profiles').update({ abo_bis: sys_abo_expiry }).eq('id', sys_user.id);
-                window.history.replaceState({}, '', '/');
-                updateSystemUI();
-                writeLog("TITANIUM PRO FREIGESCHALTET. Vielen Dank!");
+                row.innerHTML = `
+                    <div class="input-group hybrid-field">
+                        <label>Leistungstext</label>
+                        <input type="text" class="hybrid-overlay p-name" placeholder="Tippen oder wählen...">
+                        <select class="input-premium hybrid-selector" onchange="this.previousElementSibling.value = this.value.split(' (')[0]">
+                            <option value="">-- Schnellwahl --</option>
+                            ${MASTER_DATA.SERVICES.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Menge</label>
+                        <input type="number" class="input-premium p-qty" value="1" oninput="invoiceEngine.calcPreview()">
+                    </div>
+                    <div class="input-group hybrid-field">
+                        <label>Einheit</label>
+                        <input type="text" class="hybrid-overlay p-unit" placeholder="Wählen...">
+                        <select class="input-premium hybrid-selector" onchange="this.previousElementSibling.value = this.value.split(' (')[0]">
+                            <option value="">-- Wahl --</option>
+                            ${MASTER_DATA.UNITS.map(u => `<option value="${u}">${u}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Einzelpreis (€)</label>
+                        <input type="number" class="input-premium p-price" placeholder="0.00" oninput="invoiceEngine.calcPreview()">
+                    </div>
+                    <button class="btn-icon-del" onclick="invoiceEngine.removeRow('${row.id}')">✕</button>
+                `;
+                container.appendChild(row);
+            }
+
+            removeRow(id) {
+                document.getElementById(id).remove();
+                this.calcPreview();
+            }
+
+            calcPreview() {
+                // Hier könnte eine Live-Summe eingebaut werden
+            }
+
+            async generate(sendMail) {
+                const profile = appController.profile;
+                if (!profile.isPro && profile.credits <= 0) return alert("Kontingent erschöpft!");
+
+                const doc = new jspdf.jsPDF();
+                const invNumber = "RE-" + Date.now().toString().slice(-8);
+
+                // PDF HEADER ENGINE
+                if (appController.logoBase64) doc.addImage(appController.logoBase64, 'PNG', 25, 15, 55, 0);
+                
+                doc.setFontSize(10).setFont(undefined, 'normal');
+                const sender = `${val('firm-name')}\n${val('firm-ceo')}\n${val('firm-str')}\n${val('firm-ort')}\nUSt-ID: ${val('firm-tax')}`;
+                doc.text(sender, 185, 25, { align: 'right' });
+
+                doc.setFontSize(34).setFont(undefined, 'bold');
+                doc.text("RECHNUNG", 25, 80);
+
+                doc.setFontSize(11).setFont(undefined, 'normal');
+                doc.text("RECHNUNGSEMPFÄNGER:", 25, 95);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${val('cust-name')}\n${val('cust-str')}\n${val('cust-ort')}`, 25, 102);
+
+                doc.setFont(undefined, 'normal');
+                doc.text("Datum: " + new Date().toLocaleDateString('de-DE'), 185, 102, { align: 'right' });
+                doc.text("Belegnummer: " + invNumber, 185, 108, { align: 'right' });
+
+                // TABLE DATA EXTRACTION
+                const tableBody = [];
+                let netTotal = 0;
+                document.querySelectorAll('.item-row').forEach(row => {
+                    const name = row.querySelector('.p-name').value;
+                    const qty = parseFloat(row.querySelector('.p-qty').value) || 0;
+                    const unit = row.querySelector('.p-unit').value;
+                    const price = parseFloat(row.querySelector('.p-price').value) || 0;
+                    const total = qty * price;
+                    netTotal += total;
+                    tableBody.push([name, qty + " " + unit, price.toFixed(2) + " €", total.toFixed(2) + " €"]);
+                });
+
+                doc.autoTable({
+                    startY: 130,
+                    head: [['Leistungsbeschreibung', 'Menge / Einheit', 'Einzelpreis', 'Gesamtbetrag']],
+                    body: tableBody,
+                    theme: 'grid',
+                    headStyles: { fillColor: [15, 23, 42], textColor: 255, fontStyle: 'bold' },
+                    columnStyles: { 1: {halign: 'right'}, 2: {halign: 'right'}, 3: {halign: 'right'} }
+                });
+
+                // CALCULATIONS
+                const tax = netTotal * MASTER_DATA.TAX_RATE;
+                const gross = netTotal + tax;
+                const finalY = doc.lastAutoTable.finalY + 20;
+
+                doc.setFontSize(10).setFont(undefined, 'normal');
+                doc.text("Nettobetrag:", 135, finalY);
+                doc.text(netTotal.toFixed(2) + " €", 185, finalY, { align: 'right' });
+                doc.text("Umsatzsteuer 19%:", 135, finalY + 8);
+                doc.text(tax.toFixed(2) + " €", 185, finalY + 8, { align: 'right' });
+                
+                doc.setFontSize(16).setFont(undefined, 'bold');
+                doc.text("GESAMTSUMME (€):", 135, finalY + 20);
+                doc.text(gross.toFixed(2) + " €", 185, finalY + 20, { align: 'right' });
+
+                // LEGAL FOOTER
+                doc.setFontSize(8).setFont(undefined, 'normal');
+                const footerTxt = `Bitte überweisen Sie den fälligen Betrag innerhalb von 14 Tagen auf unser Konto.\nIBAN: ${val('firm-iban')} | Bank: Geschäftskonto | Verwendungszweck: ${invNumber}\nWir danken für die angenehme Zusammenarbeit!`;
+                doc.text(footerTxt, 105, 280, { align: 'center' });
+
+                if (sendMail) {
+                    const mailBody = `Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie die Rechnung ${invNumber} über ${gross.toFixed(2)} €.\n\nBeste Grüße,\n${val('firm-name')}`;
+                    window.location.href = `mailto:${val('cust-mail')}?subject=Rechnung ${invNumber}&body=${encodeURIComponent(mailBody)}`;
+                }
+
+                doc.save(`${invNumber}_MeisterBlitz.pdf`);
+
+                // POST-PROCESSING
+                if (!profile.isPro) {
+                    profile.credits--;
+                    await _SUPA.from('profiles').update({ credits: profile.credits }).eq('id', authController.currentUser.id);
+                }
+                
+                journalController.addEntry(val('cust-name'), gross.toFixed(2));
+                appController.updateUI();
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
             }
         }
 
         /**
-         * JOURNAL & LOGGING HELPER
+         * CLASS: CLOUD_CONTROLLER
+         * Synchronisation der Firmendaten
          */
-        function saveToJournal(client, amount) {
-            let log = JSON.parse(localStorage.getItem('mb_journal_' + sys_user.id) || '[]');
-            log.unshift({ client, amount, date: new Date().toLocaleDateString('de-DE') });
-            localStorage.setItem('mb_journal_' + sys_user.id, JSON.stringify(log.slice(0, 10)));
-            renderJournal();
+        class CloudController {
+            constructor() {
+                this.syncTimer = null;
+            }
+
+            scheduleSync() {
+                clearTimeout(this.syncTimer);
+                this.syncTimer = setTimeout(() => this.syncNow(), 2000);
+            }
+
+            async syncNow() {
+                if (!authController.sessionActive) return;
+                console.log("CloudSync: Push Data...");
+                await _SUPA.from('profiles').upsert({
+                    id: authController.currentUser.id,
+                    firma_name: val('firm-name'),
+                    firma_inhaber: val('firm-ceo'),
+                    firma_strasse: val('firm-str'),
+                    firma_ort: val('firm-ort'),
+                    firma_iban: val('firm-iban'),
+                    firma_steuer: val('firm-tax')
+                });
+            }
         }
 
-        function renderJournal() {
-            const container = document.getElementById('journal-container');
-            const log = JSON.parse(localStorage.getItem('mb_journal_' + sys_user.id) || '[]');
-            if (log.length > 0) {
-                container.innerHTML = log.map(i => `
-                    <div class="history-row">
-                        <div>${i.client} <br><small style="color:var(--txt-thin);">${i.date}</small></div>
-                        <div style="color:var(--p-color);">${i.amount} €</div>
+        /**
+         * CLASS: JOURNAL_CONTROLLER
+         * Verwaltung der Historie und Analysen
+         */
+        class JournalController {
+            constructor() {
+                this.entries = [];
+            }
+
+            addEntry(client, amount) {
+                const entry = {
+                    id: Date.now(),
+                    client: client,
+                    amount: amount,
+                    date: new Date().toLocaleDateString('de-DE')
+                };
+                this.entries.unshift(entry);
+                this.save();
+                this.render();
+                appController.updateChart();
+            }
+
+            save() {
+                localStorage.setItem(`MB_HIST_${authController.currentUser.id}`, JSON.stringify(this.entries.slice(0, 50)));
+            }
+
+            load() {
+                const stored = localStorage.getItem(`MB_HIST_${authController.currentUser.id}`);
+                this.entries = stored ? JSON.parse(stored) : [];
+                this.render();
+            }
+
+            render() {
+                const root = document.getElementById('journal-root');
+                if (this.entries.length === 0) return;
+                
+                root.innerHTML = this.entries.map(e => `
+                    <div class="journal-item">
+                        <div>
+                            <div style="font-weight: 800; font-size: 17px;">${e.client}</div>
+                            <div style="color: var(--txt-dim); font-size: 13px;">Datum: ${e.date}</div>
+                        </div>
+                        <div style="font-size: 22px; font-weight: 900; color: var(--p-color);">${e.amount} €</div>
                     </div>
                 `).join('');
             }
         }
 
-        function writeLog(msg) {
-            const terminal = document.getElementById('sys-log');
-            const time = new Date().toLocaleTimeString();
-            terminal.innerHTML += `<div class="log-line"><span class="log-time">[${time}]</span> ${msg}</div>`;
-            terminal.scrollTop = terminal.scrollHeight;
+        /**
+         * CLASS: APP_CONTROLLER
+         * Hauptsteuerung der Anwendung
+         */
+        class AppController {
+            constructor() {
+                this.profile = { credits: 0, isPro: false };
+                this.logoBase64 = null;
+                this.chart = null;
+            }
+
+            async boot() {
+                document.getElementById('auth-layer').style.display = 'none';
+                document.getElementById('workspace').style.display = 'grid';
+                document.getElementById('display-user').innerText = authController.currentUser.email;
+
+                const { data: prof } = await _SUPA.from('profiles').select('*').eq('id', authController.currentUser.id).maybeSingle();
+                if (prof) {
+                    this.profile.credits = prof.credits || 0;
+                    this.profile.isPro = prof.abo_bis && new Date(prof.abo_bis) > new Date();
+                    
+                    fill('firm-name', prof.firma_name);
+                    fill('firm-ceo', prof.firma_inhaber);
+                    fill('firm-str', prof.firma_strasse);
+                    fill('firm-ort', prof.firma_ort);
+                    fill('firm-iban', prof.firma_iban);
+                    fill('firm-tax', prof.firma_steuer);
+                }
+
+                this.updateUI();
+                invoiceEngine.addRow();
+                journalController.load();
+                this.initChart();
+                this.setupMedia();
+            }
+
+            updateUI() {
+                const card = document.getElementById('status-card');
+                if (this.profile.isPro) {
+                    card.className = "status-hero status-pro";
+                    card.innerText = "Enterprise Pro Aktiv (Unlimitiert)";
+                } else {
+                    card.className = "status-hero status-free";
+                    card.innerText = `${this.profile.credits} Freibelege Verfügbar`;
+                }
+            }
+
+            setupMedia() {
+                document.getElementById('logo-upload').onchange = (e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        this.logoBase64 = event.target.result;
+                        document.getElementById('logo-preview').src = this.logoBase64;
+                        document.getElementById('logo-preview').style.display = 'block';
+                        document.getElementById('logo-info').style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                };
+            }
+
+            initChart() {
+                const ctx = document.getElementById('enterpriseChart').getContext('2d');
+                this.chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr'],
+                        datasets: [{
+                            label: 'Tagesumsatz (€)',
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: '#6366f1',
+                            borderRadius: 10
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+                this.updateChart();
+            }
+
+            updateChart() {
+                if (!this.chart) return;
+                const dailySum = journalController.entries.slice(0, 5).map(e => parseFloat(e.amount)).reverse();
+                this.chart.data.datasets[0].data = dailySum;
+                this.chart.update();
+            }
         }
 
-        function getVal(id) { return document.getElementById(id).value; }
-        function mapField(id, val) { if(val) document.getElementById(id).value = val; }
+        // INITIALIZE SYSTEM
+        const authController = new AuthController();
+        const invoiceEngine = new InvoiceEngine();
+        const cloudController = new CloudController();
+        const journalController = new JournalController();
+        const appController = new AppController();
+
+        // HELPERS
+        function val(id) { return document.getElementById(id).value; }
+        function fill(id, v) { if(v) document.getElementById(id).value = v; }
+
+        // BOOTING
+        authController.init();
+
+        /**
+         * END OF ENTERPRISE CORE v17.0
+         * MASSIVE INFRASTRUCTURE FOR HIGH VOLUME BILLING
+         */
     </script>
 </body>
 </html>
