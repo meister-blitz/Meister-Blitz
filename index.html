@@ -15,23 +15,36 @@
         :root { --p-navy: #0f172a; --p-blue: #2563eb; --p-bg: #f8fafc; --p-border: #e2e8f0; --p-text: #64748b; --p-red: #ef4444; --p-gold: #f59e0b; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--p-bg); color: var(--p-navy); min-height: 100vh; font-size: 14px; }
-        #gate { position: fixed; inset: 0; background: var(--p-navy); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: white; padding: 50px; border-radius: 32px; width: 420px; text-align: center; }
+        
+        #gate { position: fixed; inset: 0; background: var(--p-navy); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: 0.5s; }
+        .auth-card { background: white; padding: 50px; border-radius: 32px; width: 420px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); text-align: center; }
+        
         header { background: white; height: 100px; padding: 0 50px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--p-border); position: sticky; top: 0; z-index: 1000; }
+        
         main { max-width: 1550px; margin: 40px auto; padding: 0 40px; display: none; }
         .grid { display: grid; grid-template-columns: 1fr 450px; gap: 40px; }
+        
         .card { background: white; padding: 30px; border-radius: 24px; border: 1px solid var(--p-border); margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .label { font-size: 11px; font-weight: 800; color: var(--p-blue); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; display: block; }
-        input, textarea { width: 100%; padding: 14px; border: 1.5px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 12px; outline: none; background: #fafafa; }
+        
+        input, textarea { width: 100%; padding: 14px; border: 1.5px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 12px; outline: none; background: #fafafa; transition: 0.2s; }
         input:focus { border-color: var(--p-blue); background: #fff; }
+        
         .chip-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
         .chip { padding: 10px 16px; border: 2px solid var(--p-border); border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; background: white; transition: 0.2s; }
         .chip.active { border-color: var(--p-blue); background: #eff6ff; color: var(--p-blue); }
-        .pos-row { display: grid; grid-template-columns: 3fr 1fr 1.5fr 1.2fr 50px; gap: 12px; margin-bottom: 12px; align-items: start; }
+        
+        .pos-row { display: grid; grid-template-columns: 3fr 1fr 1.5fr 1.2fr 50px; gap: 12px; margin-bottom: 12px; align-items: start; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .unit-btn { padding: 4px 6px; font-size: 9px; font-weight: 800; border: 1px solid var(--p-border); border-radius: 5px; cursor: pointer; background: white; margin-top: 5px; display: inline-block; }
-        .btn-main { width: 100%; padding: 22px; background: var(--p-blue); color: white; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; display: block; text-align: center; text-decoration: none; }
+        
+        .btn-main { width: 100%; padding: 22px; background: var(--p-blue); color: white; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; display: block; text-align: center; text-decoration: none; }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2); }
+        
         .btn-upgrade { background: var(--p-gold); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        
         .summary-card { background: var(--p-navy); color: white; padding: 40px; border-radius: 28px; position: sticky; top: 130px; }
         .hidden { display: none !important; }
     </style>
@@ -40,8 +53,9 @@
 
     <div id="gate">
         <div class="auth-card">
-            <h1 style="font-weight:900;">MEISTER-BLITZ</h1>
-            <input type="email" id="a-mail" placeholder="E-Mail">
+            <h1 style="font-weight:900; letter-spacing:-1px; margin-bottom:10px;">MEISTER-BLITZ</h1>
+            <p style="color:var(--p-text); margin-bottom:30px; font-weight:600;">Handwerker-Terminal v26</p>
+            <input type="email" id="a-mail" placeholder="E-Mail Adresse">
             <input type="password" id="a-pass" placeholder="Passwort">
             <button class="btn-main" onclick="CORE.login()">Einloggen</button>
             <button class="btn-main" onclick="CORE.register()" style="background:#f1f5f9; color:var(--p-navy); margin-top:10px;">Registrieren</button>
@@ -49,9 +63,9 @@
     </div>
 
     <header>
-        <div style="font-weight:900; font-size:28px;">⚡ MEISTER-BLITZ</div>
+        <div style="font-weight:900; font-size:28px; letter-spacing:-1px;">⚡ MEISTER-BLITZ <span style="color:var(--p-blue)">PRO</span></div>
         <div style="display:flex; align-items:center; gap:20px;">
-            <div id="status-badge" style="background:#dcfce7; color:#166534; padding:8px 16px; border-radius:50px; font-size:11px; font-weight:800;">LÄDT...</div>
+            <div id="status-badge" style="background:#dcfce7; color:#166534; padding:8px 16px; border-radius:50px; font-size:11px; font-weight:800; border:1px solid #bbf7d0;">LÄDT...</div>
             <button onclick="CORE.logout()" style="background:none; border:none; color:var(--p-red); font-weight:700; cursor:pointer;">Abmelden</button>
         </div>
     </header>
@@ -68,9 +82,9 @@
                         <div class="chip" onclick="UI.setType('LIEFERSCHEIN', this)">Lieferschein</div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1.2fr; gap:15px;">
-                        <input type="text" id="doc-num" placeholder="Beleg-Nr.">
+                        <input type="text" id="doc-num" placeholder="Beleg-Nummer">
                         <input type="date" id="doc-date">
-                        <input type="text" id="doc-period" placeholder="Leistungszeitraum">
+                        <input type="text" id="doc-period" placeholder="Leistungszeitraum (z.B. Jan 2024)">
                     </div>
                 </div>
 
@@ -99,24 +113,31 @@
                         <button class="chip" onclick="UI.addRow('Material laut Aufwand', 1, 0, 'Stk.')">+ Material</button>
                     </div>
                     <div id="pos-root"></div>
-                    <button onclick="UI.addRow()" style="width:100%; padding:15px; border:2px dashed var(--p-border); background:none; border-radius:12px; cursor:pointer; margin-top:10px;">+ Leere Zeile</button>
+                    <button onclick="UI.addRow()" style="width:100%; padding:15px; border:2px dashed var(--p-border); background:none; border-radius:12px; cursor:pointer; margin-top:10px; font-weight:700; color:var(--p-text);">+ Leere Zeile hinzufügen</button>
                 </div>
             </div>
 
             <div class="sidebar">
                 <div class="summary-card">
-                    <span class="label" style="color:#94a3b8;">Übersicht</span>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#94a3b8;">
-                        <span>Netto:</span><span id="v-net">0,00 €</span>
+                    <span class="label" style="color:#94a3b8;">Zusammenfassung</span>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#94a3b8; font-weight:600;">
+                        <span>Netto-Summe:</span><span id="v-net">0,00 €</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-size:32px; font-weight:800; border-top:1px solid #334155; padding-top:15px;">
-                        <span>TOTAL:</span><span id="v-total">0,00 €</span>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; color:#94a3b8; font-weight:600;">
+                        <span>MwSt. (19%):</span><span id="v-tax">0,00 €</span>
                     </div>
-                    <div id="pay-logic" style="margin-top:30px;">
-                        <button id="btn-export" class="btn-main" onclick="CORE.export()">PDF ERSTELLEN</button>
+                    <div style="display:flex; justify-content:space-between; font-size:32px; font-weight:800; border-top:1px solid #334155; padding-top:15px; margin-bottom:30px;">
+                        <span>TOTAL:</span><span id="v-total" style="color:var(--p-gold);">0,00 €</span>
+                    </div>
+                    
+                    <div id="pay-logic">
+                        <button id="btn-export" class="btn-main" onclick="CORE.export()">PDF ERSTELLEN & EXPORTIEREN</button>
+                        
                         <div id="lock-box" class="hidden">
-                            <p style="color:#f87171; text-align:center; font-weight:800; font-size:12px; margin-bottom:15px;">LIMIT ERREICHT (3/3)</p>
-                            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" id="stripe-link" target="_blank" class="btn-main btn-upgrade">PRO FREISCHALTEN</a>
+                            <div style="background:rgba(239, 68, 68, 0.1); border:1px solid #ef4444; padding:20px; border-radius:15px; text-align:center; margin-bottom:20px;">
+                                <p style="color:#f87171; font-weight:800; font-size:12px; text-transform:uppercase;">Limit erreicht (3/3)</p>
+                            </div>
+                            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" id="stripe-link" target="_blank" class="btn-main btn-upgrade">PRO VERSION FREISCHALTEN</a>
                         </div>
                     </div>
                 </div>
@@ -126,38 +147,69 @@
 
     <script>
         const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
-        const CORE = {
-            user: null, creds: 3, abo_bis: null, pro: false, tax: 1.19, type: 'RECHNUNG',
-            async login() { const e=document.getElementById('a-mail').value,p=document.getElementById('a-pass').value; const {error}=await _SB.auth.signInWithPassword({email:e,password:p}); if(error) alert(error.message); else location.reload(); },
-            async register() { const e=document.getElementById('a-mail').value,p=document.getElementById('a-pass').value; const {error}=await _SB.auth.signUp({email:e,password:p}); if(error) alert(error.message); else alert("OK!"); },
-            async logout() { await _SB.auth.signOut(); location.reload(); },
-            async init() {
-                const {data:{session}} = await _SB.auth.getSession();
-                if(session) {
-                    this.user = session.user; 
-                    document.getElementById('gate').classList.add('hidden'); 
-                    document.getElementById('app').style.display='block';
 
-                    // AUTOMATISIERUNG: User-ID an Stripe-Link hängen
+        const CORE = {
+            user: null,
+            creds: 3,
+            abo_bis: null,
+            pro: false,
+            tax: 1.19,
+            type: 'RECHNUNG',
+
+            async login() {
+                const e = document.getElementById('a-mail').value;
+                const p = document.getElementById('a-pass').value;
+                const { error } = await _SB.auth.signInWithPassword({ email: e, password: p });
+                if (error) alert("Login Fehler: " + error.message);
+                else location.reload();
+            },
+
+            async register() {
+                const e = document.getElementById('a-mail').value;
+                const p = document.getElementById('a-pass').value;
+                const { error } = await _SB.auth.signUp({ email: e, password: p });
+                if (error) alert("Registrierung Fehler: " + error.message);
+                else alert("Registrierung erfolgreich! Bitte E-Mail bestätigen.");
+            },
+
+            async logout() {
+                await _SB.auth.signOut();
+                location.reload();
+            },
+
+            async init() {
+                const { data: { session } } = await _SB.auth.getSession();
+                if (session) {
+                    this.user = session.user;
+                    
+                    // AUTOMATISIERUNG: User ID an Stripe Link hängen
                     const sLink = document.getElementById('stripe-link');
-                    if(sLink && this.user) {
+                    if(sLink) {
                         sLink.href = `https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200?client_reference_id=${this.user.id}`;
                     }
 
-                    const {data:p} = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
-                    if(p) { 
-                        this.creds = p.credits ?? 3; 
-                        this.abo_bis = p.abo_bis; 
-                        this.fill(p); 
+                    document.getElementById('gate').classList.add('hidden');
+                    document.getElementById('app').style.display = 'block';
+
+                    const { data: p } = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
+                    if (p) {
+                        this.creds = p.credits ?? 3;
+                        this.abo_bis = p.abo_bis;
+                        this.fill(p);
                     }
-                    this.status(); UI.addRow('Handwerksleistung', 1, 65, 'Std.');
+                    this.status();
+                    UI.addRow('Handwerksleistung (Arbeitszeit)', 1, 65, 'Std.');
                 }
             },
+
             fill(p) {
-                document.getElementById('m-name').value = p.firma_name || ''; document.getElementById('m-addr').value = p.firma_strasse || '';
-                document.getElementById('m-tel').value = p.firma_tel || ''; document.getElementById('m-iban').value = p.firma_iban || '';
+                document.getElementById('m-name').value = p.firma_name || '';
+                document.getElementById('m-addr').value = p.firma_strasse || '';
+                document.getElementById('m-tel').value = p.firma_tel || '';
+                document.getElementById('m-iban').value = p.firma_iban || '';
                 document.getElementById('m-tax').value = p.firma_steuer || '';
             },
+
             status() {
                 const b = document.getElementById('status-badge');
                 const lockBox = document.getElementById('lock-box');
@@ -167,16 +219,16 @@
 
                 if (ablaufDatum && ablaufDatum > jetzt) {
                     this.pro = true;
-                    const opt = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                    b.innerText = "PRO STATUS AKTIV (BIS " + ablaufDatum.toLocaleDateString('de-DE', opt) + ")";
-                    b.style.background = "#fef3c7"; b.style.color = "#92400e";
+                    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                    b.innerText = "PRO STATUS AKTIV (BIS " + ablaufDatum.toLocaleDateString('de-DE', options) + ")";
+                    b.style.background = "#fef3c7";
+                    b.style.color = "#92400e";
                     btnExport.classList.remove('hidden');
                     lockBox.classList.add('hidden');
                 } else {
                     this.pro = false;
-                    b.innerText = `${this.creds} FREI`;
-                    b.style.background = "#dcfce7"; b.style.color = "#166534";
-                    if(this.creds <= 0) {
+                    b.innerText = `${this.creds} KOSTENLOSE BELEGE ÜBRIG`;
+                    if (this.creds <= 0) {
                         btnExport.classList.add('hidden');
                         lockBox.classList.remove('hidden');
                     } else {
@@ -185,23 +237,58 @@
                     }
                 }
             },
-            sync() { _SB.from('profiles').upsert({ id: this.user.id, firma_name: document.getElementById('m-name').value, firma_strasse: document.getElementById('m-addr').value, firma_tel: document.getElementById('m-tel').value, firma_iban: document.getElementById('m-iban').value, firma_steuer: document.getElementById('m-tax').value }); },
+
+            sync() {
+                _SB.from('profiles').upsert({
+                    id: this.user.id,
+                    firma_name: document.getElementById('m-name').value,
+                    firma_strasse: document.getElementById('m-addr').value,
+                    firma_tel: document.getElementById('m-tel').value,
+                    firma_iban: document.getElementById('m-iban').value,
+                    firma_steuer: document.getElementById('m-tax').value
+                });
+            },
+
             async export() {
-                if(!this.pro && this.creds <= 0) return;
-                const doc = new jspdf.jsPDF(); doc.setFontSize(22).text(this.type, 20, 30);
-                const table = []; document.querySelectorAll('.pos-row').forEach(r => { table.push([r.querySelector('.p-d').value, r.querySelector('.p-q').value, r.querySelector('.p-u').value, r.querySelector('.p-p').value + " €"]); });
-                doc.autoTable({ startY: 60, head: [['Beschreibung', 'Menge', 'Einh.', 'Preis']], body: table });
-                doc.save(`${this.type}.pdf`);
-                if(!this.pro) { 
-                    this.creds--; 
-                    await _SB.from('profiles').update({credits: this.creds}).eq('id', this.user.id); 
+                if (!this.pro && this.creds <= 0) return;
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(22).text(this.type, 20, 30);
+                
+                const tableData = [];
+                document.querySelectorAll('.pos-row').forEach(row => {
+                    tableData.push([
+                        row.querySelector('.p-d').value,
+                        row.querySelector('.p-q').value,
+                        row.querySelector('.p-u').value,
+                        row.querySelector('.p-p').value + " €"
+                    ]);
+                });
+
+                doc.autoTable({
+                    startY: 60,
+                    head: [['Beschreibung', 'Menge', 'Einh.', 'Einzelpreis']],
+                    body: tableData,
+                });
+
+                doc.save(`${this.type}_${document.getElementById('doc-num').value}.pdf`);
+
+                if (!this.pro) {
+                    this.creds--;
+                    await _SB.from('profiles').update({ credits: this.creds }).eq('id', this.user.id);
                 }
-                this.status(); confetti();
+                
+                this.status();
+                confetti();
             }
         };
+
         const UI = {
-            addRow(d='', q=1, p=0, u='Std.') {
-                const div = document.createElement('div'); div.className = 'pos-row';
+            addRow(d = '', q = 1, p = 0, u = 'Std.') {
+                const div = document.createElement('div');
+                div.className = 'pos-row';
                 div.innerHTML = `
                     <input type="text" class="p-d" value="${d}" placeholder="Bezeichnung">
                     <input type="number" class="p-q" value="${q}" oninput="UI.calc()">
@@ -217,12 +304,38 @@
                     <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
                     <button onclick="this.parentElement.remove(); UI.calc()" style="color:red; background:none; border:none; cursor:pointer;">✕</button>
                 `;
-                document.getElementById('pos-root').appendChild(div); UI.calc();
+                document.getElementById('pos-root').appendChild(div);
+                UI.calc();
             },
-            setU(btn, v) { btn.parentElement.parentElement.querySelector('.p-u').value = v; UI.calc(); },
-            setType(t, el) { CORE.type = t; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); },
-            calc() { let n = 0; document.querySelectorAll('.pos-row').forEach(r => { n += (parseFloat(r.querySelector('.p-q').value)||0) * (parseFloat(r.querySelector('.p-p').value)||0); }); document.getElementById('v-net').innerText = n.toFixed(2) + " €"; document.getElementById('v-total').innerText = (n * 1.19).toFixed(2) + " €"; }
+
+            setU(btn, v) {
+                btn.parentElement.parentElement.querySelector('.p-u').value = v;
+                UI.calc();
+            },
+
+            setType(t, el) {
+                CORE.type = t;
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+            },
+
+            calc() {
+                let net = 0;
+                document.querySelectorAll('.pos-row').forEach(row => {
+                    const q = parseFloat(row.querySelector('.p-q').value) || 0;
+                    const p = parseFloat(row.querySelector('.p-p').value) || 0;
+                    net += q * p;
+                });
+
+                const tax = net * 0.19;
+                const total = net + tax;
+
+                document.getElementById('v-net').innerText = net.toFixed(2) + " €";
+                document.getElementById('v-tax').innerText = tax.toFixed(2) + " €";
+                document.getElementById('v-total').innerText = total.toFixed(2) + " €";
+            }
         };
+
         CORE.init();
     </script>
 </body>
