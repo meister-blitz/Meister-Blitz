@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ | Professional Business OS</title>
+    <title>MEISTER-BLITZ | Financial Terminal v12</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -13,266 +13,281 @@
 
     <style>
         :root { 
-            --p-brand: #1e293b; --p-accent: #4f46e5; --p-success: #10b981; 
-            --p-gold: #f59e0b; --p-bg: #f8fafc; --p-card: #ffffff;
-            --p-border: #e2e8f0; --p-radius: 20px;
+            --m-navy: #0f172a; --m-blue: #2563eb; --m-success: #10b981; 
+            --m-bg: #f8fafc; --m-border: #e2e8f0; --m-gold: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-        body { background: var(--p-bg); color: var(--p-brand); }
+        body { background: var(--m-bg); color: var(--m-navy); min-height: 100vh; }
 
-        /* ENTERPRISE HEADER */
+        /* BUSINESS HEADER */
         header { 
-            background: white; height: 100px; display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 50px; border-bottom: 1px solid var(--p-border); position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            background: #fff; height: 100px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 60px; border-bottom: 2px solid var(--m-border); position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo-terminal {
-            width: 250px; height: 65px; border: 2px solid var(--p-accent); border-radius: 12px;
+        .brand { display: flex; align-items: center; gap: 20px; }
+        .logo-box {
+            width: 200px; height: 60px; border: 2px dashed var(--m-blue); border-radius: 12px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            background: #f5f3ff; transition: 0.3s; position: relative;
+            background: #f0f7ff; overflow: hidden;
         }
-        .logo-terminal:hover { background: white; transform: translateY(-2px); }
-        .logo-terminal img { max-width: 90%; max-height: 80%; object-fit: contain; }
-        .logo-terminal span { font-size: 10px; font-weight: 800; color: var(--p-accent); letter-spacing: 0.5px; text-align: center; }
+        .logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        .status-chip { background: #ecfdf5; color: #065f46; padding: 12px 20px; border-radius: 99px; font-weight: 700; font-size: 12px; border: 1px solid #a7f3d0; }
+        .status-area { display: flex; align-items: center; gap: 20px; }
+        .badge { padding: 12px 20px; border-radius: 99px; font-weight: 800; font-size: 12px; border: 1px solid transparent; }
+        .badge-free { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .badge-pro { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .badge-locked { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
 
-        /* WORKSPACE LAYOUT */
-        .app-container { max-width: 1400px; margin: 40px auto; padding: 0 40px; display: none; }
+        .btn-pay { background: var(--m-gold); color: #000; padding: 14px 28px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-pay:hover { transform: scale(1.05); }
+
+        /* MAIN TERMINAL */
+        main { max-width: 1400px; margin: 40px auto; padding: 0 40px; display: none; }
+        .layout { display: grid; grid-template-columns: 1fr 400px; gap: 30px; }
+
+        .card { background: #fff; padding: 40px; border-radius: 24px; border: 1px solid var(--m-border); box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 30px; }
+        .card-h { font-size: 11px; font-weight: 900; color: var(--m-blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
+
+        input { width: 100%; padding: 18px; border: 1.5px solid var(--m-border); border-radius: 14px; font-size: 15px; font-weight: 600; margin-bottom: 15px; outline: none; transition: 0.2s; background: #fafafa; }
+        input:focus { border-color: var(--m-blue); background: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+        /* POSITIONS ENGINE */
+        .pos-row { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; margin-bottom: 12px; }
         
-        .layout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        /* SUMMARY & STRIPE SIDEBAR */
+        .sidebar-inner { position: sticky; top: 130px; }
+        .checkout-card { background: var(--m-navy); color: #fff; padding: 35px; border-radius: 28px; }
+        .price-line { display: flex; justify-content: space-between; margin-bottom: 15px; color: #94a3b8; font-weight: 600; }
+        .total-line { border-top: 1px solid #334155; margin-top: 20px; padding-top: 20px; font-size: 26px; font-weight: 800; display: flex; justify-content: space-between; color: #fff; }
 
-        .card { background: var(--p-card); padding: 40px; border-radius: var(--p-radius); border: 1px solid var(--p-border); box-shadow: 0 10px 25px rgba(0,0,0,0.02); margin-bottom: 30px; }
-        .card-h { font-size: 11px; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
+        .btn-action { width: 100%; padding: 22px; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 30px; }
+        .btn-primary { background: var(--m-blue); color: #fff; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); }
+        .btn-primary:disabled { background: #334155; cursor: not-allowed; box-shadow: none; }
 
-        input { width: 100%; padding: 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 15px; font-weight: 600; margin-bottom: 15px; outline: none; transition: 0.2s; }
-        input:focus { border-color: var(--p-accent); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
-
-        /* QUICK TOOLS */
-        .tool-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 25px; }
-        .tool-btn { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .tool-btn:hover { background: var(--p-accent); color: white; border-color: var(--p-accent); transform: translateY(-2px); }
-
-        /* POSITIONS TABLE */
-        .pos-row { display: grid; grid-template-columns: 3fr 80px 100px 120px 40px; gap: 15px; margin-bottom: 10px; align-items: center; }
-        
-        /* SUMMARY BOX */
-        .summary-card { background: var(--p-brand); color: white; padding: 30px; border-radius: var(--p-radius); position: sticky; top: 130px; }
-        .sum-line { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; color: #94a3b8; }
-        .sum-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155; font-size: 22px; font-weight: 800; color: #fbbf24; }
-
-        .btn-main { width: 100%; padding: 22px; border: none; border-radius: 15px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .btn-success { background: var(--p-success); color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
-        .btn-success:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3); }
-
-        /* AUTH LAYER */
-        #auth-layer { position: fixed; inset: 0; background: #0f172a; z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: white; padding: 60px; border-radius: 40px; width: 480px; text-align: center; }
+        /* AUTH */
+        #auth-gate { position: fixed; inset: 0; background: var(--m-navy); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .auth-box { background: #fff; padding: 60px; border-radius: 40px; width: 450px; text-align: center; }
 
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="auth-layer">
+    <div id="auth-gate">
         <div class="auth-box">
-            <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 10px;">Meister-Blitz</h1>
-            <p style="color: #64748b; font-weight: 700; font-size: 12px; margin-bottom: 40px; text-transform: uppercase;">Löwensicheres Terminal v11</p>
-            <input type="email" id="a-mail" placeholder="E-Mail Adresse">
-            <input type="password" id="a-pass" placeholder="Passwort">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                <button onclick="CORE.handleAuth('login')" class="btn-main" style="background: var(--p-accent); color: white;">LOGIN</button>
-                <button onclick="CORE.handleAuth('reg')" class="btn-main" style="background: white; border: 2px solid var(--p-accent); color: var(--p-accent);">REGISTRIEREN</button>
+            <h1 style="font-weight:900; font-size:36px; letter-spacing:-2px;">MEISTER-BLITZ</h1>
+            <p style="color:#64748b; font-size:12px; font-weight:800; margin-bottom:40px; text-transform:uppercase; letter-spacing:2px;">Enterprise Billing Solution</p>
+            <input type="email" id="email" placeholder="E-Mail">
+            <input type="password" id="pass" placeholder="Passwort">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:20px;">
+                <button onclick="CORE.auth('login')" class="btn-action btn-primary" style="margin-top:0; font-size:14px;">LOGIN</button>
+                <button onclick="CORE.auth('reg')" class="btn-action" style="margin-top:0; font-size:14px; border:2px solid var(--m-blue); background:none; color:var(--m-blue);">REGISTER</button>
             </div>
         </div>
     </div>
 
     <header>
-        <div style="display:flex; align-items:center; gap:40px;">
-            <div class="logo-terminal" onclick="document.getElementById('file-in').click()">
-                <span id="hint-txt">LOGO KOSTENLOS<br>HINZUFÜGEN</span>
-                <img id="logo-prev" class="hidden">
+        <div class="brand">
+            <div class="logo-box" onclick="document.getElementById('l-file').click()">
+                <span id="l-hint">FIRMENLOGO</span>
+                <img id="l-img" class="hidden">
             </div>
-            <input type="file" id="file-in" class="hidden" accept="image/*">
-            <div style="font-weight:900; font-size:26px; letter-spacing:-1px;">⚡ MEISTER-BLITZ</div>
+            <input type="file" id="l-file" class="hidden" accept="image/*">
+            <div style="font-weight:900; font-size:28px; letter-spacing:-1.5px;">⚡ MEISTER-BLITZ</div>
         </div>
-        <div style="display:flex; align-items:center; gap:20px;">
-            <div id="credits-badge" class="status-chip">3 GRATIS-BELEGE</div>
-            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-main" style="background: var(--p-gold); color: black; padding: 12px 25px; font-size: 13px;">UPGRADE (11,99€)</a>
-            <button onclick="CORE.logout()" style="background:none; border:none; color:#94a3b8; font-weight:800; cursor:pointer;">LOGOUT</button>
+        <div class="status-area">
+            <div id="status-badge" class="badge badge-free">PRÜFE LIZENZ...</div>
+            <button onclick="CORE.stripeRedirect()" class="btn-pay" id="upgrade-btn">UNLIMITIERT (11,99€)</button>
+            <button onclick="CORE.logout()" style="background:none; border:none; color:#94a3b8; font-weight:700; cursor:pointer;">EXIT</button>
         </div>
     </header>
 
-    <div id="main-app" class="app-container">
-        <div class="layout-grid">
-            
-            <div class="main-flow">
+    <main id="app">
+        <div class="layout">
+            <div class="form-side">
                 <div class="card">
-                    <div class="card-h">01. Absender (Deine Firmendaten)</div>
-                    <input type="text" id="m-name" placeholder="Firmenname" oninput="CORE.autoSave()">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <input type="text" id="m-str" placeholder="Straße / Hausnr." oninput="CORE.autoSave()">
-                        <input type="text" id="m-ort" placeholder="PLZ / Ort" oninput="CORE.autoSave()">
+                    <div class="card-h">Absender & Auszahlung (Cloud Sync)</div>
+                    <input type="text" id="m-name" placeholder="Firma / Inhaber" oninput="CORE.sync()">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <input type="text" id="m-str" placeholder="Straße" oninput="CORE.sync()">
+                        <input type="text" id="m-ort" placeholder="PLZ / Ort" oninput="CORE.sync()">
                     </div>
-                    <input type="text" id="m-iban" placeholder="Deine IBAN (für Zahlungen)" oninput="CORE.autoSave()">
+                    <input type="text" id="m-iban" placeholder="IBAN (für dein Geld)" oninput="CORE.sync()">
+                    <input type="text" id="m-tax" placeholder="Steuernummer / USt-IdNr." oninput="CORE.sync()">
                 </div>
 
                 <div class="card">
-                    <div class="card-h">02. Leistungen & Kosten</div>
-                    <div class="tool-grid">
-                        <button class="tool-btn" onclick="UI.addRow('Arbeitszeit / Montage', 1, 65, 'Std.')">🕒 Arbeitszeit</button>
-                        <button class="tool-btn" onclick="UI.addRow('Anfahrtspauschale', 1, 35, 'Psch.')">🚗 Anfahrt</button>
-                        <button class="tool-btn" onclick="UI.addRow('Materialkosten', 1, 0, 'Stk.')">📦 Material</button>
-                    </div>
-                    <div id="pos-container"></div>
-                    <button onclick="UI.addRow('', 1, 0, 'Std.')" style="width:100%; padding:15px; border:2px dashed var(--p-border); background:none; border-radius:12px; font-weight:800; cursor:pointer; color:#64748b;">+ EIGENE ZEILE</button>
+                    <div class="card-h">Rechnungsempfänger</div>
+                    <input type="text" id="c-name" placeholder="Kunde / Firma">
+                    <input type="text" id="c-addr" placeholder="Anschrift (Straße, PLZ, Ort)">
+                </div>
+
+                <div class="card">
+                    <div class="card-h">Leistungen & Positionen</div>
+                    <div id="pos-root"></div>
+                    <button onclick="UI.addRow('',1,0,'Std.')" style="width:100%; padding:15px; background:none; border:2px dashed var(--m-border); border-radius:12px; cursor:pointer; font-weight:800; color:#94a3b8;">+ POSITION HINZUFÜGEN</button>
                 </div>
             </div>
 
             <div class="sidebar">
-                <div class="summary-card">
-                    <div class="card-h" style="color:#94a3b8; border-color:#334155;">Zusammenfassung</div>
-                    
-                    <div class="sum-line"><span>Zwischensumme:</span><span id="sum-net">0,00 €</span></div>
-                    <div class="sum-line"><span>MwSt (19%):</span><span id="sum-vat">0,00 €</span></div>
-                    <div class="sum-total"><span>GESAMT:</span><span id="sum-gross">0,00 €</span></div>
-                    
-                    <div style="margin-top:40px;">
-                        <input type="text" id="c-name" placeholder="Kundenname" style="background:#1e293b; border-color:#334155; color:white;">
-                        <input type="email" id="c-email" placeholder="Kunden E-Mail (Optional)" style="background:#1e293b; border-color:#334155; color:white;">
-                        <button class="btn-main btn-success" onclick="CORE.generatePDF()">RECHNUNG ERSTELLEN</button>
+                <div class="sidebar-inner">
+                    <div class="checkout-card">
+                        <div class="card-h" style="color:#94a3b8; border-color:#334155;">Live-Kalkulation</div>
+                        <div class="price-line"><span>Netto:</span><span id="v-net">0,00 €</span></div>
+                        <div class="price-line"><span>USt (19%):</span><span id="v-vat">0,00 €</span></div>
+                        <div class="total-line"><span>GESAMT:</span><span id="v-gross">0,00 €</span></div>
+                        
+                        <button class="btn-action btn-primary" id="gen-btn" onclick="CORE.generatePDF()">PDF RECHNUNG ERSTELLEN</button>
+                        <p id="lock-msg" class="hidden" style="color:#f87171; font-size:11px; text-align:center; margin-top:15px; font-weight:700;">LIMIT ERREICHT. BITTE FREISCHALTEN.</p>
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
+    </main>
 
     <script>
-        const _DB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
+        const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
+        
+        const STRIPE_LINK = "https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200";
 
         const CORE = {
-            user: null, credits: 3, logo: null, saveTimer: null,
+            user: null, credits: 3, isPro: false, logo: null, timer: null,
 
-            async handleAuth(mode) {
-                const e = document.getElementById('a-mail').value, p = document.getElementById('a-pass').value;
-                const { data, error } = mode === 'login' ? 
-                    await _DB.auth.signInWithPassword({email:e, password:p}) :
-                    await _DB.auth.signUp({email:e, password:p});
+            async auth(mode) {
+                const e = document.getElementById('email').value, p = document.getElementById('pass').value;
+                const {data, error} = mode === 'login' ? await _SB.auth.signInWithPassword({email:e, password:p}) : await _SB.auth.signUp({email:e, password:p});
                 if(error) alert(error.message); else location.reload();
             },
 
             async init() {
-                const { data: { session } } = await _DB.auth.getSession();
+                const {data:{session}} = await _SB.auth.getSession();
                 if(session) {
                     this.user = session.user;
-                    document.getElementById('auth-layer').style.display = 'none';
-                    document.getElementById('main-app').style.display = 'block';
-                    const { data: p } = await _DB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
-                    if(p) { this.credits = p.credits ?? 3; this.loadData(p); }
-                    UI.addRow('Arbeitszeit', 1, 0, 'Std.');
+                    document.getElementById('auth-gate').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    
+                    const {data:p} = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
+                    if(p) {
+                        this.credits = p.credits ?? 3;
+                        this.isPro = p.is_pro ?? false;
+                        this.fill(p);
+                    }
+                    UI.addRow('Handwerksleistung', 1, 0, 'Std.');
                     this.updateUI();
                 }
             },
 
-            loadData(p) {
+            fill(p) {
                 document.getElementById('m-name').value = p.firma_name || '';
                 document.getElementById('m-str').value = p.firma_strasse || '';
                 document.getElementById('m-ort').value = p.firma_ort || '';
                 document.getElementById('m-iban').value = p.firma_iban || '';
+                document.getElementById('m-tax').value = p.firma_steuer || '';
             },
 
-            autoSave() {
-                clearTimeout(this.saveTimer);
-                this.saveTimer = setTimeout(async () => {
-                    await _DB.from('profiles').upsert({
+            sync() {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(async () => {
+                    await _SB.from('profiles').upsert({
                         id: this.user.id,
                         firma_name: document.getElementById('m-name').value,
                         firma_strasse: document.getElementById('m-str').value,
                         firma_ort: document.getElementById('m-ort').value,
-                        firma_iban: document.getElementById('m-iban').value
+                        firma_iban: document.getElementById('m-iban').value,
+                        firma_steuer: document.getElementById('m-tax').value
                     });
                 }, 1000);
             },
 
             updateUI() {
-                const b = document.getElementById('credits-badge');
-                b.innerText = this.credits > 0 ? `${this.credits} GRATIS-RECHNUNGEN` : "LIMIT ERREICHT";
+                const badge = document.getElementById('status-badge');
+                const genBtn = document.getElementById('gen-btn');
+                const lockMsg = document.getElementById('lock-msg');
+
+                if(this.isPro) {
+                    badge.innerText = "PRO ACCOUNT";
+                    badge.className = "badge badge-pro";
+                    document.getElementById('upgrade-btn').classList.add('hidden');
+                } else {
+                    if(this.credits > 0) {
+                        badge.innerText = `${this.credits} GRATIS-RECHNUNGEN`;
+                        badge.className = "badge badge-free";
+                    } else {
+                        badge.innerText = "LIMIT ERREICHT";
+                        badge.className = "badge badge-locked";
+                        genBtn.disabled = true;
+                        lockMsg.classList.remove('hidden');
+                    }
+                }
                 UI.calc();
             },
 
-            async generatePDF() {
-                if(this.credits <= 0) return alert("Limit erreicht!");
-                if(!document.getElementById('c-name').value) return alert("Bitte Kundennamen eingeben.");
+            stripeRedirect() {
+                // Hier öffnet sich dein Stripe-Link
+                window.open(STRIPE_LINK, '_blank');
+            },
 
+            async generatePDF() {
+                if(!this.isPro && this.credits <= 0) return;
+                
                 const doc = new jspdf.jsPDF();
                 if(this.logo) doc.addImage(this.logo, 'PNG', 150, 10, 45, 25);
                 
-                doc.setFontSize(24).setFont(undefined, 'bold').text("RECHNUNG", 20, 30);
-                doc.setFontSize(10).setFont(undefined, 'normal');
-                doc.text(document.getElementById('m-name').value, 20, 42);
-                doc.text(`${document.getElementById('m-str').value}, ${document.getElementById('m-ort').value}`, 20, 47);
-                doc.text(`An: ${document.getElementById('c-name').value}`, 20, 65);
-
+                doc.setFontSize(22).setFont(undefined, 'bold').text("RECHNUNG", 20, 30);
+                doc.setFontSize(10).setFont(undefined, 'normal').text(`${document.getElementById('m-name').value}\n${document.getElementById('m-str').value}\n${document.getElementById('m-ort').value}`, 20, 42);
+                doc.text(`KUNDE:\n${document.getElementById('c-name').value}\n${document.getElementById('c-addr').value}`, 20, 65);
+                
                 const rows = [];
-                document.querySelectorAll('.p-row-data').forEach(r => {
-                    const d = r.querySelector('.p-d').value;
-                    const q = r.querySelector('.p-q').value;
-                    const p = r.querySelector('.p-p').value;
-                    const t = (q * p).toFixed(2);
-                    rows.push([d, q, r.querySelector('.p-e').value, p + " €", t + " €"]);
+                document.querySelectorAll('.p-row').forEach(r => {
+                    const q = r.querySelector('.p-q').value, p = r.querySelector('.p-p').value;
+                    rows.push([r.querySelector('.p-d').value, q, r.querySelector('.p-e').value, p + " €", (q*p).toFixed(2) + " €"]);
                 });
 
-                doc.autoTable({ startY: 80, head: [['Leistung', 'Menge', 'Einh.', 'Preis', 'Gesamt']], body: rows });
-                doc.text(`Gesamtbetrag Brutto: ${document.getElementById('sum-gross').innerText}`, 190, doc.lastAutoTable.finalY + 15, {align:'right'});
+                doc.autoTable({ startY: 85, head: [['Leistung', 'Menge', 'Einh.', 'Preis', 'Gesamt']], body: rows });
+                doc.text(`Brutto-Gesamtbetrag: ${document.getElementById('v-gross').innerText}`, 190, doc.lastAutoTable.finalY + 15, {align:'right'});
+                doc.text(`Bitte überweisen an: ${document.getElementById('m-iban').value}`, 20, doc.lastAutoTable.finalY + 30);
                 
                 doc.save("Rechnung.pdf");
-                this.credits--;
-                await _DB.from('profiles').update({credits: this.credits}).eq('id', this.user.id);
+
+                if(!this.isPro) {
+                    this.credits--;
+                    await _SB.from('profiles').update({credits: this.credits}).eq('id', this.user.id);
+                }
                 this.updateUI();
                 confetti();
             },
 
-            logout() { _DB.auth.signOut(); location.reload(); }
+            logout() { _SB.auth.signOut(); location.reload(); }
         };
 
         const UI = {
-            addRow(txt, q, p, unit) {
+            addRow(t, q, p, u) {
                 const div = document.createElement('div');
-                div.className = 'pos-row p-row-data';
-                div.innerHTML = `
-                    <input type="text" class="p-d" value="${txt}" placeholder="Was wurde getan?" oninput="UI.calc()">
-                    <input type="number" class="p-q" value="${q}" oninput="UI.calc()">
-                    <input type="text" class="p-e" value="${unit}" oninput="UI.calc()">
-                    <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
-                    <button onclick="this.parentElement.remove(); UI.calc();" style="border:none;background:none;color:red;font-weight:bold;cursor:pointer;">✕</button>
-                `;
-                document.getElementById('pos-container').appendChild(div);
+                div.className = 'pos-row p-item';
+                div.innerHTML = `<input type="text" class="p-d" value="${t}"><input type="number" class="p-q" value="${q}" oninput="UI.calc()"><input type="text" class="p-e" value="${u}"><input type="number" class="p-p" value="${p}" oninput="UI.calc()"><button onclick="this.parentElement.remove(); UI.calc()" style="border:none;background:none;color:red;font-weight:bold;cursor:pointer;">✕</button>`;
+                document.getElementById('pos-root').appendChild(div);
                 this.calc();
             },
             calc() {
-                let net = 0;
-                document.querySelectorAll('.p-row-data').forEach(r => {
-                    net += (r.querySelector('.p-q').value * r.querySelector('.p-p').value);
-                });
-                const vat = net * 0.19;
-                document.getElementById('sum-net').innerText = net.toFixed(2) + " €";
-                document.getElementById('sum-vat').innerText = vat.toFixed(2) + " €";
-                document.getElementById('sum-gross').innerText = (net + vat).toFixed(2) + " €";
+                let n = 0;
+                document.querySelectorAll('.p-item').forEach(r => { n += (r.querySelector('.p-q').value * r.querySelector('.p-p').value); });
+                document.getElementById('v-net').innerText = n.toFixed(2) + " €";
+                document.getElementById('v-vat').innerText = (n * 0.19).toFixed(2) + " €";
+                document.getElementById('v-gross').innerText = (n * 1.19).toFixed(2) + " €";
             }
         };
 
-        document.getElementById('file-in').onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                CORE.logo = ev.target.result;
-                document.getElementById('logo-prev').src = CORE.logo;
-                document.getElementById('logo-prev').classList.remove('hidden');
-                document.getElementById('hint-txt').classList.add('hidden');
+        document.getElementById('l-file').onchange = (e) => {
+            const r = new FileReader();
+            r.onload = (v) => {
+                CORE.logo = v.target.result;
+                document.getElementById('l-img').src = CORE.logo;
+                document.getElementById('l-img').classList.remove('hidden');
+                document.getElementById('l-hint').classList.add('hidden');
             };
-            reader.readAsDataURL(e.target.files[0]);
+            r.readAsDataURL(e.target.files[0]);
         };
 
         CORE.init();
