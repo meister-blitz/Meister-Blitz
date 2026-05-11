@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ | Enterprise Terminal v17</title>
+    <title>MEISTER-BLITZ | Professional Terminal v26</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,41 +12,26 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { 
-            --p-navy: #0f172a; --p-blue: #2563eb; --p-bg: #f8fafc; 
-            --p-border: #e2e8f0; --p-text: #64748b; --p-red: #ef4444;
-        }
-
+        :root { --p-navy: #0f172a; --p-blue: #2563eb; --p-bg: #f8fafc; --p-border: #e2e8f0; --p-text: #64748b; --p-red: #ef4444; --p-gold: #f59e0b; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--p-bg); color: var(--p-navy); min-height: 100vh; font-size: 14px; }
-
-        /* AUTH & HEADER */
         #gate { position: fixed; inset: 0; background: var(--p-navy); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .auth-card { background: white; padding: 50px; border-radius: 32px; width: 420px; text-align: center; }
         header { background: white; height: 100px; padding: 0 50px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--p-border); position: sticky; top: 0; z-index: 1000; }
-        
-        /* MAIN LAYOUT */
         main { max-width: 1550px; margin: 40px auto; padding: 0 40px; display: none; }
         .grid { display: grid; grid-template-columns: 1fr 450px; gap: 40px; }
-
         .card { background: white; padding: 30px; border-radius: 24px; border: 1px solid var(--p-border); margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .label { font-size: 11px; font-weight: 800; color: var(--p-blue); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; display: block; }
-
-        /* INPUTS */
-        input, textarea { width: 100%; padding: 14px; border: 1.5px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 12px; outline: none; background: #fafafa; transition: 0.2s; }
-        input:focus { border-color: var(--p-blue); background: #fff; box-shadow: 0 0 0 4px rgba(37,99,235,0.05); }
-
-        /* POSITIONS TABLE SYSTEM */
-        .pos-grid-header { display: grid; grid-template-columns: 3.5fr 1fr 1.2fr 1.5fr 60px; gap: 15px; padding: 10px; font-weight: 800; color: var(--p-text); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--p-border); margin-bottom: 15px; }
-        .pos-row { display: grid; grid-template-columns: 3.5fr 1fr 1.2fr 1.5fr 60px; gap: 15px; margin-bottom: 12px; align-items: center; background: #fff; transition: 0.2s; }
-        
-        /* BUTTONS */
-        .chip { padding: 10px 16px; border: 2px solid var(--p-border); border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.2s; background: white; }
+        input, textarea { width: 100%; padding: 14px; border: 1.5px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 12px; outline: none; background: #fafafa; }
+        input:focus { border-color: var(--p-blue); background: #fff; }
+        .chip-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .chip { padding: 10px 16px; border: 2px solid var(--p-border); border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; background: white; transition: 0.2s; }
         .chip.active { border-color: var(--p-blue); background: #eff6ff; color: var(--p-blue); }
-        .btn-main { width: 100%; padding: 22px; background: var(--p-blue); color: white; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .btn-delete { background: #fee2e2; color: var(--p-red); border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; }
-        .btn-delete:hover { background: var(--p-red); color: white; }
-
+        .pos-row { display: grid; grid-template-columns: 3fr 1fr 1.5fr 1.2fr 50px; gap: 12px; margin-bottom: 12px; align-items: start; }
+        .unit-btn { padding: 4px 6px; font-size: 9px; font-weight: 800; border: 1px solid var(--p-border); border-radius: 5px; cursor: pointer; background: white; margin-top: 5px; display: inline-block; }
+        .btn-main { width: 100%; padding: 22px; background: var(--p-blue); color: white; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; display: block; text-align: center; text-decoration: none; }
+        .btn-upgrade { background: var(--p-gold); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         .summary-card { background: var(--p-navy); color: white; padding: 40px; border-radius: 28px; position: sticky; top: 130px; }
         .hidden { display: none !important; }
     </style>
@@ -55,19 +40,19 @@
 
     <div id="gate">
         <div class="auth-card">
-            <h1 style="font-weight:900; margin-bottom:10px;">MEISTER-BLITZ</h1>
-            <p style="color:var(--p-text); font-size:12px; font-weight:800; margin-bottom:40px;">ENTERPRISE TERMINAL LOGIN</p>
+            <h1 style="font-weight:900;">MEISTER-BLITZ</h1>
             <input type="email" id="a-mail" placeholder="E-Mail">
             <input type="password" id="a-pass" placeholder="Passwort">
-            <button class="btn-main" onclick="CORE.auth()">Einloggen / Registrieren</button>
+            <button class="btn-main" onclick="CORE.login()">Einloggen</button>
+            <button class="btn-main" onclick="CORE.register()" style="background:#f1f5f9; color:var(--p-navy); margin-top:10px;">Registrieren</button>
         </div>
     </div>
 
     <header>
         <div style="font-weight:900; font-size:28px;">⚡ MEISTER-BLITZ</div>
-        <div class="nav-right" style="display:flex; align-items:center; gap:20px;">
-            <div id="status-badge" style="background:#dcfce7; color:#166534; padding:8px 16px; border-radius:50px; font-size:11px; font-weight:800;">LÄDT STATUS...</div>
-            <button onclick="CORE.logout()" style="background:none; border:none; color:var(--p-red); font-weight:700; cursor:pointer;">Logout</button>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <div id="status-badge" style="background:#dcfce7; color:#166534; padding:8px 16px; border-radius:50px; font-size:11px; font-weight:800;">LÄDT...</div>
+            <button onclick="CORE.logout()" style="background:none; border:none; color:var(--p-red); font-weight:700; cursor:pointer;">Abmelden</button>
         </div>
     </header>
 
@@ -75,13 +60,12 @@
         <div class="grid">
             <div class="left">
                 <div class="card">
-                    <span class="label">01. Dokument & Details</span>
-                    <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
+                    <span class="label">Dokument-Typ</span>
+                    <div class="chip-group">
                         <div class="chip active" onclick="UI.setType('RECHNUNG', this)">Rechnung</div>
                         <div class="chip" onclick="UI.setType('ANGEBOT', this)">Angebot</div>
-                        <div class="chip" onclick="UI.setType('KOSTENVORANSCHLAG', this)">K.-Voranschlag</div>
+                        <div class="chip" onclick="UI.setType('KOSTENVORANSCHLAG', this)">Kostenvoranschlag</div>
                         <div class="chip" onclick="UI.setType('LIEFERSCHEIN', this)">Lieferschein</div>
-                        <div class="chip" onclick="UI.setType('QUITTUNG', this)">Quittung</div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1.2fr; gap:15px;">
                         <input type="text" id="doc-num" placeholder="Beleg-Nr.">
@@ -94,56 +78,47 @@
                     <div class="card">
                         <span class="label">Meine Firmendaten</span>
                         <input type="text" id="m-name" placeholder="Firma / Inhaber" oninput="CORE.sync()">
-                        <textarea id="m-addr" placeholder="Anschrift (Straße, PLZ, Ort)" style="height:80px;" oninput="CORE.sync()"></textarea>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                            <input type="text" id="m-tel" placeholder="Telefonnummer" oninput="CORE.sync()">
-                            <input type="text" id="m-mail" placeholder="E-Mail Adresse" oninput="CORE.sync()">
-                        </div>
-                        <input type="text" id="m-tax" placeholder="Steuer-Nr / USt-IdNr" oninput="CORE.sync()">
-                        <input type="text" id="m-iban" placeholder="Deine IBAN" oninput="CORE.sync()">
+                        <textarea id="m-addr" placeholder="Anschrift" style="height:80px;" oninput="CORE.sync()"></textarea>
+                        <input type="text" id="m-tel" placeholder="Telefon" oninput="CORE.sync()">
+                        <input type="text" id="m-iban" placeholder="IBAN" oninput="CORE.sync()">
+                        <input type="text" id="m-tax" placeholder="Steuer-Nr." oninput="CORE.sync()">
                     </div>
                     <div class="card">
-                        <span class="label">Rechnungsempfänger</span>
-                        <input type="text" id="c-name" placeholder="Kunde / Firmenname">
-                        <textarea id="c-addr" placeholder="Kundenanschrift" style="height:80px;"></textarea>
-                        <input type="text" id="c-tel" placeholder="Kunde Telefon (optional)">
+                        <span class="label">Kunden-Daten</span>
+                        <input type="text" id="c-name" placeholder="Name des Kunden">
+                        <textarea id="c-addr" placeholder="Anschrift des Kunden" style="height:80px;"></textarea>
+                        <input type="text" id="c-tel" placeholder="Telefon (optional)">
                     </div>
                 </div>
 
                 <div class="card">
-                    <span class="label">02. Leistungspositionen</span>
-                    <div class="pos-grid-header">
-                        <span>Leistung</span><span>Menge</span><span>Einheit</span><span>Einzelpreis</span><span></span>
+                    <span class="label">Positionen & Schnellwahl</span>
+                    <div class="chip-group">
+                        <button class="chip" onclick="UI.addRow('Handwerksleistung (Arbeitszeit)', 1, 65, 'Std.')">+ Arbeitszeit</button>
+                        <button class="chip" onclick="UI.addRow('Anfahrtspauschale inkl. Rüstzeit', 1, 25, 'Paush.')">+ Anfahrt</button>
+                        <button class="chip" onclick="UI.addRow('Material laut Aufwand', 1, 0, 'Stk.')">+ Material</button>
                     </div>
                     <div id="pos-root"></div>
-                    <button onclick="UI.addRow()" style="width:100%; padding:15px; border:2px dashed var(--p-border); background:none; border-radius:12px; cursor:pointer; font-weight:700; color:var(--p-text); margin-top:10px;">+ Leere Zeile hinzufügen</button>
+                    <button onclick="UI.addRow()" style="width:100%; padding:15px; border:2px dashed var(--p-border); background:none; border-radius:12px; cursor:pointer; margin-top:10px;">+ Leere Zeile</button>
                 </div>
             </div>
 
             <div class="sidebar">
                 <div class="summary-card">
-                    <span class="label" style="color:#94a3b8;">Zahlungs-Übersicht</span>
-                    
-                    <label style="font-size:11px; font-weight:700; color:#94a3b8; display:block; margin-bottom:10px;">MwSt. Satz</label>
-                    <div style="display:flex; gap:8px; margin-bottom:25px;">
-                        <div class="chip active" onclick="UI.setTax(19, this)">19%</div>
-                        <div class="chip" onclick="UI.setTax(7, this)">7%</div>
-                        <div class="chip" onclick="UI.setTax(0, this)">0%</div>
+                    <span class="label" style="color:#94a3b8;">Übersicht</span>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#94a3b8;">
+                        <span>Netto:</span><span id="v-net">0,00 €</span>
                     </div>
-
-                    <div style="border-top:1px solid #334155; padding-top:25px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#94a3b8;">
-                            <span>Netto Summe:</span><span id="v-net">0,00 €</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#94a3b8;">
-                            <span>MwSt (<span id="t-label">19</span>%):</span><span id="v-tax">0,00 €</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; font-size:32px; font-weight:800; border-top:2px solid #334155; padding-top:15px; margin-top:10px;">
-                            <span>GESAMT:</span><span id="v-total">0,00 €</span>
+                    <div style="display:flex; justify-content:space-between; font-size:32px; font-weight:800; border-top:1px solid #334155; padding-top:15px;">
+                        <span>TOTAL:</span><span id="v-total">0,00 €</span>
+                    </div>
+                    <div id="pay-logic" style="margin-top:30px;">
+                        <button id="btn-export" class="btn-main" onclick="CORE.export()">PDF ERSTELLEN</button>
+                        <div id="lock-box" class="hidden">
+                            <p style="color:#f87171; text-align:center; font-weight:800; font-size:12px; margin-bottom:15px;">LIMIT ERREICHT (3/3)</p>
+                            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" target="_blank" class="btn-main btn-upgrade">PRO FREISCHALTEN</a>
                         </div>
                     </div>
-
-                    <button class="btn-main" onclick="CORE.export()">PDF JETZT GENERIEREN</button>
                 </div>
             </div>
         </div>
@@ -151,138 +126,64 @@
 
     <script>
         const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
-
         const CORE = {
-            user: null, creds: 3, pro: false, tax: 19, type: 'RECHNUNG', timer: null,
-
-            async auth() {
-                const e = document.getElementById('a-mail').value, p = document.getElementById('a-pass').value;
-                const {data, error} = await _SB.auth.signInWithPassword({email:e, password:p});
-                if(error) {
-                    const {data:r, error:re} = await _SB.auth.signUp({email:e, password:p});
-                    if(re) alert(re.message); else alert("Registriert! Jetzt einloggen.");
-                } else { location.reload(); }
-            },
-
+            user: null, creds: 3, pro: false, tax: 1.19, type: 'RECHNUNG',
+            async login() { const e=document.getElementById('a-mail').value,p=document.getElementById('a-pass').value; const {error}=await _SB.auth.signInWithPassword({email:e,password:p}); if(error) alert(error.message); else location.reload(); },
+            async register() { const e=document.getElementById('a-mail').value,p=document.getElementById('a-pass').value; const {error}=await _SB.auth.signUp({email:e,password:p}); if(error) alert(error.message); else alert("OK!"); },
+            async logout() { await _SB.auth.signOut(); location.reload(); },
             async init() {
                 const {data:{session}} = await _SB.auth.getSession();
                 if(session) {
-                    this.user = session.user;
-                    document.getElementById('gate').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
+                    this.user = session.user; document.getElementById('gate').classList.add('hidden'); document.getElementById('app').style.display='block';
                     const {data:p} = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
                     if(p) { this.creds = p.credits ?? 3; this.pro = p.is_pro ?? false; this.fill(p); }
-                    document.getElementById('doc-date').valueAsDate = new Date();
-                    document.getElementById('doc-num').value = 'B-' + Date.now().toString().slice(-6);
-                    UI.addRow('Deine erste Leistung', 1, 0, 'Std.');
-                    this.updateUI();
+                    this.status(); UI.addRow('Handwerksleistung', 1, 65, 'Std.');
                 }
             },
-
             fill(p) {
-                document.getElementById('m-name').value = p.firma_name || '';
-                document.getElementById('m-addr').value = p.firma_strasse || '';
-                document.getElementById('m-tel').value = p.firma_tel || '';
-                document.getElementById('m-mail').value = p.firma_mail || '';
+                document.getElementById('m-name').value = p.firma_name || ''; document.getElementById('m-addr').value = p.firma_strasse || '';
+                document.getElementById('m-tel').value = p.firma_tel || ''; document.getElementById('m-iban').value = p.firma_iban || '';
                 document.getElementById('m-tax').value = p.firma_steuer || '';
-                document.getElementById('m-iban').value = p.firma_iban || '';
             },
-
-            sync() {
-                clearTimeout(this.timer);
-                this.timer = setTimeout(async () => {
-                    await _SB.from('profiles').upsert({
-                        id: this.user.id,
-                        firma_name: document.getElementById('m-name').value,
-                        firma_strasse: document.getElementById('m-addr').value,
-                        firma_tel: document.getElementById('m-tel').value,
-                        firma_mail: document.getElementById('m-mail').value,
-                        firma_steuer: document.getElementById('m-tax').value,
-                        firma_iban: document.getElementById('m-iban').value
-                    });
-                }, 1000);
-            },
-
-            updateUI() {
+            status() {
                 const b = document.getElementById('status-badge');
-                b.innerText = this.pro ? "PRO ACCOUNT" : `${this.creds} BELEGE FREI`;
-                UI.calc();
+                if(this.pro) { b.innerText = "PRO ACCOUNT"; b.style.background = "#fef3c7"; b.style.color = "#92400e"; document.getElementById('btn-export').classList.remove('hidden'); document.getElementById('lock-box').classList.add('hidden'); }
+                else { b.innerText = `${this.creds} FREI`; if(this.creds <= 0) { document.getElementById('btn-export').classList.add('hidden'); document.getElementById('lock-box').classList.remove('hidden'); } }
             },
-
+            sync() { _SB.from('profiles').upsert({ id: this.user.id, firma_name: document.getElementById('m-name').value, firma_strasse: document.getElementById('m-addr').value, firma_tel: document.getElementById('m-tel').value, firma_iban: document.getElementById('m-iban').value, firma_steuer: document.getElementById('m-tax').value }); },
             async export() {
-                if(!this.pro && this.creds <= 0) return alert("Limit erreicht!");
-                const doc = new jspdf.jsPDF();
-                
-                doc.setFontSize(22).setFont(undefined, 'bold').text(this.type, 20, 30);
-                doc.setFontSize(10).setFont(undefined, 'normal');
-                doc.text(`Nr: ${document.getElementById('doc-num').value}\nDatum: ${document.getElementById('doc-date').value}\nZeit: ${document.getElementById('doc-period').value}`, 140, 25);
-                
-                doc.setFont(undefined, 'bold').text("ABSENDER:", 20, 50);
-                doc.setFont(undefined, 'normal').text(`${document.getElementById('m-name').value}\n${document.getElementById('m-addr').value}\nTel: ${document.getElementById('m-tel').value}\nMail: ${document.getElementById('m-mail').value}`, 20, 55);
-                
-                doc.setFont(undefined, 'bold').text("EMPFÄNGER:", 110, 50);
-                doc.setFont(undefined, 'normal').text(`${document.getElementById('c-name').value}\n${document.getElementById('c-addr').value}`, 110, 55);
-
-                const table = [];
-                document.querySelectorAll('.pos-row').forEach(r => {
-                    const q = r.querySelector('.p-q').value, p = r.querySelector('.p-p').value;
-                    table.push([r.querySelector('.p-d').value, q, r.querySelector('.p-u').value, p + " €", (q*p).toFixed(2) + " €"]);
-                });
-
-                doc.autoTable({ startY: 85, head: [['Leistung', 'Menge', 'Einh.', 'Einzel', 'Gesamt']], body: table, headStyles: {fillColor:[15, 23, 42]} });
-                
-                const finalY = doc.lastAutoTable.finalY + 15;
-                doc.setFontSize(12).setFont(undefined, 'bold').text(`GESAMTBETRAG: ${document.getElementById('v-total').innerText}`, 190, finalY, {align:'right'});
-                doc.setFontSize(9).setFont(undefined, 'normal').text(`Steuer-Nr: ${document.getElementById('m-tax').value} | IBAN: ${document.getElementById('m-iban').value}`, 20, finalY + 20);
-
+                const doc = new jspdf.jsPDF(); doc.setFontSize(22).text(this.type, 20, 30);
+                const table = []; document.querySelectorAll('.pos-row').forEach(r => { table.push([r.querySelector('.p-d').value, r.querySelector('.p-q').value, r.querySelector('.p-u').value, r.querySelector('.p-p').value + " €"]); });
+                doc.autoTable({ startY: 60, head: [['Beschreibung', 'Menge', 'Einh.', 'Preis']], body: table });
                 doc.save(`${this.type}.pdf`);
-                if(!this.pro) {
-                    this.creds--;
-                    await _SB.from('profiles').update({credits: this.creds}).eq('id', this.user.id);
-                }
-                this.updateUI(); confetti();
-            },
-
-            logout() { _SB.auth.signOut(); location.reload(); }
-        };
-
-        const UI = {
-            addRow(d='', q=1, p=0, u='Std.') {
-                const div = document.createElement('div');
-                div.className = 'pos-row';
-                div.innerHTML = `
-                    <input type="text" class="p-d" value="${d}" placeholder="Leistungsbeschreibung...">
-                    <input type="number" class="p-q" value="${q}" oninput="UI.calc()">
-                    <input type="text" class="p-u" value="${u}" placeholder="Einh.">
-                    <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
-                    <button class="btn-delete" onclick="this.parentElement.remove(); UI.calc()">✕</button>
-                `;
-                document.getElementById('pos-root').appendChild(div);
-                this.calc();
-            },
-            setType(t, el) {
-                CORE.type = t;
-                document.querySelectorAll('.left .chip').forEach(c => c.classList.remove('active'));
-                el.classList.add('active');
-            },
-            setTax(v, el) {
-                CORE.tax = v; document.getElementById('t-label').innerText = v;
-                document.querySelectorAll('.sidebar .chip').forEach(c => c.classList.remove('active'));
-                el.classList.add('active');
-                this.calc();
-            },
-            calc() {
-                let n = 0;
-                document.querySelectorAll('.pos-row').forEach(r => { 
-                    n += (parseFloat(r.querySelector('.p-q').value) || 0) * (parseFloat(r.querySelector('.p-p').value) || 0); 
-                });
-                const t = n * (CORE.tax / 100);
-                document.getElementById('v-net').innerText = n.toFixed(2) + " €";
-                document.getElementById('v-tax').innerText = t.toFixed(2) + " €";
-                document.getElementById('v-total').innerText = (n + t).toFixed(2) + " €";
+                if(!this.pro) { this.creds--; await _SB.from('profiles').update({credits: this.creds}).eq('id', this.user.id); }
+                this.status(); confetti();
             }
         };
-
+        const UI = {
+            addRow(d='', q=1, p=0, u='Std.') {
+                const div = document.createElement('div'); div.className = 'pos-row';
+                div.innerHTML = `
+                    <input type="text" class="p-d" value="${d}" placeholder="Bezeichnung">
+                    <input type="number" class="p-q" value="${q}" oninput="UI.calc()">
+                    <div>
+                        <input type="text" class="p-u" value="${u}" placeholder="Einh.">
+                        <div style="display:flex; gap:3px; flex-wrap:wrap;">
+                            <span class="unit-btn" onclick="UI.setU(this,'Std.')">Std</span>
+                            <span class="unit-btn" onclick="UI.setU(this,'Stk.')">Stk</span>
+                            <span class="unit-btn" onclick="UI.setU(this,'Km')">Km</span>
+                            <span class="unit-btn" onclick="UI.setU(this,'m²')">m²</span>
+                        </div>
+                    </div>
+                    <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
+                    <button onclick="this.parentElement.remove(); UI.calc()" style="color:red; background:none; border:none; cursor:pointer;">✕</button>
+                `;
+                document.getElementById('pos-root').appendChild(div); UI.calc();
+            },
+            setU(btn, v) { btn.parentElement.parentElement.querySelector('.p-u').value = v; UI.calc(); },
+            setType(t, el) { CORE.type = t; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); },
+            calc() { let n = 0; document.querySelectorAll('.pos-row').forEach(r => { n += (parseFloat(r.querySelector('.p-q').value)||0) * (parseFloat(r.querySelector('.p-p').value)||0); }); document.getElementById('v-net').innerText = n.toFixed(2) + " €"; document.getElementById('v-total').innerText = (n * 1.19).toFixed(2) + " €"; }
+        };
         CORE.init();
     </script>
 </body>
