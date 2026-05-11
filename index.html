@@ -27,14 +27,14 @@
         .card { background: white; padding: 30px; border-radius: 24px; border: 1px solid var(--p-border); margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .label { font-size: 11px; font-weight: 800; color: var(--p-blue); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; display: block; }
         
-        input, textarea { width: 100%; padding: 14px; border: 1.5px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 12px; outline: none; background: #fafafa; transition: 0.2s; }
-        input:focus { border-color: var(--p-blue); background: #fff; }
+        input, textarea, select { width: 100%; padding: 14px; border: 1.5px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 12px; outline: none; background: #fafafa; transition: 0.2s; }
+        input:focus, select:focus { border-color: var(--p-blue); background: #fff; }
         
         .chip-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
         .chip { padding: 10px 16px; border: 2px solid var(--p-border); border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; background: white; transition: 0.2s; }
         .chip.active { border-color: var(--p-blue); background: #eff6ff; color: var(--p-blue); }
         
-        .pos-row { display: grid; grid-template-columns: 3fr 1fr 1.5fr 1.2fr 50px; gap: 12px; margin-bottom: 12px; align-items: start; animation: slideIn 0.3s ease-out; }
+        .pos-row { display: grid; grid-template-columns: 3fr 0.8fr 1fr 1fr 0.8fr 40px; gap: 12px; margin-bottom: 12px; align-items: start; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .unit-btn { padding: 4px 6px; font-size: 9px; font-weight: 800; border: 1px solid var(--p-border); border-radius: 5px; cursor: pointer; background: white; margin-top: 5px; display: inline-block; }
@@ -42,10 +42,8 @@
         .btn-main { width: 100%; padding: 22px; background: var(--p-blue); color: white; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; display: block; text-align: center; text-decoration: none; }
         .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2); }
         
-        .btn-upgrade { background: var(--p-gold); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        
         .summary-card { background: var(--p-navy); color: white; padding: 40px; border-radius: 28px; position: sticky; top: 130px; }
+        .tax-line { display: flex; justify-content: space-between; margin-bottom: 8px; color: #94a3b8; font-weight: 600; font-size: 13px; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -108,9 +106,9 @@
                 <div class="card">
                     <span class="label">Positionen & Schnellwahl</span>
                     <div class="chip-group">
-                        <button class="chip" onclick="UI.addRow('Handwerksleistung (Arbeitszeit)', 1, 65, 'Std.')">+ Arbeitszeit</button>
-                        <button class="chip" onclick="UI.addRow('Anfahrtspauschale inkl. Rüstzeit', 1, 25, 'Paush.')">+ Anfahrt</button>
-                        <button class="chip" onclick="UI.addRow('Material laut Aufwand', 1, 0, 'Stk.')">+ Material</button>
+                        <button class="chip" onclick="UI.addRow('Handwerksleistung (Arbeitszeit)', 1, 65, 'Std.', 19)">+ Arbeitszeit (19%)</button>
+                        <button class="chip" onclick="UI.addRow('Anfahrtspauschale inkl. Rüstzeit', 1, 25, 'Paush.', 19)">+ Anfahrt (19%)</button>
+                        <button class="chip" onclick="UI.addRow('Material laut Aufwand', 1, 0, 'Stk.', 19)">+ Material (19%)</button>
                     </div>
                     <div id="pos-root"></div>
                     <button onclick="UI.addRow()" style="width:100%; padding:15px; border:2px dashed var(--p-border); background:none; border-radius:12px; cursor:pointer; margin-top:10px; font-weight:700; color:var(--p-text);">+ Leere Zeile hinzufügen</button>
@@ -120,24 +118,18 @@
             <div class="sidebar">
                 <div class="summary-card">
                     <span class="label" style="color:#94a3b8;">Zusammenfassung</span>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#94a3b8; font-weight:600;">
-                        <span>Netto-Summe:</span><span id="v-net">0,00 €</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; color:#94a3b8; font-weight:600;">
-                        <span>MwSt. (19%):</span><span id="v-tax">0,00 €</span>
-                    </div>
+                    <div id="v-tax-details"></div>
                     <div style="display:flex; justify-content:space-between; font-size:32px; font-weight:800; border-top:1px solid #334155; padding-top:15px; margin-bottom:30px;">
                         <span>TOTAL:</span><span id="v-total" style="color:var(--p-gold);">0,00 €</span>
                     </div>
                     
                     <div id="pay-logic">
                         <button id="btn-export" class="btn-main" onclick="CORE.export()">PDF ERSTELLEN & EXPORTIEREN</button>
-                        
                         <div id="lock-box" class="hidden">
                             <div style="background:rgba(239, 68, 68, 0.1); border:1px solid #ef4444; padding:20px; border-radius:15px; text-align:center; margin-bottom:20px;">
                                 <p style="color:#f87171; font-weight:800; font-size:12px; text-transform:uppercase;">Limit erreicht (3/3)</p>
                             </div>
-                            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" id="stripe-link" target="_blank" class="btn-main btn-upgrade">PRO VERSION FREISCHALTEN</a>
+                            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" id="stripe-link" target="_blank" class="btn-main" style="background:var(--p-gold)">PRO VERSION FREISCHALTEN</a>
                         </div>
                     </div>
                 </div>
@@ -149,7 +141,7 @@
         const _SB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
 
         const CORE = {
-            user: null, creds: 3, abo_bis: null, pro: false, tax: 1.19, type: 'RECHNUNG',
+            user: null, creds: 3, pro: false, type: 'RECHNUNG',
 
             async login() {
                 const e = document.getElementById('a-mail').value;
@@ -162,7 +154,7 @@
                 const e = document.getElementById('a-mail').value;
                 const p = document.getElementById('a-pass').value;
                 const { error } = await _SB.auth.signUp({ email: e, password: p });
-                if (error) alert("Registrierung Fehler: " + error.message); else alert("Registrierung erfolgreich!");
+                if (error) alert("Registrierung Fehler: " + error.message); else alert("Erfolgreich! Bitte einloggen.");
             },
 
             async logout() { await _SB.auth.signOut(); location.reload(); },
@@ -171,27 +163,24 @@
                 const { data: { session } } = await _SB.auth.getSession();
                 if (session) {
                     this.user = session.user;
-                    
-                    // AUTOMATISIERUNG: User ID an Stripe Link hängen
                     const sLink = document.getElementById('stripe-link');
                     if(sLink) { sLink.href = `https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200?client_reference_id=${this.user.id}`; }
-
+                    
                     document.getElementById('gate').classList.add('hidden');
                     document.getElementById('app').style.display = 'block';
+                    document.getElementById('doc-date').valueAsDate = new Date();
+                    if(!document.getElementById('doc-num').value) document.getElementById('doc-num').value = 'B-' + Date.now().toString().slice(-6);
 
-                    const { data: p } = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
-                    if (p) {
-                        // FIX: Wenn credits 0 sind, dann 0 laden. Nur wenn p.credits null ist, dann 3.
-                        this.creds = (p.credits !== null && p.credits !== undefined) ? p.credits : 3;
-                        this.abo_bis = p.abo_bis;
-                        this.fill(p);
-                    } else {
-                        // Neuen User anlegen
+                    let { data: p } = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
+                    if (!p) {
                         await _SB.from('profiles').insert({ id: this.user.id, credits: 3 });
-                        this.creds = 3;
+                        p = { credits: 3 };
                     }
+                    this.creds = (p.credits !== null) ? p.credits : 3;
+                    this.pro = p.abo_bis && new Date(p.abo_bis) > new Date();
+                    this.fill(p);
                     this.status();
-                    UI.addRow('Handwerksleistung (Arbeitszeit)', 1, 65, 'Std.');
+                    UI.addRow('Handwerksleistung (Arbeitszeit)', 1, 65, 'Std.', 19);
                 }
             },
 
@@ -205,22 +194,17 @@
 
             status() {
                 const b = document.getElementById('status-badge');
-                const lockBox = document.getElementById('lock-box');
-                const btnExport = document.getElementById('btn-export');
-                const jetzt = new Date();
-                const ablaufDatum = this.abo_bis ? new Date(this.abo_bis) : null;
-
-                if (ablaufDatum && ablaufDatum > jetzt) {
-                    this.pro = true;
-                    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                    b.innerText = "PRO STATUS AKTIV (BIS " + ablaufDatum.toLocaleDateString('de-DE', options) + ")";
+                const lb = document.getElementById('lock-box');
+                const ex = document.getElementById('btn-export');
+                
+                if (this.pro) {
+                    b.innerText = "PRO STATUS AKTIV";
                     b.style.background = "#fef3c7"; b.style.color = "#92400e";
-                    btnExport.classList.remove('hidden'); lockBox.classList.add('hidden');
+                    ex.classList.remove('hidden'); lb.classList.add('hidden');
                 } else {
-                    this.pro = false;
-                    b.innerText = `${this.creds} KOSTENLOSE BELEGE ÜBRIG`;
-                    if (this.creds <= 0) { btnExport.classList.add('hidden'); lockBox.classList.remove('hidden'); }
-                    else { btnExport.classList.remove('hidden'); lockBox.classList.add('hidden'); }
+                    b.innerText = `${this.creds} GRATIS-BELEGE ÜBRIG`;
+                    if (this.creds <= 0) { ex.classList.add('hidden'); lb.classList.remove('hidden'); }
+                    else { ex.classList.remove('hidden'); lb.classList.add('hidden'); }
                 }
             },
 
@@ -236,48 +220,65 @@
             },
 
             async export() {
-                if (!this.pro && this.creds <= 0) return;
-
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
+                const calc = UI.lastCalc;
                 
-                // PDF Design
                 doc.setFontSize(22).setFont(undefined, 'bold').text(this.type, 20, 30);
-                const mN = document.getElementById('m-name').value;
-                const mA = document.getElementById('m-addr').value;
-                doc.setFontSize(10).setFont(undefined, 'normal').text([mN, mA], 190, 30, { align: 'right' });
-                
-                const tableData = [];
-                document.querySelectorAll('.pos-row').forEach(row => {
-                    tableData.push([
-                        row.querySelector('.p-d').value,
-                        row.querySelector('.p-q').value,
-                        row.querySelector('.p-u').value,
-                        row.querySelector('.p-p').value + " €"
+                doc.setFontSize(10).setFont(undefined, 'normal').text([
+                    document.getElementById('m-name').value,
+                    document.getElementById('m-addr').value,
+                    "Tel: " + document.getElementById('m-tel').value
+                ], 190, 30, { align: 'right' });
+
+                doc.text(["An:", document.getElementById('c-name').value, document.getElementById('c-addr').value], 20, 55);
+                doc.text([
+                    "Datum: " + document.getElementById('doc-date').value,
+                    "Nummer: " + document.getElementById('doc-num').value,
+                    "Zeitraum: " + document.getElementById('doc-period').value
+                ], 190, 55, { align: 'right' });
+
+                const rows = [];
+                document.querySelectorAll('.pos-row').forEach(r => {
+                    rows.push([
+                        r.querySelector('.p-d').value, 
+                        r.querySelector('.p-q').value, 
+                        r.querySelector('.p-u').value, 
+                        r.querySelector('.p-p').value + " €",
+                        r.querySelector('.p-t').value + "%"
                     ]);
                 });
 
                 doc.autoTable({
-                    startY: 60,
-                    head: [['Beschreibung', 'Menge', 'Einh.', 'Einzelpreis']],
-                    body: tableData,
+                    startY: 85,
+                    head: [['Beschreibung', 'Menge', 'Einh.', 'Preis', 'MwSt']],
+                    body: rows,
+                    foot: [
+                        ['', '', '', 'Netto 19%:', calc.n19.toFixed(2) + " €"],
+                        ['', '', '', 'MwSt 19%:', calc.t19.toFixed(2) + " €"],
+                        ['', '', '', 'Netto 7%:', calc.n7.toFixed(2) + " €"],
+                        ['', '', '', 'MwSt 7%:', calc.t7.toFixed(2) + " €"],
+                        ['', '', '', 'Netto 0%:', calc.n0.toFixed(2) + " €"],
+                        ['', '', '', 'GESAMT:', calc.total.toFixed(2) + " €"]
+                    ],
+                    footStyles: { fillColor: [15, 23, 42] }
                 });
 
+                doc.setFontSize(9).text(`Steuer-Nr: ${document.getElementById('m-tax').value} | IBAN: ${document.getElementById('m-iban').value}`, 105, 285, { align: 'center' });
                 doc.save(`${this.type}_${document.getElementById('doc-num').value}.pdf`);
 
-                // FIX: Credit sofort abziehen und in DB speichern
                 if (!this.pro) {
                     this.creds--;
                     await _SB.from('profiles').update({ credits: this.creds }).eq('id', this.user.id);
+                    this.status();
                 }
-                
-                this.status();
                 confetti();
             }
         };
 
         const UI = {
-            addRow(d = '', q = 1, p = 0, u = 'Std.') {
+            lastCalc: { n19:0, t19:0, n7:0, t7:0, n0:0, total:0 },
+            addRow(d='', q=1, p=0, u='Std.', t=19) {
                 const div = document.createElement('div');
                 div.className = 'pos-row';
                 div.innerHTML = `
@@ -291,34 +292,39 @@
                         </div>
                     </div>
                     <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
-                    <button onclick="this.parentElement.remove(); UI.calc()" style="color:red; background:none; border:none; cursor:pointer;">✕</button>
-                `;
+                    <select class="p-t" onchange="UI.calc()">
+                        <option value="19" ${t==19?'selected':''}>19%</option>
+                        <option value="7" ${t==7?'selected':''}>7%</option>
+                        <option value="0" ${t==0?'selected':''}>0%</option>
+                    </select>
+                    <button onclick="this.parentElement.remove(); UI.calc()" style="color:red; background:none; border:none; cursor:pointer;">✕</button>`;
                 document.getElementById('pos-root').appendChild(div);
                 UI.calc();
             },
-
-            setU(btn, v) {
-                btn.parentElement.parentElement.querySelector('.p-u').value = v;
-                UI.calc();
-            },
-
-            setType(t, el) {
-                CORE.type = t;
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                el.classList.add('active');
-            },
-
+            setU(btn, v) { btn.parentElement.parentElement.querySelector('.p-u').value = v; UI.calc(); },
+            setType(t, el) { CORE.type = t; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); },
             calc() {
-                let net = 0;
-                document.querySelectorAll('.pos-row').forEach(row => {
-                    net += (parseFloat(row.querySelector('.p-q').value) || 0) * (parseFloat(row.querySelector('.p-p').value) || 0);
+                let n19 = 0, n7 = 0, n0 = 0;
+                document.querySelectorAll('.pos-row').forEach(r => {
+                    const line = (parseFloat(r.querySelector('.p-q').value)||0) * (parseFloat(r.querySelector('.p-p').value)||0);
+                    const tax = r.querySelector('.p-t').value;
+                    if(tax == "19") n19 += line;
+                    else if(tax == "7") n7 += line;
+                    else n0 += line;
                 });
+                const t19 = n19 * 0.19;
+                const t7 = n7 * 0.07;
+                const total = n19 + t19 + n7 + t7 + n0;
+                
+                this.lastCalc = { n19, t19, n7, t7, n0, total };
 
-                const tax = net * 0.19;
-                const total = net + tax;
-
-                document.getElementById('v-net').innerText = net.toFixed(2) + " €";
-                document.getElementById('v-tax').innerText = tax.toFixed(2) + " €";
+                document.getElementById('v-tax-details').innerHTML = `
+                    <div class="tax-line"><span>Netto (19%):</span><span>${n19.toFixed(2)} €</span></div>
+                    <div class="tax-line"><span>MwSt (19%):</span><span>${t19.toFixed(2)} €</span></div>
+                    <div class="tax-line"><span>Netto (7%):</span><span>${n7.toFixed(2)} €</span></div>
+                    <div class="tax-line"><span>MwSt (7%):</span><span>${t7.toFixed(2)} €</span></div>
+                    <div class="tax-line" style="border-bottom: 1px solid #334155; padding-bottom:10px;"><span>Steuerfrei (0%):</span><span>${n0.toFixed(2)} €</span></div>
+                `;
                 document.getElementById('v-total').innerText = total.toFixed(2) + " €";
             }
         };
