@@ -181,9 +181,14 @@
 
                     const { data: p } = await _SB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
                     if (p) {
-                        this.creds = p.credits ?? 3;
+                        // FIX: Wenn credits 0 sind, dann 0 laden. Nur wenn p.credits null ist, dann 3.
+                        this.creds = (p.credits !== null && p.credits !== undefined) ? p.credits : 3;
                         this.abo_bis = p.abo_bis;
                         this.fill(p);
+                    } else {
+                        // Neuen User anlegen
+                        await _SB.from('profiles').insert({ id: this.user.id, credits: 3 });
+                        this.creds = 3;
                     }
                     this.status();
                     UI.addRow('Handwerksleistung (Arbeitszeit)', 1, 65, 'Std.');
@@ -236,32 +241,12 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 
-                // 1. ÜBERSCHRIFT
+                // PDF Design
                 doc.setFontSize(22).setFont(undefined, 'bold').text(this.type, 20, 30);
-                
-                // 2. MEINE DATEN (RECHTS)
-                doc.setFontSize(10).setFont(undefined, 'normal');
                 const mN = document.getElementById('m-name').value;
                 const mA = document.getElementById('m-addr').value;
-                const mS = document.getElementById('m-tax').value;
-                const mI = document.getElementById('m-iban').value;
-                doc.text([mN, mA, `Steuer-Nr: ${mS}`, `IBAN: ${mI}`], 190, 30, { align: 'right' });
-
-                // 3. KUNDEN DATEN (LINKS)
-                doc.setFontSize(11).setFont(undefined, 'bold').text("Empfänger:", 20, 55);
-                doc.setFont(undefined, 'normal');
-                const cN = document.getElementById('c-name').value;
-                const cA = document.getElementById('c-addr').value;
-                doc.text([cN, cA], 20, 62);
-
-                // 4. BELEG DATEN
-                const bN = document.getElementById('doc-num').value;
-                const bD = document.getElementById('doc-date').value;
-                doc.setFontSize(10);
-                doc.text(`Beleg-Nr: ${bN}`, 190, 70, { align: 'right' });
-                doc.text(`Datum: ${bD}`, 190, 75, { align: 'right' });
-
-                // 5. TABELLE
+                doc.setFontSize(10).setFont(undefined, 'normal').text([mN, mA], 190, 30, { align: 'right' });
+                
                 const tableData = [];
                 document.querySelectorAll('.pos-row').forEach(row => {
                     tableData.push([
@@ -273,26 +258,21 @@
                 });
 
                 doc.autoTable({
-                    startY: 90,
+                    startY: 60,
                     head: [['Beschreibung', 'Menge', 'Einh.', 'Einzelpreis']],
                     body: tableData,
-                    theme: 'striped',
-                    headStyles: { fillColor: [37, 99, 235] }
                 });
 
-                // 6. SUMME
-                const finalY = doc.lastAutoTable.finalY + 10;
-                const total = document.getElementById('v-total').innerText;
-                doc.setFontSize(14).setFont(undefined, 'bold');
-                doc.text(`Gesamtbetrag: ${total}`, 190, finalY, { align: 'right' });
+                doc.save(`${this.type}_${document.getElementById('doc-num').value}.pdf`);
 
-                doc.save(`${this.type}_${bN}.pdf`);
-
+                // FIX: Credit sofort abziehen und in DB speichern
                 if (!this.pro) {
                     this.creds--;
                     await _SB.from('profiles').update({ credits: this.creds }).eq('id', this.user.id);
                 }
-                this.status(); confetti();
+                
+                this.status();
+                confetti();
             }
         };
 
@@ -308,29 +288,41 @@
                         <div style="display:flex; gap:3px; flex-wrap:wrap;">
                             <span class="unit-btn" onclick="UI.setU(this,'Std.')">Std</span>
                             <span class="unit-btn" onclick="UI.setU(this,'Stk.')">Stk</span>
-                            <span class="unit-btn" onclick="UI.setU(this,'Km')">Km</span>
-                            <span class="unit-btn" onclick="UI.setU(this,'m²')">m²</span>
                         </div>
                     </div>
                     <input type="number" class="p-p" value="${p}" oninput="UI.calc()">
                     <button onclick="this.parentElement.remove(); UI.calc()" style="color:red; background:none; border:none; cursor:pointer;">✕</button>
                 `;
-                document.getElementById('pos-root').appendChild(div); UI.calc();
+                document.getElementById('pos-root').appendChild(div);
+                UI.calc();
             },
-            setU(btn, v) { btn.parentElement.parentElement.querySelector('.p-u').value = v; UI.calc(); },
-            setType(t, el) { CORE.type = t; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); },
+
+            setU(btn, v) {
+                btn.parentElement.parentElement.querySelector('.p-u').value = v;
+                UI.calc();
+            },
+
+            setType(t, el) {
+                CORE.type = t;
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+            },
+
             calc() {
                 let net = 0;
                 document.querySelectorAll('.pos-row').forEach(row => {
                     net += (parseFloat(row.querySelector('.p-q').value) || 0) * (parseFloat(row.querySelector('.p-p').value) || 0);
                 });
+
                 const tax = net * 0.19;
                 const total = net + tax;
+
                 document.getElementById('v-net').innerText = net.toFixed(2) + " €";
                 document.getElementById('v-tax').innerText = tax.toFixed(2) + " €";
                 document.getElementById('v-total').innerText = total.toFixed(2) + " €";
             }
         };
+
         CORE.init();
     </script>
 </body>
