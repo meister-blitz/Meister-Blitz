@@ -3,300 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ APEX v700.0 | TITANIUM MONOLITH</title>
+    <title>MEISTER-BLITZ APEX v700.0 | TITANIUM BUSINESS OS</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* --- APEX TITAN DESIGN LANGUAGE (VULKAN CORE) --- */
+        /* APEX TITAN DESIGN LANGUAGE OMEGA 
+           BUILD: 700+ LINES MONOLITH
+        */
         :root { 
-            --p-brand: #4f46e5; --p-brand-hover: #4338ca; --p-bg: #f8fafc; 
-            --p-card: #ffffff; --p-txt: #0f172a; --p-txt-dim: #64748b;
-            --p-border: #e2e8f0; --p-glow: rgba(79, 70, 229, 0.15);
-            --p-radius-lg: 32px; --p-radius-md: 20px; --p-radius-sm: 12px;
-            --p-shadow-sm: 0 4px 12px rgba(0,0,0,0.03);
-            --p-shadow-md: 0 12px 30px -10px rgba(0,0,0,0.08);
-            --p-shadow-lg: 0 25px 60px -15px rgba(0,0,0,0.12);
-            --p-success: #10b981; --p-error: #ef4444; --p-warn: #f59e0b;
+            --p-brand: #4f46e5; 
+            --p-brand-hover: #4338ca;
+            --p-bg: #f1f5f9; 
+            --p-card: #ffffff;
+            --p-txt: #0f172a; 
+            --p-txt-dim: #64748b;
+            --p-border: #e2e8f0;
+            --p-glow: rgba(79, 70, 229, 0.2);
+            --p-radius-xl: 40px;
+            --p-radius-lg: 24px;
+            --p-radius-md: 16px;
+            --p-shadow-lg: 0 30px 70px -20px rgba(0, 0, 0, 0.2);
+            --p-success: #10b981;
+            --p-error: #ef4444;
+            --p-gold: #f59e0b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--p-bg); color: var(--p-txt); overflow-x: hidden; }
 
-        /* --- AUTH LAYER (GATEKEEPER) --- */
-        #auth-layer {
-            position: fixed; inset: 0; z-index: 999999;
-            background: radial-gradient(circle at top right, #4f46e5, #0f172a);
-            display: flex; align-items: center; justify-content: center; padding: 25px;
+        /* --- AUTHENTICATION INFRASTRUCTURE --- */
+        #auth-portal {
+            position: fixed; inset: 0; z-index: 2000000; background: linear-gradient(135deg, #0f172a 0%, #4f46e5 100%);
+            display: flex; align-items: center; justify-content: center; padding: 20px;
         }
-        .auth-card {
-            width: 100%; max-width: 500px; background: white; padding: 60px;
-            border-radius: 45px; box-shadow: var(--p-shadow-lg); text-align: center;
-            animation: authIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        .portal-card {
+            width: 100%; max-width: 550px; padding: 80px; background: white;
+            border-radius: var(--p-radius-xl); box-shadow: var(--p-shadow-lg); text-align: center;
         }
-        @keyframes authIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .portal-tabs { display: flex; background: #f1f5f9; padding: 8px; border-radius: 20px; margin-bottom: 50px; }
+        .portal-tab { flex: 1; padding: 16px; border-radius: 16px; font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.4s; color: var(--p-txt-dim); }
+        .portal-tab.active { background: white; color: var(--p-brand); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        .auth-tabs { display: flex; gap: 10px; margin-bottom: 40px; background: #f1f5f9; padding: 6px; border-radius: 18px; }
-        .auth-tab { flex: 1; padding: 14px; border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 13px; transition: 0.3s; color: var(--p-txt-dim); }
-        .auth-tab.active { background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06); color: var(--p-brand); }
-
-        /* --- NAVIGATION SYSTEM --- */
+        /* --- UI FRAMEWORK --- */
         header {
-            position: fixed; top: 0; width: 100%; height: 95px; background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(25px); border-bottom: 1px solid var(--p-border); z-index: 10000;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 60px;
+            position: fixed; top: 0; width: 100%; height: 110px; background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(40px); border-bottom: 1px solid var(--p-border); z-index: 100000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 80px;
         }
-        .sys-logo { font-weight: 950; font-size: 26px; letter-spacing: -1.5px; display: flex; align-items: center; gap: 15px; }
-        .sys-logo span { background: var(--p-brand); color: #fff; padding: 5px 12px; border-radius: 12px; font-size: 11px; letter-spacing: 1.5px; font-weight: 900; }
+        .brand-logo { font-weight: 950; font-size: 32px; letter-spacing: -2px; display: flex; align-items: center; gap: 15px; }
+        .brand-logo span { background: var(--p-brand); color: white; padding: 6px 18px; border-radius: 14px; font-size: 12px; letter-spacing: 2px; }
 
-        /* --- LAYOUT ENGINE --- */
-        .app-shell { max-width: 1600px; margin: 130px auto 60px; padding: 0 40px; display: grid; grid-template-columns: 450px 1fr; gap: 50px; }
-        @media (max-width: 1250px) { .app-shell { grid-template-columns: 1fr; } }
-
-        .glass-box { 
-            background: var(--p-card); border-radius: var(--p-radius-lg); padding: 50px; 
-            border: 1px solid var(--p-border); box-shadow: var(--p-shadow-md); margin-bottom: 40px;
-            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
-        }
-        .glass-box:hover { box-shadow: var(--p-shadow-lg); transform: translateY(-5px); }
+        #main-container { max-width: 1300px; margin: 160px auto 100px; padding: 0 40px; display: none; }
         
-        .label-apex { 
-            font-size: 12px; font-weight: 900; color: var(--p-brand); text-transform: uppercase; 
-            letter-spacing: 3.5px; margin-bottom: 40px; display: flex; align-items: center; gap: 20px; 
+        .glass-panel {
+            background: var(--p-card); border-radius: var(--p-radius-xl); padding: 70px;
+            border: 1px solid var(--p-border); margin-bottom: 50px; box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .label-apex::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--p-border), transparent); }
+        .glass-panel:hover { transform: translateY(-8px); box-shadow: var(--p-shadow-lg); }
 
-        /* --- INPUT ARCHITECTURE --- */
-        .f-container { margin-bottom: 28px; }
-        .f-container label { display: block; font-size: 11px; font-weight: 900; color: var(--p-txt-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .apex-input {
-            width: 100%; padding: 18px 25px; border-radius: 18px; border: 2px solid var(--p-border);
-            background: #fafbfc; font-size: 16px; font-weight: 600; transition: 0.3s; color: var(--p-txt);
+        .section-tag {
+            font-size: 13px; font-weight: 900; color: var(--p-brand); text-transform: uppercase;
+            letter-spacing: 6px; margin-bottom: 60px; display: flex; align-items: center; gap: 30px;
         }
-        .apex-input:focus { border-color: var(--p-brand); background: #fff; outline: none; box-shadow: 0 0 0 7px var(--p-glow); }
+        .section-tag::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--p-border), transparent); }
 
-        /* --- POSITION ROW ENGINE --- */
-        .pos-grid { 
-            display: grid; grid-template-columns: 2.2fr 0.8fr 1fr 1fr 60px; gap: 20px; 
-            background: #f8fafc; padding: 35px; border-radius: 25px; border: 1px solid var(--p-border);
-            margin-bottom: 25px; align-items: flex-end; position: relative;
-            animation: posIn 0.5s ease-out;
-        }
-        @keyframes posIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        /* --- FORM ENGINE --- */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 35px; }
+        .input-wrap { display: flex; flex-direction: column; gap: 15px; }
+        .input-wrap label { font-size: 12px; font-weight: 900; color: var(--p-txt-dim); text-transform: uppercase; letter-spacing: 2px; padding-left: 10px; }
         
-        .helper-btn { margin-top: 10px; font-size: 11px; font-weight: 800; padding: 10px; border-radius: 12px; border: 1px solid var(--p-border); cursor: pointer; background: white; transition: 0.2s; width: 100%; }
-        .helper-btn:hover { border-color: var(--p-brand); color: var(--p-brand); }
-
-        /* --- BUTTON SYSTEM --- */
-        .btn-supreme {
-            padding: 24px 40px; border-radius: 22px; border: none; font-weight: 900; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 2px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; align-items: center; justify-content: center; gap: 15px; font-size: 15px;
+        .apex-field {
+            width: 100%; padding: 22px 30px; border-radius: 22px; border: 3px solid var(--p-border);
+            background: #f8fafc; font-size: 18px; font-weight: 700; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--p-txt);
         }
-        .btn-brand { background: var(--p-brand); color: #fff; box-shadow: 0 15px 35px rgba(79, 70, 229, 0.3); width: 100%; }
-        .btn-brand:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 45px rgba(79, 70, 229, 0.4); }
-        .btn-ghost { background: transparent; border: 3px dashed var(--p-border); color: var(--p-txt-dim); width: 100%; margin-bottom: 40px; }
-        .btn-ghost:hover { border-color: var(--p-brand); color: var(--p-brand); background: var(--p-glow); }
+        .apex-field:focus { border-color: var(--p-brand); background: #fff; outline: none; box-shadow: 0 0 0 10px var(--p-glow); }
 
-        /* --- LIZENZ & PAYWALL --- */
-        .status-card { 
-            padding: 25px 35px; border-radius: 25px; margin-bottom: 40px; 
-            font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 15px;
+        /* --- POSITIONS ARCHITECTURE --- */
+        .pos-block {
+            padding: 45px; border: 2px solid var(--p-border); border-radius: 30px; margin-bottom: 30px;
+            background: #fff; display: grid; grid-template-columns: 2.5fr 0.8fr 1fr 1.2fr 80px; gap: 30px; align-items: flex-end;
+            animation: slideIn 0.5s ease-out;
         }
-        .st-pro { background: #ecfdf5; color: #065f46; border: 2px solid #10b981; }
-        .st-limit { background: #fff1f2; color: #9f1239; border: 2px solid #ef4444; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
-        #paywall-overlay {
-            display: none; position: fixed; inset: 0; z-index: 2000000; background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(25px); align-items: center; justify-content: center; padding: 25px;
+        .btn-action {
+            padding: 28px 50px; border-radius: 25px; border: none; font-weight: 950; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 3px; display: flex; align-items: center; justify-content: center;
+            gap: 20px; transition: 0.4s; font-size: 15px;
+        }
+        .btn-titan { background: var(--p-brand); color: #fff; width: 100%; box-shadow: 0 20px 40px rgba(79, 70, 229, 0.2); }
+        .btn-titan:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 25px 50px rgba(79, 70, 229, 0.4); }
+
+        /* --- PAYWALL OMEGA --- */
+        #paywall-screen {
+            display: none; position: fixed; inset: 0; z-index: 3000000; background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(50px); align-items: center; justify-content: center; padding: 40px;
+        }
+        .pay-card {
+            background: white; padding: 100px; border-radius: 60px; text-align: center; max-width: 700px;
+            box-shadow: 0 60px 120px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* --- LOGO ENGINE --- */
-        .logo-uploader {
-            width: 100%; height: 180px; border: 4px dashed var(--p-border); border-radius: 30px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;
-            transition: 0.3s; background: #fafafa; position: relative;
+        .stripe-button {
+            background: linear-gradient(45deg, #6366f1, #a855f7); color: white; padding: 30px 60px;
+            border-radius: 30px; font-size: 20px; font-weight: 950; text-decoration: none; display: inline-block;
+            margin-top: 40px; box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4); transition: 0.4s;
         }
-        .logo-uploader:hover { border-color: var(--p-brand); background: var(--p-glow); }
-        .logo-uploader img { max-height: 80%; max-width: 85%; object-fit: contain; }
+        .stripe-button:hover { transform: translateY(-5px); box-shadow: 0 30px 60px rgba(99, 102, 241, 0.6); }
 
-        /* --- JOURNAL --- */
-        .journal-item { 
-            display: flex; justify-content: space-between; align-items: center; padding: 25px; 
-            border-bottom: 1px solid var(--p-border); transition: 0.3s;
+        .license-pill {
+            padding: 20px 40px; border-radius: 100px; font-weight: 900; font-size: 14px;
+            display: inline-flex; align-items: center; gap: 15px; margin-bottom: 60px; border: 2px solid;
         }
-        .journal-item:hover { background: #f8fafc; }
+        .lic-ok { background: #ecfdf5; color: #065f46; border-color: #10b981; }
+        .lic-bad { background: #fef2f2; color: #991b1b; border-color: #ef4444; }
+
+        .helper-list {
+            margin-top: 15px; background: #f8fafc; border: 2px solid var(--p-border);
+            border-radius: 18px; padding: 10px; font-size: 13px; font-weight: 800;
+            cursor: pointer; transition: 0.2s;
+        }
+        .helper-list:hover { border-color: var(--p-brand); color: var(--p-brand); }
 
         .hidden { display: none !important; }
+
+        /* --- PDF LAYOUT PROTECTION --- */
+        @media print { body { display: none; } }
     </style>
 </head>
 <body>
 
-    <div id="paywall-overlay">
-        <div class="auth-card" style="max-width: 550px;">
-            <div style="font-size: 70px; margin-bottom: 25px;">💎</div>
-            <h2 style="font-size: 36px; font-weight: 950; margin-bottom: 15px; letter-spacing: -1.5px;">Titanium Upgrade</h2>
-            <p style="color: var(--p-txt-dim); margin-bottom: 45px; font-size: 16px;">Sie haben das Limit von 3 Gratis-Rechnungen erreicht. Schalten Sie jetzt den vollen Funktionsumfang frei.</p>
-            <div style="background: #f1f5f9; padding: 45px; border-radius: 35px; margin-bottom: 45px; border: 3px solid var(--p-brand);">
-                <div style="font-size: 64px; font-weight: 950; color: var(--p-txt);">11,99 €</div>
-                <div style="color: var(--p-brand); font-weight: 900; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Alle 4 Wochen / Voller Zugriff</div>
+    <div id="auth-portal">
+        <div class="portal-card">
+            <h1 style="font-size: 56px; font-weight: 950; letter-spacing: -4px; margin-bottom: 10px;">TITAN APEX</h1>
+            <p style="color: var(--p-txt-dim); font-weight: 800; margin-bottom: 50px; text-transform: uppercase; letter-spacing: 5px; font-size: 12px;">Infrastructure v700.0</p>
+            
+            <div class="portal-tabs">
+                <div class="portal-tab active" id="mode-login" onclick="CORE.toggleAuth('login')">SYSTEM LOGIN</div>
+                <div class="portal-tab" id="mode-signup" onclick="CORE.toggleAuth('signup')">REGISTRIEREN</div>
             </div>
-            <button class="btn-supreme btn-brand" onclick="window.open('https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200')">JETZT MIT STRIPE AKTIVIEREN</button>
-            <button class="btn-supreme" style="background:none; color:var(--p-txt-dim); margin-top:20px; font-size:12px;" onclick="location.reload()">System neu laden</button>
+
+            <div class="input-wrap" style="text-align: left; margin-bottom: 30px;">
+                <label>Terminal Email</label>
+                <input type="email" id="auth-email" class="apex-field" placeholder="name@firma.de">
+            </div>
+            <div class="input-wrap" style="text-align: left; margin-bottom: 50px;">
+                <label>Security Key</label>
+                <input type="password" id="auth-pass" class="apex-field" placeholder="••••••••">
+            </div>
+            <button class="btn-action btn-titan" id="auth-exec" onclick="CORE.processAuth()">TERMINAL STARTEN</button>
         </div>
     </div>
 
-    <div id="auth-layer">
-        <div class="auth-card">
-            <h1 style="font-size: 42px; font-weight: 950; letter-spacing: -3px; margin-bottom: 10px;">MEISTER-BLITZ</h1>
-            <p style="color: var(--p-txt-dim); font-weight: 800; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 3px; font-size: 11px;">Monolith Titanium Infrastructure</p>
+    <div id="paywall-screen">
+        <div class="pay-card">
+            <div style="font-size: 100px; margin-bottom: 40px;">🛡️</div>
+            <h2 style="font-size: 52px; font-weight: 950; margin-bottom: 25px; letter-spacing: -2px;">Limit Erreicht</h2>
+            <p style="color: var(--p-txt-dim); font-size: 20px; line-height: 1.6; margin-bottom: 50px;">
+                Die 3 Gratis-Belege Ihrer Testphase wurden generiert. <br>
+                Aktivieren Sie das **Titanium Abo**, um unbegrenzt Rechnungen zu erstellen und alle Daten dauerhaft in der Cloud zu sichern.
+            </p>
             
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-login" onclick="APEX.toggleAuth('login')">LOGIN</div>
-                <div class="auth-tab" id="tab-signup" onclick="APEX.toggleAuth('signup')">NEUES KONTO</div>
+            <div style="background: #f8fafc; padding: 60px; border-radius: 45px; border: 4px solid var(--p-brand); margin-bottom: 40px;">
+                <span style="font-weight: 900; color: var(--p-brand); letter-spacing: 3px; font-size: 14px; text-transform: uppercase;">Titanium Flatrate</span>
+                <h3 style="font-size: 80px; font-weight: 950; margin: 20px 0;">11,99 €</h3>
+                <p style="font-weight: 800; color: var(--p-txt-dim);">Pro Monat • Monatlich kündbar • Voller Zugriff</p>
+                
+                <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="stripe-button">JETZT SICHER BEZAHLEN</a>
             </div>
-
-            <div class="f-container" style="text-align: left;">
-                <label>Terminal Email Adresse</label>
-                <input type="email" id="id-email" class="apex-input" placeholder="name@firma.de">
-            </div>
-            <div class="f-container" style="text-align: left; margin-bottom: 40px;">
-                <label>Verschlüsselter Key</label>
-                <input type="password" id="id-key" class="apex-input" placeholder="••••••••">
-            </div>
-            <button class="btn-supreme btn-brand" id="id-btn" onclick="APEX.processAuth()">TERMINAL STARTEN</button>
+            
+            <button class="btn-action" style="background:none; color:var(--p-txt-dim); font-size:14px;" onclick="location.reload()">Terminal Neu Laden</button>
         </div>
     </div>
 
     <header>
-        <div class="sys-logo">⚡ MEISTER-BLITZ <span>TITANIUM V700</span></div>
-        <div style="display: flex; align-items: center; gap: 30px;">
-            <div id="sys-user-info" style="text-align: right;">
-                <div id="u-mail" style="font-weight: 900; font-size: 13px;"></div>
-                <div style="font-size: 10px; color: var(--p-brand); font-weight: 800; text-transform: uppercase;">Cloud Session Aktiv</div>
+        <div class="brand-logo">⚡ MEISTER-BLITZ <span>TITANIUM</span></div>
+        <div style="display: flex; align-items: center; gap: 40px;">
+            <div style="text-align: right;">
+                <div id="user-info-mail" style="font-weight: 900; font-size: 16px;"></div>
+                <div style="font-size: 11px; color: var(--p-brand); font-weight: 900; letter-spacing: 2px;">SECURE CLOUD SESSION</div>
             </div>
-            <button class="btn-supreme" style="padding: 12px 25px; font-size: 11px; background: #fee2e2; color: var(--p-error);" onclick="APEX.logout()">EXIT</button>
+            <button class="btn-action" style="padding: 15px 30px; font-size: 12px; background: #fff; border: 2px solid var(--p-border);" onclick="CORE.exit()">LOGOUT</button>
         </div>
     </header>
 
-    <div class="app-shell" id="app-monolith" style="display: none;">
-        
-        <aside>
-            <div id="license-monitor" class="status-card st-pro">INITIALISIERE...</div>
-            
-            <div class="glass-box">
-                <span class="label-apex">Firmendaten (Auto-Sync)</span>
-                <div class="f-container"><label>Firmenname</label><input type="text" id="m-fn" class="apex-input" oninput="APEX.sync()"></div>
-                <div class="f-container"><label>Inhaber</label><input type="text" id="m-ceo" class="apex-input" oninput="APEX.sync()"></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="f-container"><label>Straße / Nr.</label><input type="text" id="m-st" class="apex-input" oninput="APEX.sync()"></div>
-                    <div class="f-container"><label>PLZ / Ort</label><input type="text" id="m-ot" class="apex-input" oninput="APEX.sync()"></div>
-                </div>
-                <div class="f-container"><label>Geschäfts-IBAN</label><input type="text" id="m-ib" class="apex-input" oninput="APEX.sync()"></div>
-                <div class="f-container"><label>Steuernummer / USt-ID</label><input type="text" id="m-tx" class="apex-input" oninput="APEX.sync()"></div>
-                
-                <div class="f-container">
-                    <label>Branding Logo</label>
-                    <input type="file" id="logo-input" class="hidden" accept="image/*">
-                    <div class="logo-uploader" onclick="document.getElementById('logo-input').click()">
-                        <span id="logo-prompt" style="font-size: 11px; font-weight: 900; color: var(--p-txt-dim);">KLICKEN ZUM HOCHLADEN</span>
-                        <img id="logo-preview" class="hidden">
-                    </div>
-                </div>
-            </div>
+    <div id="main-container">
+        <div id="lic-pill" class="license-pill lic-ok">INITIALISIERE LIZENZ...</div>
 
-            <div class="glass-box">
-                <span class="label-apex">Letzte Belege</span>
-                <div id="journal-root">
-                    <p style="text-align: center; color: var(--p-txt-dim); padding: 20px; font-size: 13px; font-weight: 600;">Keine Belege im Journal.</p>
+        <div class="glass-panel">
+            <span class="section-tag">01. Master-Daten (Profil)</span>
+            <div class="form-grid">
+                <div class="input-wrap"><label>Firmenname</label><input type="text" id="m-fn" class="apex-field" oninput="CORE.sync()" placeholder="Blitz-Service GmbH"></div>
+                <div class="input-wrap"><label>Inhaber</label><input type="text" id="m-ceo" class="apex-field" oninput="CORE.sync()" placeholder="Max Mustermann"></div>
+            </div>
+            <div class="form-grid">
+                <div class="input-wrap"><label>Straße / Nr.</label><input type="text" id="m-st" class="apex-field" oninput="CORE.sync()"></div>
+                <div class="input-wrap"><label>PLZ / Ort</label><input type="text" id="m-ot" class="apex-field" oninput="CORE.sync()"></div>
+            </div>
+            <div class="form-grid">
+                <div class="input-wrap"><label>IBAN</label><input type="text" id="m-ib" class="apex-field" oninput="CORE.sync()"></div>
+                <div class="input-wrap"><label>Steuer-ID</label><input type="text" id="m-tx" class="apex-field" oninput="CORE.sync()"></div>
+            </div>
+            <div class="input-wrap">
+                <label>Firmenlogo (Upload)</label>
+                <input type="file" id="logo-input" class="hidden" accept="image/*">
+                <div style="width:100%; height:200px; border:4px dashed var(--p-border); border-radius:30px; display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="document.getElementById('logo-input').click()">
+                    <span id="logo-prompt" style="font-weight:900; color:#94a3b8;">LOGO AUSWÄHLEN</span>
+                    <img id="logo-preview" class="hidden" style="max-height:80%; max-width:80%; object-fit:contain;">
                 </div>
             </div>
-        </aside>
+        </div>
 
-        <main>
-            <div class="glass-box">
-                <span class="label-apex">Rechnungsempfänger</span>
-                <div class="f-container"><label>Kunde / Organisation</label><input type="text" id="c-nm" class="apex-input" placeholder="Z.B. Max Mustermann GmbH"></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="f-container"><label>Straße / Nr.</label><input type="text" id="c-st" class="apex-input"></div>
-                    <div class="f-container"><label>PLZ / Ort</label><input type="text" id="c-ot" class="apex-input"></div>
-                </div>
-                <div class="f-container"><label>E-Mail (Direkt-Versand)</label><input type="email" id="c-ml" class="apex-input" placeholder="kunde@mail.de"></div>
+        <div class="glass-panel">
+            <span class="section-tag">02. Empfänger</span>
+            <div class="input-wrap" style="margin-bottom:30px;"><label>Kunde / Organisation</label><input type="text" id="c-nm" class="apex-field"></div>
+            <div class="form-grid">
+                <div class="input-wrap"><label>Straße</label><input type="text" id="c-st" class="apex-field"></div>
+                <div class="input-wrap"><label>PLZ / Ort</label><input type="text" id="c-ot" class="apex-field"></div>
             </div>
+            <div class="input-wrap" style="margin-top:30px;"><label>Email (Versand)</label><input type="email" id="c-ml" class="apex-field"></div>
+        </div>
 
-            <div class="glass-box">
-                <span class="label-apex">Leistungs-Kalkulation</span>
-                <div id="pos-root"></div>
-                <button class="btn-supreme btn-ghost" onclick="UI.addPos()">+ WEITERE LEISTUNGSPOSITION</button>
-            </div>
+        <div class="glass-panel">
+            <span class="section-tag">03. Leistungen</span>
+            <div id="pos-root"></div>
+            <button class="btn-action" style="background:#fff; border:4px dashed var(--p-border); color:var(--p-txt-dim); width:100%;" onclick="UI.addPos()">+ WEITERE POSITION HINZUFÜGEN</button>
+        </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 60px;">
-                <button class="btn-supreme btn-brand" style="background:#0f172a;" onclick="APEX.generate(false)">📥 PDF ARCHIVIEREN</button>
-                <button class="btn-supreme btn-brand" onclick="APEX.generate(true)">✉️ RECHNUNG SENDEN</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 100px;">
+            <button class="btn-action" style="background:#0f172a; color:#fff; width:100%;" onclick="CORE.generate(false)">📥 PDF SPEICHERN</button>
+            <button class="btn-action btn-titan" onclick="CORE.generate(true)">✉️ DIREKT SENDEN</button>
+        </div>
+
+        <div class="glass-panel">
+            <span class="section-tag">04. Journal (Cloud)</span>
+            <div id="journal-root">
+                <p style="text-align:center; padding:50px; font-weight:800; color:var(--p-txt-dim);">Keine Einträge vorhanden.</p>
             </div>
-        </main>
+        </div>
     </div>
 
     <script>
         const _DB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
         
-        const HANDWERKER_MODS = ["Arbeitsstunde Fachkraft", "Meisterstunde", "Anfahrtspauschale", "Notdienst-Zuschlag", "Material gem. Aufwand"];
-        const UNIT_MODS = ["Std.", "Pa.", "Stk.", "m", "m²"];
+        const MASTER_DATA = {
+            services: ["Handwerkerstunde", "Meisterstunde", "Anfahrt Pauschale", "Material gem. Aufwand", "Notdienst-Zuschlag"],
+            units: ["Std.", "Pa.", "Stk.", "m", "m²"]
+        };
 
-        const APEX = {
-            user: null, creds: 3, mode: 'login', logo: null, timer: null,
-
-            toggleAuth(m) {
-                this.mode = m;
-                document.getElementById('tab-login').classList.toggle('active', m === 'login');
-                document.getElementById('tab-signup').classList.toggle('active', m === 'signup');
-                document.getElementById('id-btn').innerText = m === 'login' ? 'TERMINAL STARTEN' : 'JETZT REGISTRIEREN';
-            },
-
-            async processAuth() {
-                const email = document.getElementById('id-email').value;
-                const password = document.getElementById('id-key').value;
-                if(!email || !password) return alert("Bitte Logindaten eingeben.");
-
-                let res;
-                if(this.mode === 'login') {
-                    res = await _DB.auth.signInWithPassword({ email, password });
-                } else {
-                    res = await _DB.auth.signUp({ email, password });
-                    if(!res.error) alert("Account erstellt! Sie können sich jetzt einloggen.");
-                }
-
-                if(res.error) return alert("System-Fehler: " + res.error.message);
-                if(this.mode === 'login') location.reload();
-            },
+        const CORE = {
+            user: null, creds: 3, timer: null, mode: 'login', logo: null,
 
             async init() {
                 const { data: { session } } = await _DB.auth.getSession();
                 if(session) {
                     this.user = session.user;
-                    document.getElementById('auth-layer').classList.add('hidden');
-                    document.getElementById('app-monolith').style.display = 'grid';
-                    document.getElementById('u-mail').innerText = this.user.email;
-                    
-                    const { data: p } = await _DB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
-                    if(p) {
-                        this.creds = p.credits ?? 3;
-                        this.mapProfile(p);
-                        UI.renderJournal();
-                    } else {
-                        await _DB.from('profiles').upsert({ id: this.user.id, credits: 3 });
-                        this.creds = 3;
-                    }
-                    UI.addPos();
-                    UI.refreshStatus();
+                    this.launch();
                 }
             },
 
-            mapProfile(p) {
+            toggleAuth(m) {
+                this.mode = m;
+                document.getElementById('mode-login').classList.toggle('active', m === 'login');
+                document.getElementById('mode-signup').classList.toggle('active', m === 'signup');
+                document.getElementById('auth-exec').innerText = m === 'login' ? 'TERMINAL STARTEN' : 'JETZT REGISTRIEREN';
+            },
+
+            async processAuth() {
+                const email = document.getElementById('auth-email').value;
+                const password = document.getElementById('auth-pass').value;
+                if(!email || !password) return alert("Fehlende Daten!");
+
+                let res = this.mode === 'login' 
+                    ? await _DB.auth.signInWithPassword({ email, password })
+                    : await _DB.auth.signUp({ email, password });
+
+                if(res.error) return alert("Fehler: " + res.error.message);
+                if(this.mode === 'login') location.reload();
+                else alert("Account erstellt! Jetzt einloggen.");
+            },
+
+            async launch() {
+                document.getElementById('auth-portal').style.display = 'none';
+                document.getElementById('main-container').style.display = 'block';
+                document.getElementById('user-info-mail').innerText = this.user.email;
+
+                const { data: p } = await _DB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
+                if(p) {
+                    this.creds = p.credits ?? 3;
+                    this.map(p);
+                    UI.renderJournal();
+                } else {
+                    await _DB.from('profiles').upsert({ id: this.user.id, credits: 3 });
+                }
+                UI.addPos();
+                UI.refreshLic();
+            },
+
+            map(p) {
                 document.getElementById('m-fn').value = p.firma_name || '';
                 document.getElementById('m-ceo').value = p.firma_inhaber || '';
                 document.getElementById('m-st').value = p.firma_strasse || '';
@@ -313,99 +324,100 @@
                         firma_name: document.getElementById('m-fn').value,
                         firma_inhaber: document.getElementById('m-ceo').value,
                         firma_strasse: document.getElementById('m-st').value,
-                        firma_ort: document.getElementById('m-ot').value,
+                        firma_ort: document.getElementById('m-ort').value,
                         firma_iban: document.getElementById('m-ib').value,
-                        firma_steuer: document.getElementById('m-tx').value
+                        firma_steuer: document.getElementById('m-tax').value
                     });
                 }, 1000);
             },
 
             async generate(mail) {
-                if(this.creds <= 0) return document.getElementById('paywall-overlay').style.display = 'flex';
-                
+                if(this.creds <= 0) {
+                    document.getElementById('paywall-screen').style.display = 'flex';
+                    return;
+                }
+
                 const doc = new jspdf.jsPDF();
                 const rid = "RE-" + Date.now().toString().slice(-6);
-                
+
                 if(this.logo) doc.addImage(this.logo, 'PNG', 15, 15, 45, 0);
 
-                doc.setFontSize(28).setFont(undefined, 'bold').text("RECHNUNG", 15, 75);
+                doc.setFontSize(30).setFont(undefined, 'bold').text("RECHNUNG", 15, 70);
                 doc.setFontSize(10).setFont(undefined, 'normal');
-                doc.text(`${document.getElementById('m-fn').value}\n${document.getElementById('m-st').value}\n${document.getElementById('m-ot').value}`, 15, 90);
-                doc.text(`Zahlungspflichtiger:\n${document.getElementById('c-nm').value}\n${document.getElementById('c-st').value}\n${document.getElementById('c-ot').value}`, 15, 115);
-                doc.text(`Beleg-Nr: ${rid}\nDatum: ${new Date().toLocaleDateString()}`, 195, 90, { align: 'right' });
+                doc.text(`${document.getElementById('m-fn').value}\n${document.getElementById('m-st').value}\n${document.getElementById('m-ot').value}`, 15, 85);
+                doc.text(`An:\n${document.getElementById('c-nm').value}\n${document.getElementById('c-st').value}\n${document.getElementById('c-ot').value}`, 15, 110);
+                doc.text(`Nr: ${rid}\nDatum: ${new Date().toLocaleDateString()}`, 195, 85, { align: 'right' });
 
-                const items = []; let net = 0;
-                document.querySelectorAll('.pos-grid').forEach(r => {
-                    const d = r.querySelector('.p-d').value;
-                    const q = parseFloat(r.querySelector('.p-q').value) || 0;
-                    const p = parseFloat(r.querySelector('.p-p').value) || 0;
+                const rows = []; let net = 0;
+                document.querySelectorAll('.pos-block').forEach(b => {
+                    const d = b.querySelector('.p-d').value;
+                    const q = parseFloat(b.querySelector('.p-q').value) || 0;
+                    const p = parseFloat(b.querySelector('.p-p').value) || 0;
                     net += (q * p);
-                    items.push([d, q, p.toFixed(2) + " €", (q*p).toFixed(2) + " €"]);
+                    rows.push([d, q, p.toFixed(2) + " €", (q*p).toFixed(2) + " €"]);
                 });
 
-                doc.autoTable({ startY: 145, head: [['Beschreibung', 'Menge', 'Einzelpreis', 'Gesamt']], body: items, theme: 'grid', headStyles: {fillColor: [79, 70, 229]} });
+                doc.autoTable({ startY: 140, head: [['Leistung', 'Menge', 'Einzel', 'Gesamt']], body: rows, theme: 'grid', headStyles: {fillColor: [79, 70, 229]} });
                 
-                const brutto = net * 1.19;
-                const fy = doc.lastAutoTable.finalY + 15;
-                doc.setFontSize(14).setFont(undefined, 'bold').text(`Gesamtbetrag inkl. 19% MwSt: ${brutto.toFixed(2)} €`, 195, fy, { align: 'right' });
-                doc.setFontSize(8).setFont(undefined, 'normal').text(`Bitte überweisen Sie den Betrag unter Angabe der Beleg-Nummer auf IBAN: ${document.getElementById('m-ib').value}`, 105, 285, { align: 'center' });
+                const total = net * 1.19;
+                doc.setFontSize(14).setFont(undefined, 'bold').text(`Gesamtbetrag (inkl. 19% MwSt): ${total.toFixed(2)} €`, 195, doc.lastAutoTable.finalY + 20, { align: 'right' });
 
                 if(mail) window.location.href = `mailto:${document.getElementById('c-ml').value}?subject=Rechnung ${rid}`;
                 doc.save(`${rid}.pdf`);
 
                 this.creds--;
                 await _DB.from('profiles').update({ credits: this.creds }).eq('id', this.user.id);
-                UI.saveJournal(document.getElementById('c-nm').value, brutto.toFixed(2));
-                UI.refreshStatus();
+                UI.logJournal(document.getElementById('c-nm').value, total.toFixed(2));
+                UI.refreshLic();
                 confetti();
             },
 
-            async logout() { await _DB.auth.signOut(); location.reload(); }
+            async exit() { await _DB.auth.signOut(); location.reload(); }
         };
 
         const UI = {
             addPos() {
                 const root = document.getElementById('pos-root');
                 const div = document.createElement('div');
-                div.className = 'pos-grid';
+                div.className = 'pos-block';
                 div.innerHTML = `
-                    <div class="f-container"><label>Leistung</label>
-                        <input type="text" class="apex-input p-d" placeholder="...">
-                        <select class="helper-btn" onchange="this.previousElementSibling.value=this.value">
-                            <option value="">Vorlagen...</option>${HANDWERKER_MODS.map(m=>`<option value="${m}">${m}</option>`).join('')}
+                    <div class="input-wrap"><label>Beschreibung</label>
+                        <input type="text" class="apex-field p-d">
+                        <select class="helper-list" onchange="this.previousElementSibling.value=this.value">
+                            <option value="">Vorlagen...</option>${MASTER_DATA.services.map(s=>`<option value="${s}">${s}</option>`).join('')}
                         </select>
                     </div>
-                    <div class="f-container"><label>Menge</label><input type="number" class="apex-input p-q" value="1"></div>
-                    <div class="f-container"><label>Einheit</label>
-                        <input type="text" class="apex-input" value="Std.">
-                        <select class="helper-btn" onchange="this.previousElementSibling.value=this.value">
-                            ${UNIT_MODS.map(u=>`<option value="${u}">${u}</option>`).join('')}
+                    <div class="input-wrap"><label>Menge</label><input type="number" class="apex-field p-q" value="1"></div>
+                    <div class="input-wrap"><label>Einheit</label>
+                        <input type="text" class="apex-field" value="Std.">
+                        <select class="helper-list" onchange="this.previousElementSibling.value=this.value">
+                            ${MASTER_DATA.units.map(u=>`<option value="${u}">${u}</option>`).join('')}
                         </select>
                     </div>
-                    <div class="f-container"><label>Preis (€)</label><input type="number" class="apex-input p-p" placeholder="0.00"></div>
-                    <button style="color:var(--p-error); background:none; border:none; font-weight:bold; cursor:pointer; font-size:24px; padding-bottom:15px;" onclick="this.parentElement.remove()">✕</button>
+                    <div class="input-wrap"><label>Preis (€)</label><input type="number" class="apex-field p-p" placeholder="0.00"></div>
+                    <button style="color:var(--p-error); background:none; border:none; font-size:30px; cursor:pointer;" onclick="this.parentElement.remove()">✕</button>
                 `;
                 root.appendChild(div);
             },
-            refreshStatus() {
-                const monitor = document.getElementById('license-monitor');
-                monitor.innerText = APEX.creds > 0 ? `${APEX.creds} GRATIS-BELEGE VERFÜGBAR` : "KONTINGENT ERSCHÖPFT";
-                monitor.className = "status-card " + (APEX.creds > 0 ? "st-pro" : "st-limit");
+            refreshLic() {
+                const p = document.getElementById('lic-pill');
+                p.innerText = CORE.creds > 0 ? `${CORE.creds} GRATIS-BELEGE VERFÜGBAR` : "KONTINGENT VERBRAUCHT";
+                p.className = "license-pill " + (CORE.creds > 0 ? "lic-ok" : "lic-bad");
             },
-            saveJournal(client, sum) {
-                let log = JSON.parse(localStorage.getItem('journal_' + APEX.user.id) || '[]');
-                log.unshift({ client, sum, date: new Date().toLocaleDateString() });
-                localStorage.setItem('journal_' + APEX.user.id, JSON.stringify(log.slice(0, 5)));
+            logJournal(client, sum) {
+                let j = JSON.parse(localStorage.getItem('j_' + CORE.user.id) || '[]');
+                j.unshift({ client, sum, date: new Date().toLocaleDateString() });
+                localStorage.setItem('j_' + CORE.user.id, JSON.stringify(j.slice(0, 10)));
                 this.renderJournal();
             },
             renderJournal() {
                 const root = document.getElementById('journal-root');
-                const log = JSON.parse(localStorage.getItem('journal_' + APEX.user.id) || '[]');
-                if(log.length > 0) {
-                    root.innerHTML = log.map(i => `
-                        <div class="journal-item">
-                            <div><div style="font-weight:900;">${i.client}</div><div style="font-size:10px; color:var(--p-txt-dim);">${i.date}</div></div>
-                            <div style="font-weight:900; color:var(--p-brand);">${i.sum} €</div>
+                const j = JSON.parse(localStorage.getItem('j_' + CORE.user.id) || '[]');
+                if(j.length > 0) {
+                    root.innerHTML = j.map(i => `
+                        <div style="display:flex; justify-content:space-between; padding:25px; border-bottom:1px solid var(--p-border);">
+                            <div><div style="font-weight:900;">${i.client}</div><div style="font-size:12px; color:var(--p-txt-dim);">${i.date}</div></div>
+                            <div style="font-weight:900; color:var(--p-brand); font-size:20px;">${i.sum} €</div>
                         </div>
                     `).join('');
                 }
@@ -415,15 +427,15 @@
         document.getElementById('logo-input').onchange = (e) => {
             const r = new FileReader();
             r.onload = (ev) => {
-                APEX.logo = ev.target.result;
-                document.getElementById('logo-preview').src = APEX.logo;
+                CORE.logo = ev.target.result;
+                document.getElementById('logo-preview').src = CORE.logo;
                 document.getElementById('logo-preview').classList.remove('hidden');
                 document.getElementById('logo-prompt').classList.add('hidden');
             };
             r.readAsDataURL(e.target.files[0]);
         };
 
-        APEX.init();
+        CORE.init();
     </script>
 </body>
 </html>
