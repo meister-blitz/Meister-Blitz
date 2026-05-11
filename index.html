@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ | Titanium Business Terminal</title>
+    <title>MEISTER-BLITZ | Titanium Business OS v10</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13,122 +13,124 @@
 
     <style>
         :root { 
-            --p-brand: #4f46e5; --p-gold: #f59e0b; --p-bg: #f3f4f6; 
-            --p-border: #e5e7eb; --p-txt: #111827; --p-radius: 24px;
-            --p-glass: rgba(255, 255, 255, 0.8);
+            --p-brand: #4f46e5; --p-gold: #f59e0b; --p-bg: #f1f5f9; 
+            --p-border: #e2e8f0; --p-txt: #0f172a; --p-radius: 28px;
+            --p-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-        body { background: var(--p-bg); color: var(--p-txt); line-height: 1.5; }
+        body { background: var(--p-bg); color: var(--p-txt); overflow-x: hidden; }
 
-        /* PREMIUM HEADER */
+        /* HIGH-STABILITY HEADER */
         header { 
-            background: var(--p-glass); backdrop-filter: blur(20px);
-            height: 100px; display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 50px; border-bottom: 1px solid rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px);
+            height: 110px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 60px; border-bottom: 1px solid rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000;
         }
 
         .logo-terminal {
-            width: 240px; height: 65px; border: 2px dashed var(--p-brand); border-radius: 18px;
+            width: 260px; height: 75px; border: 3px dashed var(--p-brand); border-radius: 20px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            overflow: hidden; background: #fff; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #fff; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .logo-terminal:hover { transform: scale(1.02); border-style: solid; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15); }
-        .logo-terminal img { max-width: 85%; max-height: 85%; object-fit: contain; }
-        .logo-terminal span { font-size: 10px; font-weight: 800; color: var(--p-brand); text-align: center; letter-spacing: 0.5px; }
+        .logo-terminal:hover { transform: scale(1.03); border-style: solid; box-shadow: 0 15px 30px rgba(79, 70, 229, 0.2); }
+        .logo-terminal img { max-width: 80%; max-height: 80%; object-fit: contain; }
+        .logo-terminal span { font-size: 11px; font-weight: 800; color: var(--p-brand); text-transform: uppercase; }
 
-        .nav-right { display: flex; align-items: center; gap: 25px; }
-        .badge { background: #dcfce7; color: #166534; padding: 12px 20px; border-radius: 16px; font-weight: 800; font-size: 12px; border: 1px solid #bbf7d0; }
-        .badge.out { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        .nav-actions { display: flex; align-items: center; gap: 30px; }
+        .badge-system { background: #dcfce7; color: #166534; padding: 14px 24px; border-radius: 18px; font-weight: 800; font-size: 12px; border: 2px solid #bbf7d0; box-shadow: 0 5px 15px rgba(22,101,52,0.1); }
+        .badge-system.locked { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
 
-        .btn-premium { background: var(--p-gold); color: #000; padding: 16px 28px; border-radius: 18px; text-decoration: none; font-weight: 800; font-size: 14px; box-shadow: 0 4px 0 #d97706; transition: 0.2s; }
-        .btn-premium:active { transform: translateY(2px); box-shadow: 0 1px 0 #d97706; }
-        .btn-exit { background: none; border: 1.5px solid var(--p-border); padding: 12px 18px; border-radius: 14px; cursor: pointer; font-weight: 700; color: #6b7280; font-size: 12px; }
+        .btn-premium { background: var(--p-gold); color: #000; padding: 18px 32px; border-radius: 20px; text-decoration: none; font-weight: 800; font-size: 14px; box-shadow: 0 6px 0 #b45309; transition: 0.2s; }
+        .btn-premium:active { transform: translateY(4px); box-shadow: 0 2px 0 #b45309; }
 
-        /* AUTH LAYER */
-        #gate { position: fixed; inset: 0; background: #0f172a; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .gate-card { background: #fff; padding: 70px; border-radius: 48px; width: 520px; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.6); }
-        .auth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        /* AUTH GATEWAY */
+        #auth-gate { position: fixed; inset: 0; background: #020617; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .auth-panel { background: #fff; padding: 80px; border-radius: 56px; width: 550px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.8); }
+        .auth-input { width: 100%; padding: 22px; border: 2px solid #f1f5f9; border-radius: 20px; font-size: 16px; font-weight: 700; margin-bottom: 20px; outline: none; background: #f8fafc; }
+        .auth-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
 
-        /* MAIN CONTENT */
-        .main { max-width: 1300px; margin: 50px auto; padding: 0 40px; display: none; }
-        .card { background: #fff; padding: 45px; border-radius: var(--p-radius); border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 20px 50px rgba(0,0,0,0.04); margin-bottom: 35px; }
-        .card-title { font-size: 12px; font-weight: 900; color: var(--p-brand); text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 35px; display: flex; align-items: center; gap: 20px; }
-        .card-title::after { content: ""; height: 1.5px; flex: 1; background: #f3f4f6; }
+        /* WORKSPACE */
+        .workspace { max-width: 1400px; margin: 60px auto; padding: 0 50px; display: none; }
+        .titan-card { background: #fff; padding: 50px; border-radius: var(--p-radius); border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--p-shadow); margin-bottom: 40px; position: relative; }
+        .card-label { font-size: 12px; font-weight: 900; color: var(--p-brand); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 40px; display: flex; align-items: center; gap: 25px; }
+        .card-label::after { content: ""; height: 2px; flex: 1; background: #f1f5f9; }
 
-        .input-box { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        input { width: 100%; padding: 18px; border: 1.5px solid #f3f4f6; border-radius: 16px; font-size: 16px; font-weight: 600; margin-bottom: 18px; outline: none; transition: 0.3s; background: #fafafa; }
-        input:focus { border-color: var(--p-brand); background: #fff; box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.06); }
+        .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 35px; }
+        input[type="text"], input[type="email"], input[type="number"] { 
+            width: 100%; padding: 20px; border: 2px solid #f1f5f9; border-radius: 18px; font-size: 16px; font-weight: 700; margin-bottom: 20px; outline: none; transition: 0.3s; background: #fafafa;
+        }
+        input:focus { border-color: var(--p-brand); background: #fff; box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.08); }
 
-        /* NEUTRALE SCHNELL-WAHL */
-        .template-area { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 40px; background: #f9fafb; padding: 30px; border-radius: 24px; border: 1px solid #f1f5f9; }
-        .t-btn { background: #fff; border: 1.5px solid #e5e7eb; padding: 16px 24px; border-radius: 16px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .t-btn:hover { border-color: var(--p-brand); color: var(--p-brand); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        /* QUICK OPTIONS (UNIVERSAL HANDWERKER) */
+        .universal-shortcuts { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-bottom: 40px; background: #f8fafc; padding: 35px; border-radius: 30px; }
+        .s-btn { background: #fff; border: 2px solid #e2e8f0; padding: 18px; border-radius: 18px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .s-btn:hover { border-color: var(--p-brand); color: var(--p-brand); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.05); }
 
-        /* POSITIONEN */
-        .pos-header { display: grid; grid-template-columns: 3fr 100px 120px 140px 50px; gap: 20px; padding: 0 20px; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; margin-bottom: 15px; }
-        .pos-row { display: grid; grid-template-columns: 3fr 100px 120px 140px 50px; gap: 20px; margin-bottom: 15px; align-items: center; }
+        /* POSITION TABLE */
+        .pos-header { display: grid; grid-template-columns: 4fr 120px 140px 150px 60px; gap: 25px; padding: 0 25px; font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 20px; }
+        .pos-item { display: grid; grid-template-columns: 4fr 120px 140px 150px 60px; gap: 25px; margin-bottom: 15px; align-items: center; }
 
-        .btn-action { width: 100%; padding: 25px; border: none; border-radius: 22px; font-weight: 800; font-size: 18px; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; gap: 15px; transition: 0.4s; }
-        .btn-dark { background: #111827; }
-        .btn-brand { background: var(--p-brand); box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3); }
-        .btn-brand:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(79, 70, 229, 0.4); }
+        .btn-giant { width: 100%; padding: 28px; border: none; border-radius: 24px; font-weight: 900; font-size: 20px; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; gap: 20px; transition: 0.4s; }
+        .btn-black { background: #0f172a; }
+        .btn-primary { background: var(--p-brand); box-shadow: 0 20px 40px rgba(79, 70, 229, 0.3); }
+        .btn-primary:hover { transform: translateY(-5px); box-shadow: 0 25px 50px rgba(79, 70, 229, 0.4); }
 
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="gate">
-        <div class="gate-card">
-            <h1 style="font-weight:900; font-size:42px; margin-bottom:10px; letter-spacing:-2px;">Meister-Blitz</h1>
-            <p style="color:#64748b; font-weight:700; font-size:12px; margin-bottom:45px; letter-spacing:2px; text-transform:uppercase;">Business Operating System</p>
+    <div id="auth-gate">
+        <div class="auth-panel">
+            <h1 style="font-weight:900; font-size:48px; margin-bottom:10px; letter-spacing:-3px;">MEISTER-BLITZ</h1>
+            <p style="color:#64748b; font-weight:800; font-size:13px; margin-bottom:50px; letter-spacing:3px; text-transform:uppercase;">Titanium Apex Edition v10</p>
             
-            <input type="email" id="id-mail" placeholder="E-Mail Adresse">
-            <input type="password" id="id-pass" placeholder="Passwort">
+            <input type="email" id="auth-email" class="auth-input" placeholder="E-Mail Adresse">
+            <input type="password" id="auth-pass" class="auth-input" placeholder="Terminal-Schlüssel (Passwort)">
             
-            <div class="auth-grid">
-                <button onclick="CORE.login()" class="btn-action btn-brand" style="font-size:14px; padding:20px;">ANMELDEN</button>
-                <button onclick="CORE.register()" class="btn-action" style="font-size:14px; padding:20px; background:#fff; border:2px solid var(--p-brand); color:var(--p-brand);">REGISTRIEREN</button>
+            <div class="auth-btn-group">
+                <button onclick="ENGINE.auth('login')" class="btn-giant btn-primary" style="font-size:14px;">ANMELDEN</button>
+                <button onclick="ENGINE.auth('reg')" class="btn-giant" style="font-size:14px; background:#fff; border:3px solid var(--p-brand); color:var(--p-brand);">REGISTRIEREN</button>
             </div>
         </div>
     </div>
 
     <header>
-        <div style="display:flex; align-items:center; gap:40px;">
-            <div class="logo-terminal" onclick="document.getElementById('l-file').click()">
-                <span id="l-txt">LOGO KOSTENLOS EINFÜGEN<br>(OPTIONAL)</span>
-                <img id="l-img" class="hidden">
+        <div style="display:flex; align-items:center; gap:50px;">
+            <div class="logo-terminal" onclick="document.getElementById('logo-upload').click()">
+                <span id="logo-hint">LOGO KOSTENLOS EINFÜGEN</span>
+                <img id="logo-img" class="hidden">
             </div>
-            <input type="file" id="l-file" class="hidden" accept="image/*">
-            <div style="font-weight:900; font-size:28px; color:var(--p-brand); letter-spacing:-1.5px;">⚡ MEISTER-BLITZ</div>
+            <input type="file" id="logo-upload" class="hidden" accept="image/*">
+            <div style="font-weight:900; font-size:32px; color:var(--p-brand); letter-spacing:-2px;">⚡ TITANIUM</div>
         </div>
         
-        <div class="nav-right">
-            <div id="status-chip" class="badge">3 GRATIS-RECHNUNGEN</div>
-            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-premium">PRO-LIZENZ (11,99€)</a>
-            <button class="btn-exit" onclick="CORE.logout()">LOGOUT</button>
+        <div class="nav-actions">
+            <div id="license-status" class="badge-system">INITIALISIERE...</div>
+            <a href="https://buy.stripe.com/8x2fZ93URcjE3p2giv2B200" class="btn-premium">FULL ACCESS (11,99€)</a>
+            <button class="btn-exit" onclick="ENGINE.exit()" style="background:none; border:none; color:#94a3b8; font-weight:800; cursor:pointer;">EXIT</button>
         </div>
     </header>
 
-    <div id="app" class="main">
+    <div id="main-os" class="workspace">
         
-        <div class="input-box">
-            <div class="card">
-                <div class="card-title">01. Absender (Saved in Cloud)</div>
-                <input type="text" id="m-fn" placeholder="Meine Firma" oninput="CORE.sync()">
-                <div class="input-box">
-                    <input type="text" id="m-st" placeholder="Straße / Nr." oninput="CORE.sync()">
-                    <input type="text" id="m-ot" placeholder="PLZ / Ort" oninput="CORE.sync()">
+        <div class="field-grid">
+            <div class="titan-card">
+                <div class="card-label">01. Absender (Saved to Cloud)</div>
+                <input type="text" id="m-fn" placeholder="Firmenname" oninput="ENGINE.debounceSync()">
+                <div class="field-grid">
+                    <input type="text" id="m-st" placeholder="Straße" oninput="ENGINE.debounceSync()">
+                    <input type="text" id="m-ot" placeholder="PLZ / Ort" oninput="ENGINE.debounceSync()">
                 </div>
-                <input type="text" id="m-ib" placeholder="IBAN (Zahlungsziel)" oninput="CORE.sync()">
-                <input type="text" id="m-tx" placeholder="Steuernummer / USt-ID" oninput="CORE.sync()">
+                <input type="text" id="m-ib" placeholder="IBAN" oninput="ENGINE.debounceSync()">
+                <input type="text" id="m-tx" placeholder="Steuernummer / USt-ID" oninput="ENGINE.debounceSync()">
             </div>
 
-            <div class="card">
-                <div class="card-title">02. Rechnungsempfänger</div>
+            <div class="titan-card">
+                <div class="card-label">02. Rechnungsempfänger</div>
                 <input type="text" id="c-nm" placeholder="Kunde / Firma Name">
-                <div class="input-box">
+                <div class="field-grid">
                     <input type="text" id="c-st" placeholder="Straße">
                     <input type="text" id="c-ot" placeholder="PLZ / Ort">
                 </div>
@@ -136,145 +138,182 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-title">03. Leistungs-Terminal (Universal)</div>
+        <div class="titan-card">
+            <div class="card-label">03. Leistungs-Terminal (Universal)</div>
             
-            <div class="template-area">
-                <button class="t-btn" onclick="UI.add('Arbeitsleistung / Facharbeitszeit', 1, 65, 'Std.')">🕒 Arbeitszeit</button>
-                <button class="t-btn" onclick="UI.add('Anfahrtspauschale inkl. Fahrtkosten', 1, 39, 'Psch.')">🚗 Anfahrt</button>
-                <button class="t-btn" onclick="UI.add('Material / Verbrauchsmaterial', 1, 0, 'Stk.')">📦 Material</button>
-                <button class="t-btn" onclick="UI.add('Dienstleistungspauschale', 1, 150, 'Psch.')">🛠️ Pauschale</button>
-                <button class="t-btn" onclick="UI.add('Maschinenmiete / Gerätetechnik', 1, 45, 'Tag')">⚙️ Maschinen</button>
-                <button class="t-btn" onclick="UI.add('Entsorgung & Umweltgebühr', 1, 20, 'Psch.')">♻️ Entsorgung</button>
+            <div class="universal-shortcuts">
+                <button class="s-btn" onclick="CORE.addRow('Arbeitsleistung / Facharbeitszeit', 1, 65, 'Std.')">🕒 ARBEITSZEIT</button>
+                <button class="s-btn" onclick="CORE.addRow('Anfahrtspauschale / Fahrtkosten', 1, 39, 'Psch.')">🚗 ANFAHRT</button>
+                <button class="s-btn" onclick="CORE.addRow('Materialkosten / Kleinteile', 1, 0, 'Psch.')">📦 MATERIAL</button>
+                <button class="s-btn" onclick="CORE.addRow('Dienstleistungspauschale', 1, 120, 'Psch.')">🛠️ PAUSCHALE</button>
+                <button class="s-btn" onclick="CORE.addRow('Maschinennutzung / Miete', 1, 50, 'Tag')">⚙️ MASCHINEN</button>
             </div>
 
             <div class="pos-header">
-                <span>Leistungsbeschreibung</span><span>Menge</span><span>Einheit</span><span>Einzel (€)</span><span></span>
+                <span>Leistungsbeschreibung</span><span>Menge</span><span>Einheit</span><span>Einzelpreis</span><span></span>
             </div>
             <div id="pos-root"></div>
             
-            <button onclick="UI.add('',1,0,'Std.')" style="width:100%; padding:20px; margin-top:25px; border:2px dashed var(--p-brand); background:#f5f3ff; color:var(--p-brand); font-weight:800; cursor:pointer; border-radius:18px;">
-                + NEUE POSITION HINZUFÜGEN
+            <button onclick="CORE.addRow('',1,0,'Std.')" style="width:100%; padding:22px; margin-top:30px; border:3px dashed var(--p-brand); background:#f5f3ff; color:var(--p-brand); font-weight:900; cursor:pointer; border-radius:20px;">
+                + MANUELLE POSITION HINZUFÜGEN
             </button>
         </div>
 
-        <div class="input-box">
-            <button class="btn-action btn-dark" onclick="CORE.gen(false)">📥 PDF SPEICHERN</button>
-            <button class="btn-action btn-brand" onclick="CORE.gen(true)">✉️ BELEG PER MAIL SENDEN</button>
+        <div class="field-grid">
+            <button class="btn-giant btn-black" onclick="CORE.exportPDF(false)">📥 PDF ARCHIVIEREN</button>
+            <button class="btn-giant btn-primary" onclick="CORE.exportPDF(true)">✉️ RECHNUNG SENDEN</button>
         </div>
-
-        <p style="text-align:center; margin-top:60px; color:#9ca3af; font-weight:800; font-size:12px; letter-spacing:1px; padding-bottom:50px;">
-            TITANIUM OS v10.0 • UNIVERSAL HANDWERKER TERMINAL • CLOUD CONNECTED
-        </p>
     </div>
 
     <script>
         const _DB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
         
-        const CORE = {
-            user: null, creds: 3, logo: null, timer: null,
-            async login() {
-                const e = document.getElementById('id-mail').value, p = document.getElementById('id-pass').value;
-                const {data, error} = await _DB.auth.signInWithPassword({email:e, password:p});
-                if(error) return alert("Fehler: " + error.message);
-                location.reload();
+        const ENGINE = {
+            user: null, credits: 3, logo: null, syncTimer: null,
+
+            async auth(mode) {
+                const e = document.getElementById('auth-email').value;
+                const p = document.getElementById('auth-pass').value;
+                if(!e || !p) return alert("Sicherheitshinweis: Zugangsdaten unvollständig.");
+                
+                const { data, error } = mode === 'login' ? 
+                    await _DB.auth.signInWithPassword({email: e, password: p}) :
+                    await _DB.auth.signUp({email: e, password: p});
+
+                if(error) alert("System-Fehler: " + error.message);
+                else location.reload();
             },
-            async register() {
-                const e = document.getElementById('id-mail').value, p = document.getElementById('id-pass').value;
-                const {data, error} = await _DB.auth.signUp({email:e, password:p});
-                if(error) return alert("Fehler: " + error.message);
-                alert("Account bereit!"); location.reload();
-            },
-            async logout() { await _DB.auth.signOut(); location.reload(); },
+
             async init() {
-                const {data:{session}} = await _DB.auth.getSession();
+                const { data: { session } } = await _DB.auth.getSession();
                 if(session) {
                     this.user = session.user;
-                    document.getElementById('gate').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
-                    const {data:p} = await _DB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
-                    if(p) { this.creds = p.credits ?? 3; this.fill(p); }
-                    else { await _DB.from('profiles').upsert({id:this.user.id, credits:3}); }
-                    UI.add('Dienstleistung', 1, 0, 'Std.'); UI.upd();
+                    document.getElementById('auth-gate').style.display = 'none';
+                    document.getElementById('main-os').style.display = 'block';
+                    
+                    const { data: p } = await _DB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
+                    if(p) {
+                        this.credits = p.credits ?? 3;
+                        this.fillData(p);
+                    } else {
+                        await _DB.from('profiles').upsert({id: this.user.id, credits: 3});
+                    }
+                    CORE.addRow('Dienstleistung', 1, 0, 'Std.');
+                    this.updateUI();
                 }
             },
-            fill(p) {
+
+            fillData(p) {
                 document.getElementById('m-fn').value = p.firma_name || '';
                 document.getElementById('m-st').value = p.firma_strasse || '';
                 document.getElementById('m-ot').value = p.firma_ort || '';
                 document.getElementById('m-ib').value = p.firma_iban || '';
                 document.getElementById('m-tx').value = p.firma_steuer || '';
             },
-            sync() {
-                clearTimeout(this.timer);
-                this.timer = setTimeout(async () => {
+
+            debounceSync() {
+                clearTimeout(this.syncTimer);
+                this.syncTimer = setTimeout(async () => {
                     await _DB.from('profiles').upsert({
-                        id: this.user.id, firma_name: document.getElementById('m-fn').value,
+                        id: this.user.id,
+                        firma_name: document.getElementById('m-fn').value,
                         firma_strasse: document.getElementById('m-st').value,
                         firma_ort: document.getElementById('m-ot').value,
                         firma_iban: document.getElementById('m-ib').value,
                         firma_steuer: document.getElementById('m-tx').value
                     });
-                }, 1000);
+                    console.log("Cloud Sync Completed.");
+                }, 1500);
             },
-            async gen(mail) {
-                if(this.creds <= 0) return alert("Gratis-Kontingent verbraucht! Bitte Pro-Lizenz aktivieren.");
-                const doc = new jspdf.jsPDF();
-                if(this.logo) doc.addImage(this.logo, 'PNG', 150, 10, 45, 25);
-                
-                doc.setFontSize(26).setFont(undefined, 'bold').text("RECHNUNG", 20, 30);
-                doc.setFontSize(10).setFont(undefined, 'normal').text(`${document.getElementById('m-fn').value}\n${document.getElementById('m-st').value}\n${document.getElementById('m-ot').value}`, 20, 40);
-                doc.text(`RECHNUNG AN:\n${document.getElementById('c-nm').value}\n${document.getElementById('c-st').value}\n${document.getElementById('c-ot').value}`, 20, 65);
-                
-                const rows = []; let sum = 0;
-                document.querySelectorAll('.p-row').forEach(r => {
-                    const d = r.querySelector('.p-d').value, q = r.querySelector('.p-q').value, e = r.querySelector('.p-e').value, p = r.querySelector('.p-p').value;
-                    sum += (q*p); rows.push([d, q, e, p + " €", (q*p).toFixed(2) + " €"]);
-                });
 
-                doc.autoTable({startY: 95, head:[['Leistung', 'Menge', 'Einh.', 'Preis', 'Gesamt']], body: rows, theme:'grid', headStyles:{fillColor:[79,70,229]}});
-                doc.setFontSize(13).setFont(undefined, 'bold').text(`Gesamt (inkl. 19% MwSt): ${(sum*1.19).toFixed(2)} €`, 190, doc.lastAutoTable.finalY + 15, {align:'right'});
-                
-                doc.save(`Rechnung.pdf`);
-                if(mail) window.location.href = `mailto:${document.getElementById('c-ml').value}?subject=Rechnung`;
-                
-                this.creds--;
-                await _DB.from('profiles').update({credits:this.creds}).eq('id', this.user.id);
-                UI.upd(); confetti();
-            }
+            updateUI() {
+                const b = document.getElementById('license-status');
+                b.innerText = this.credits > 0 ? `${this.credits} GRATIS-RECHNUNGEN` : "LIMIT ERREICHT";
+                if(this.credits <= 0) b.classList.add('locked');
+            },
+
+            exit() { _DB.auth.signOut(); location.reload(); }
         };
 
-        const UI = {
-            add(txt, q, p, unit) {
-                const div = document.createElement('div'); div.className = 'pos-row p-row';
+        const CORE = {
+            addRow(txt, q, p, unit) {
+                const div = document.createElement('div');
+                div.className = 'pos-item';
                 div.innerHTML = `
                     <input type="text" class="p-d" value="${txt}" placeholder="Beschreibung...">
                     <input type="number" class="p-q" value="${q}">
                     <input type="text" class="p-e" value="${unit}">
                     <input type="number" class="p-p" value="${p}">
-                    <button onclick="this.parentElement.remove()" style="border:none;background:none;color:#ef4444;font-weight:bold;cursor:pointer;font-size:24px;">✕</button>
+                    <button onclick="this.parentElement.remove()" style="border:none;background:none;color:#ef4444;font-weight:900;cursor:pointer;font-size:24px;">✕</button>
                 `;
                 document.getElementById('pos-root').appendChild(div);
             },
-            upd() { 
-                const b = document.getElementById('status-chip');
-                b.innerText = CORE.creds > 0 ? `${CORE.creds} GRATIS-RECHNUNGEN` : "LIMIT ERREICHT";
-                if(CORE.creds <= 0) b.classList.add('out');
+
+            async exportPDF(sendMail) {
+                if(ENGINE.credits <= 0) return alert("System-Sperre: Bitte Pro-Lizenz erwerben.");
+                
+                const doc = new jspdf.jsPDF();
+                if(ENGINE.logo) doc.addImage(ENGINE.logo, 'PNG', 150, 10, 45, 25);
+                
+                doc.setFontSize(26).setFont(undefined, 'bold').text("RECHNUNG", 20, 30);
+                doc.setFontSize(10).setFont(undefined, 'normal');
+                doc.text(`${document.getElementById('m-fn').value}\n${document.getElementById('m-st').value}\n${document.getElementById('m-ot').value}`, 20, 42);
+                doc.text(`AN EMPFÄNGER:\n${document.getElementById('c-nm').value}\n${document.getElementById('c-st').value}\n${document.getElementById('c-ot').value}`, 20, 65);
+                
+                const tableData = []; let subtotal = 0;
+                document.querySelectorAll('.pos-item').forEach(row => {
+                    const d = row.querySelector('.p-d').value;
+                    const q = parseFloat(row.querySelector('.p-q').value) || 0;
+                    const e = row.querySelector('.p-e').value;
+                    const p = parseFloat(row.querySelector('.p-p').value) || 0;
+                    const total = q * p;
+                    subtotal += total;
+                    tableData.push([d, q, e, p.toFixed(2) + " €", total.toFixed(2) + " €"]);
+                });
+
+                doc.autoTable({
+                    startY: 95,
+                    head: [['Beschreibung', 'Menge', 'Einh.', 'Einzel', 'Gesamt']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [79, 70, 229] }
+                });
+
+                const vat = subtotal * 0.19;
+                const grandTotal = subtotal + vat;
+
+                doc.setFontSize(12).setFont(undefined, 'bold');
+                doc.text(`Gesamt Netto: ${subtotal.toFixed(2)} €`, 190, doc.lastAutoTable.finalY + 15, {align: 'right'});
+                doc.text(`MwSt 19%: ${vat.toFixed(2)} €`, 190, doc.lastAutoTable.finalY + 22, {align: 'right'});
+                doc.text(`Gesamtbetrag: ${grandTotal.toFixed(2)} €`, 190, doc.lastAutoTable.finalY + 30, {align: 'right'});
+                
+                doc.save(`Rechnung_${Date.now()}.pdf`);
+                
+                if(sendMail) {
+                    const mail = document.getElementById('c-ml').value;
+                    window.location.href = `mailto:${mail}?subject=Rechnung`;
+                }
+
+                ENGINE.credits--;
+                await _DB.from('profiles').update({credits: ENGINE.credits}).eq('id', ENGINE.user.id);
+                ENGINE.updateUI();
+                confetti();
             }
         };
 
-        document.getElementById('l-file').onchange = (e) => {
-            const r = new FileReader();
-            r.onload = (ev) => {
-                CORE.logo = ev.target.result;
-                document.getElementById('l-img').src = CORE.logo;
-                document.getElementById('l-img').classList.remove('hidden');
-                document.getElementById('l-txt').classList.add('hidden');
+        document.getElementById('logo-upload').onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                ENGINE.logo = ev.target.result;
+                document.getElementById('logo-img').src = ENGINE.logo;
+                document.getElementById('logo-img').classList.remove('hidden');
+                document.getElementById('logo-hint').classList.add('hidden');
             };
-            r.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(file);
         };
 
-        CORE.init();
+        ENGINE.init();
     </script>
 </body>
 </html>
