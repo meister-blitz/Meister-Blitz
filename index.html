@@ -3,322 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEISTER-BLITZ v17.0 | ULTIMATE ENTERPRISE INFRASTRUCTURE</title>
+    <title>MEISTER-BLITZ v25.0 | TITAN SUPREME INFRASTRUCTURE</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* STYLING ENGINE v17.0 - ULTIMATE ENTERPRISE
-           MASSIVE CSS ARCHITECTURE FOR INDUSTRIAL USE
+        /* CORE ARCHITECTURE v25.0
+           THE CLEAN TITAN SUPREME DESIGN
         */
         :root { 
-            --p-color: #6366f1; 
-            --p-dark: #4f46e5;
-            --p-light: #818cf8;
-            --p-glow: rgba(99, 102, 241, 0.12);
-            --s-color: #10b981; 
-            --s-dark: #059669;
-            --w-color: #f59e0b;
-            --d-color: #ef4444;
-            --bg-main: #f8fafc; 
+            --p-brand: #4f46e5; 
+            --p-glow: rgba(79, 70, 229, 0.12);
+            --bg-master: #f8fafc; 
             --bg-card: #ffffff;
             --txt-main: #0f172a; 
             --txt-dim: #64748b;
-            --txt-white: #ffffff;
-            --border-soft: #e2e8f0;
-            --border-hard: #cbd5e1;
-            --radius-max: 36px;
-            --radius-mid: 20px;
-            --radius-sm: 12px;
-            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            --shadow-heavy: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            --trans-fast: 0.2s ease;
-            --trans-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-ui: #e2e8f0;
+            --radius-xl: 28px;
+            --radius-md: 14px;
+            --sh-premium: 0 25px 60px -12px rgba(0, 0, 0, 0.06);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--bg-main); 
-            color: var(--txt-main); 
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-master); color: var(--txt-main); }
 
-        /* --- AUTHENTICATION OVERLAY CLASS --- */
-        .auth-gate {
-            position: fixed; inset: 0; z-index: 100000;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            display: flex; align-items: center; justify-content: center; padding: 30px;
-            backdrop-filter: blur(10px);
+        /* AUTH & GATEWAY */
+        #auth-overlay {
+            position: fixed; inset: 0; z-index: 1000000;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            display: flex; align-items: center; justify-content: center;
         }
-
         .auth-panel {
-            background: var(--bg-card); width: 100%; max-width: 580px;
-            padding: 70px; border-radius: var(--radius-max);
-            box-shadow: 0 50px 100px rgba(0,0,0,0.5); text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%; max-width: 480px; padding: 60px; text-align: center;
+            background: #fff; border-radius: 40px; box-shadow: var(--sh-premium); border: 1px solid var(--border-ui);
         }
 
-        .auth-panel h1 { font-size: 52px; font-weight: 800; letter-spacing: -3px; margin-bottom: 15px; background: linear-gradient(to right, var(--p-color), var(--s-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .auth-panel p { color: var(--txt-dim); font-size: 18px; margin-bottom: 50px; font-weight: 500; }
+        /* HEADER INFRASTRUCTURE */
+        header {
+            position: fixed; top: 0; width: 100%; height: 95px;
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--border-ui); z-index: 50000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 60px;
+        }
+        .logo-box { font-weight: 800; font-size: 26px; display: flex; align-items: center; gap: 14px; }
+        .logo-box span { background: #000; color: #fff; padding: 5px 15px; border-radius: 10px; font-size: 11px; letter-spacing: 1px; }
 
-        /* --- NAVIGATION CORE --- */
-        .nav-master {
-            position: fixed; top: 0; width: 100%; height: 100px;
-            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(40px);
-            border-bottom: 1px solid var(--border-soft); z-index: 50000;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 80px;
+        /* MAIN STAGE */
+        #main-app { 
+            display: none; padding: 140px 60px 100px; max-width: 1850px; 
+            margin: 0 auto; grid-template-columns: 440px 1fr; gap: 60px; 
         }
 
-        .nav-logo { font-size: 28px; font-weight: 900; letter-spacing: -1.5px; color: var(--txt-main); display: flex; align-items: center; gap: 12px; }
-        .nav-logo span { background: var(--txt-main); color: #fff; padding: 4px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .sidebar { display: flex; flex-direction: column; gap: 35px; }
 
-        .nav-actions { display: flex; align-items: center; gap: 30px; }
-        .user-badge { 
-            background: var(--bg-main); border: 1px solid var(--border-soft); 
-            padding: 10px 25px; border-radius: 100px; display: flex; 
-            align-items: center; gap: 15px; font-weight: 700; font-size: 14px;
+        .card-titan {
+            background: var(--bg-card); border-radius: var(--radius-xl);
+            padding: 45px; box-shadow: var(--sh-premium);
+            border: 1px solid var(--border-ui); transition: 0.4s ease;
         }
+        .card-titan:hover { transform: translateY(-4px); }
 
-        /* --- MAIN WORKSPACE --- */
-        #workspace { 
-            display: none; padding: 140px 80px 100px; max-width: 1920px; 
-            margin: 0 auto; grid-template-columns: 480px 1fr; gap: 60px; 
-        }
-
-        .sidebar-engine { display: flex; flex-direction: column; gap: 40px; }
-
-        .master-card {
-            background: var(--bg-card); border-radius: var(--radius-max);
-            padding: 50px; box-shadow: var(--shadow-heavy);
-            border: 1px solid var(--border-soft); transition: var(--trans-slow);
-        }
-        .master-card:hover { transform: translateY(-5px); }
-
-        .section-tag {
-            display: block; font-size: 13px; font-weight: 900; color: var(--p-color);
+        .label-sup {
+            font-size: 12px; font-weight: 900; color: var(--p-brand);
             text-transform: uppercase; letter-spacing: 3px; margin-bottom: 40px;
             display: flex; align-items: center; gap: 20px;
         }
-        .section-tag::after { content: ""; height: 2px; flex: 1; background: linear-gradient(to right, var(--p-glow), transparent); }
+        .label-sup::after { content: ""; height: 1px; flex: 1; background: var(--border-ui); }
 
-        /* --- FORM ARCHITECTURE --- */
-        .input-group { margin-bottom: 30px; position: relative; }
-        .input-group label { display: block; font-size: 12px; font-weight: 800; color: var(--txt-dim); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        /* FIELD ARCHITECTURE */
+        .g-field { margin-bottom: 28px; }
+        .g-field label { display: block; font-size: 11px; font-weight: 800; color: var(--txt-dim); margin-bottom: 12px; text-transform: uppercase; }
         
-        .input-premium {
-            width: 100%; padding: 20px 28px; border-radius: var(--radius-mid);
-            border: 2px solid var(--border-soft); background: #fcfdfe;
-            font-size: 17px; font-weight: 600; transition: var(--trans-fast);
+        .g-input {
+            width: 100%; padding: 18px 25px; border-radius: var(--radius-md);
+            border: 2px solid var(--border-ui); background: #fcfdfe;
+            font-size: 16px; font-weight: 600; transition: 0.3s;
         }
-        .input-premium:focus { border-color: var(--p-color); background: #fff; box-shadow: 0 15px 40px var(--p-glow); }
+        .g-input:focus { border-color: var(--p-brand); background: #fff; outline: none; box-shadow: 0 0 0 5px var(--p-glow); }
 
-        /* --- DYNAMIC ITEM ENGINE (HYBRID) --- */
-        .item-row {
-            background: #fafbfc; padding: 35px; border-radius: 28px;
-            border: 1px solid var(--border-soft); margin-bottom: 25px;
-            display: grid; grid-template-columns: 2.2fr 0.8fr 1.2fr 1.2fr 65px; gap: 25px; align-items: end;
-            animation: slideIn 0.4s ease-out;
+        /* INVOICE POSITION ENGINE */
+        .pos-grid {
+            background: #ffffff; padding: 35px; border-radius: 24px;
+            border: 1px solid var(--border-ui); margin-bottom: 25px;
+            display: grid; grid-template-columns: 2.6fr 0.7fr 1.2fr 1.2fr 60px; gap: 25px; align-items: end;
+            position: relative;
         }
 
-        .hybrid-field { position: relative; }
-        .hybrid-overlay {
-            position: absolute; top: 41px; left: 22px; width: 82%;
-            border: none; background: transparent; font-weight: 700;
-            font-size: 16px; z-index: 10; outline: none;
+        .h-box { position: relative; }
+        .h-txt {
+            position: absolute; top: 41px; left: 22px; width: calc(100% - 65px);
+            height: 38px; border: none; background: transparent; 
+            font-weight: 700; font-size: 15px; z-index: 50; outline: none;
         }
-        .hybrid-selector { cursor: pointer; color: transparent !important; }
-        .hybrid-selector option { color: var(--txt-main); font-weight: 600; }
+        .h-sel { cursor: pointer; color: transparent !important; z-index: 10; }
 
-        /* --- BUTTON SYSTEM --- */
-        .btn-base {
-            padding: 24px 45px; border-radius: var(--radius-mid); border: none;
-            font-weight: 800; font-size: 16px; cursor: pointer; text-transform: uppercase;
+        /* BUTTON SYSTEM */
+        .btn-core {
+            padding: 22px 40px; border-radius: 16px; border: none;
+            font-weight: 800; font-size: 15px; cursor: pointer; text-transform: uppercase;
             letter-spacing: 2px; display: flex; align-items: center; justify-content: center;
-            gap: 15px; transition: var(--trans-slow);
+            gap: 15px; transition: 0.4s;
         }
-        .btn-solid { background: var(--txt-main); color: var(--txt-white); width: 100%; }
-        .btn-solid:hover { background: #000; transform: scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .btn-p { background: var(--txt-main); color: #fff; width: 100%; }
+        .btn-p:hover { background: #000; transform: translateY(-3px); }
         
-        .btn-outline { background: transparent; border: 3px dashed var(--border-hard); color: var(--txt-dim); width: 100%; margin-top: 30px; }
-        .btn-outline:hover { border-color: var(--p-color); color: var(--p-color); background: var(--p-glow); }
+        .btn-add { background: transparent; border: 3px dashed var(--border-ui); color: var(--txt-dim); width: 100%; margin-top: 25px; }
+        .btn-add:hover { border-color: var(--p-brand); color: var(--p-brand); background: var(--p-glow); }
 
-        .btn-icon-del { background: #fee2e2; color: var(--d-color); height: 65px; border-radius: var(--radius-mid); width: 65px; }
-        .btn-icon-del:hover { background: var(--d-color); color: #fff; transform: rotate(90deg); }
+        .btn-del { background: #fee2e2; color: #ef4444; height: 62px; font-size: 20px; border-radius: 14px; }
+        .btn-del:hover { background: #ef4444; color: #fff; }
 
-        /* --- ANALYTICS & MONITORING --- */
-        .status-hero {
-            padding: 40px; border-radius: var(--radius-max); text-align: center;
-            font-weight: 900; font-size: 24px; margin-bottom: 50px;
-            border: 2px solid transparent; text-transform: uppercase; letter-spacing: 2px;
+        /* PAYWALL TITAN */
+        #paywall {
+            display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98);
+            z-index: 1000000; align-items: center; justify-content: center; backdrop-filter: blur(15px);
         }
-        .status-free { background: #fffbeb; color: #92400e; border-color: #f59e0b; }
-        .status-pro { background: #ecfdf5; color: #065f46; border-color: #10b981; }
+        .pay-card {
+            background: white; padding: 70px; border-radius: 45px; text-align: center; max-width: 550px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        }
+        .price-tag {
+            background: #f1f5f9; padding: 40px; border-radius: 30px; margin: 30px 0;
+            border: 2px solid var(--p-brand);
+        }
+        .price-tag h3 { font-size: 56px; font-weight: 900; letter-spacing: -2px; }
 
-        .chart-wrap { height: 300px; margin-top: 40px; }
-
-        /* --- MEDIA ENGINE --- */
-        .logo-box {
-            width: 100%; height: 240px; border: 4px dashed var(--border-soft);
-            border-radius: var(--radius-mid); display: flex; align-items: center;
+        /* BRANDING AREA */
+        .brand-slot {
+            width: 100%; height: 200px; border: 4px dashed var(--border-ui);
+            border-radius: 24px; display: flex; align-items: center;
             justify-content: center; cursor: pointer; background: #fafafa;
-            overflow: hidden; transition: var(--trans-fast);
         }
-        .logo-box:hover { border-color: var(--p-color); background: var(--p-glow); }
-        .logo-box img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .brand-slot img { max-width: 90%; max-height: 90%; object-fit: contain; }
 
-        /* --- DATA TABLES --- */
-        .journal-list { margin-top: 40px; border-radius: var(--radius-mid); overflow: hidden; }
-        .journal-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 30px; background: white; border-bottom: 1px solid var(--border-soft);
-            transition: var(--trans-fast);
-        }
-        .journal-item:hover { background: #f8fafc; padding-left: 40px; }
-        .journal-item:last-child { border-bottom: none; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* EXPLICIT TERMINAL HIDER */
-        #debug-console, .terminal, .log-box { display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important; }
+        .hide { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="auth-layer" class="auth-gate">
+    <div id="auth-overlay">
         <div class="auth-panel">
-            <h1>MEISTER-BLITZ</h1>
-            <p>High-Volume Enterprise Billing System v17.0</p>
-            <div class="input-group" style="text-align: left;">
-                <label>Betriebs-Zulassung (E-Mail)</label>
-                <input type="email" id="login-email" class="input-premium" placeholder="name@unternehmen.de">
+            <h1 style="font-size: 42px; letter-spacing: -3px; margin-bottom: 10px;">MEISTER-BLITZ</h1>
+            <p style="color: var(--txt-dim); margin-bottom: 40px; font-weight: 600;">SUPREME INFRASTRUCTURE v25.0</p>
+            <div class="g-field" style="text-align: left;">
+                <label>Betriebs-Zugang (E-Mail)</label>
+                <input type="email" id="auth-mail" class="g-input" placeholder="verwaltung@meisterbetrieb.de">
             </div>
-            <div class="input-group" style="text-align: left;">
-                <label>Sicherheitsschlüssel</label>
-                <input type="password" id="login-pass" class="input-premium" placeholder="••••••••">
+            <div class="g-field" style="text-align: left;">
+                <label>Verschlüsselungs-Key</label>
+                <input type="password" id="auth-pass" class="g-input" placeholder="••••••••">
             </div>
-            <button class="btn-base btn-solid" onclick="authController.execute('in')" style="background: var(--p-dark);">System Terminal Starten</button>
-            <div style="margin-top: 40px; font-size: 15px; font-weight: 700;">
-                Neu hier? <span onclick="authController.execute('up')" style="color:var(--p-color); cursor:pointer; text-decoration: underline;">Infrastruktur-Account beantragen</span>
-            </div>
+            <button class="btn-core btn-p" onclick="CORE.login()" style="background: var(--p-brand);">ZUGANG INITIALISIEREN</button>
+            <p style="margin-top: 30px; font-size: 12px; font-weight: 700; color: #94a3b8;">SECURED BY TITAN CLOUD SHIELD</p>
         </div>
     </div>
 
-    <header class="nav-master">
-        <div class="nav-logo">⚡ MEISTER-BLITZ <span>Industrial 17.0</span></div>
-        <div class="nav-actions">
-            <div class="user-badge">
-                <div style="width: 10px; height: 10px; background: var(--s-color); border-radius: 50%;"></div>
-                <div id="display-user">Prüfe Status...</div>
+    <div id="paywall">
+        <div class="pay-card">
+            <div style="font-size: 60px; margin-bottom: 20px;">🛡️</div>
+            <h2 style="font-size: 36px; font-weight: 900; margin-bottom: 15px;">Gratis-Phase beendet</h2>
+            <p style="color: var(--txt-dim); font-weight: 600; margin-bottom: 20px;">Ihre 3 kostenfreien Belege wurden erstellt. Für die weitere Nutzung ist das Supreme-Abonnement erforderlich.</p>
+            <div class="price-tag">
+                <span style="font-size: 14px; font-weight: 900; color: var(--p-brand);">TITAN SUPREME PRO</span>
+                <h3>11,99 €</h3>
+                <span style="font-weight: 700; color: var(--txt-dim);">PRO MONAT / 4 WOCHEN</span>
             </div>
-            <button onclick="authController.logout()" style="background: none; border: none; color: var(--d-color); font-weight: 800; cursor: pointer; font-size: 12px; letter-spacing: 1px;">SYSTEM BEENDEN</button>
+            <button class="btn-core btn-p" style="background: var(--p-brand);" onclick="alert('Payment Gateway: Stripe')">JETZT FREISCHALTEN</button>
+            <p style="margin-top: 25px; font-size: 13px; color: #94a3b8; font-weight: 600;">Sofortige Freischaltung aller Cloud-Funktionen.</p>
         </div>
+    </div>
+
+    <header>
+        <div class="logo-box">⚡ MEISTER-BLITZ <span>TITAN SUPREME</span></div>
+        <div id="user-info" style="font-weight: 800; font-size: 14px; color: var(--txt-dim);">LADE DATENSATZ...</div>
     </header>
 
-    <div id="workspace">
-        <aside class="sidebar-engine">
-            <div id="status-card" class="status-hero status-free">System Initialisierung...</div>
-
-            <div class="master-card">
-                <span class="section-tag">Master-Betriebsprofil</span>
-                <div class="input-group">
-                    <label>Offizieller Firmenwortlaut</label>
-                    <input type="text" id="firm-name" class="input-premium" oninput="cloudController.scheduleSync()">
-                </div>
-                <div class="input-group">
-                    <label>Inhaber / Geschäftsleitung</label>
-                    <input type="text" id="firm-ceo" class="input-premium" oninput="cloudController.scheduleSync()">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="input-group">
-                        <label>Straße / Hausnummer</label>
-                        <input type="text" id="firm-str" class="input-premium" oninput="cloudController.scheduleSync()">
-                    </div>
-                    <div class="input-group">
-                        <label>PLZ / Standort</label>
-                        <input type="text" id="firm-ort" class="input-premium" oninput="cloudController.scheduleSync()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>IBAN Bankverbindung (€)</label>
-                    <input type="text" id="firm-iban" class="input-premium" oninput="cloudController.scheduleSync()">
-                </div>
-                <div class="input-group">
-                    <label>USt-ID / Steuernummer</label>
-                    <input type="text" id="firm-tax" class="input-premium" oninput="cloudController.scheduleSync()">
-                </div>
+    <div id="main-app">
+        <aside class="sidebar">
+            <div id="lic-box" class="card-titan" style="padding: 30px; text-align: center; font-weight: 900; font-size: 20px;">
+                SYNCING CLOUD...
+            </div>
+            
+            <div class="card-titan">
+                <span class="label-sup">Firmen-Infrastruktur</span>
+                <div class="g-field"><label>Rechtlicher Firmenname</label><input type="text" id="m-fn" class="g-input" oninput="CORE.sync()"></div>
+                <div class="g-field"><label>Geschäftsführung</label><input type="text" id="m-ceo" class="g-input" oninput="CORE.sync()"></div>
+                <div class="g-field"><label>Straße / Hausnummer</label><input type="text" id="m-str" class="g-input" oninput="CORE.sync()"></div>
+                <div class="g-field"><label>PLZ / Standort</label><input type="text" id="m-ort" class="g-input" oninput="CORE.sync()"></div>
+                <div class="g-field"><label>IBAN Bankdaten (€)</label><input type="text" id="m-iban" class="g-input" oninput="CORE.sync()"></div>
+                <div class="g-field"><label>Steuernummer / USt-ID</label><input type="text" id="m-tax" class="g-input" oninput="CORE.sync()"></div>
             </div>
 
-            <div class="master-card">
-                <span class="section-tag">Digitales Branding</span>
-                <input type="file" id="logo-upload" hidden accept="image/*">
-                <div class="logo-box" onclick="document.getElementById('logo-upload').click()">
-                    <div id="logo-info" style="text-align: center;">
-                        <div style="font-size: 60px;">🚀</div>
-                        <p style="font-size: 12px; font-weight: 900; margin-top: 15px; color: var(--txt-dim);">FIRMENLOGO HOCHLADEN</p>
-                    </div>
-                    <img id="logo-preview" style="display:none;">
-                </div>
-            </div>
-
-            <div class="master-card">
-                <span class="section-tag">Wachstums-Analytik</span>
-                <div class="chart-wrap">
-                    <canvas id="enterpriseChart"></canvas>
+            <div class="card-titan">
+                <span class="label-sup">Corporate Brand</span>
+                <input type="file" id="logo-in" class="hide" accept="image/*">
+                <div class="brand-slot" onclick="document.getElementById('logo-in').click()">
+                    <span id="logo-msg" style="font-size: 11px; font-weight: 900; color: #94a3b8;">LOGO HOCHLADEN</span>
+                    <img id="logo-pre" class="hide">
                 </div>
             </div>
         </aside>
 
-        <main class="content-engine">
-            <div class="master-card" style="margin-bottom: 50px;">
-                <span class="section-tag">Kunden-Stammdaten</span>
-                <div class="input-group">
-                    <label>Debitor / Firmenname des Kunden</label>
-                    <input type="text" id="cust-name" class="input-premium" placeholder="z.B. Musterbau GmbH & Co. KG">
-                </div>
+        <main>
+            <div class="card-titan" style="margin-bottom: 40px;">
+                <span class="label-sup">Debitoren-Datensatz</span>
+                <div class="g-field"><label>Empfänger / Kundenname</label><input type="text" id="c-nm" class="g-input"></div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                    <div class="input-group">
-                        <label>Anschrift (Straße & Nr.)</label>
-                        <input type="text" id="cust-str" class="input-premium">
-                    </div>
-                    <div class="input-group">
-                        <label>Ort (PLZ & Stadt)</label>
-                        <input type="text" id="cust-ort" class="input-premium">
-                    </div>
+                    <div class="g-field"><label>Straße</label><input type="text" id="c-st" class="g-input"></div>
+                    <div class="g-field"><label>PLZ / Ort</label><input type="text" id="c-ot" class="g-input"></div>
                 </div>
-                <div class="input-group">
-                    <label>Zustell-E-Mail (Automatischer Belegversand)</label>
-                    <input type="email" id="cust-mail" class="input-premium" placeholder="buchhaltung@kunde.de">
-                </div>
+                <div class="g-field"><label>E-Mail Zieladresse</label><input type="email" id="c-ml" class="g-input" placeholder="belege@kunde.de"></div>
             </div>
 
-            <div class="master-card">
-                <span class="section-tag">Leistungsverzeichnis & Kalkulationsmatrix</span>
-                <div id="items-root">
-                    </div>
-                <button class="btn-base btn-outline" onclick="invoiceEngine.addRow()">+ Neue Abrechnungsposition hinzufügen</button>
+            <div class="card-titan">
+                <span class="label-sup">Leistungs-Kalkulation</span>
+                <div id="pos-root"></div>
+                <button class="btn-core btn-add" onclick="UI.addPos()">+ WEITERE POSITION HINZUFÜGEN</button>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin: 60px 0;">
-                <button class="btn-base btn-solid" style="background:#0f172a;" onclick="invoiceEngine.generate(false)">
-                    <span>📥</span> PDF BELEG GENERIEREN
-                </button>
-                <button class="btn-base btn-solid" style="background:var(--p-dark);" onclick="invoiceEngine.generate(true)">
-                    <span>📧</span> DIREKTER MAIL-VERSAND
-                </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 60px 0;">
+                <button class="btn-core btn-p" style="background:#000;" onclick="CORE.gen(false)">📥 PDF EXPORTIEREN</button>
+                <button class="btn-core btn-p" style="background:var(--p-brand);" onclick="CORE.gen(true)">✉️ BELEG VERSENDEN</button>
             </div>
 
-            <div class="master-card">
-                <span class="section-tag">Transaktions-Protokoll (High Volume)</span>
-                <div id="journal-root">
-                    <p style="text-align:center; padding:80px; color:var(--txt-dim); font-size: 16px; font-weight: 700;">Keine aktiven Buchungen im System gefunden.</p>
+            <div class="card-titan">
+                <span class="label-sup">Buchungs-Journal</span>
+                <div id="journal">
+                    <p style="text-align: center; padding: 50px; color: #94a3b8; font-weight: 700;">Keine Belege im aktuellen Zyklus.</p>
                 </div>
             </div>
         </main>
@@ -326,403 +241,228 @@
 
     <script>
         /**
-         * GLOBAL CONSTANTS & PRESETS
-         * Explizite Definitionen für Punkt 2 (Vollständig ausgeschrieben + Euro)
+         * MEISTER-BLITZ SUPREME CORE v25.0
+         * THE ULTIMATE HANDWERKER INFRASTRUCTURE
          */
-        const MASTER_DATA = {
-            SERVICES: [
-                "Handwerker-Leistung (Stundenabrechnung für qualifizierte Fachkräfte)",
-                "Fachhelfer-Einsatz (Unterstützende Montagetätigkeiten)",
-                "Meister-Stundensatz (Bauleitung, Koordination und Abnahme)",
-                "Anfahrtspauschale (Zonenbasierte Abrechnung inkl. Fahrzeugkosten)",
-                "Materialpauschale (Kleinteile, Verbrauchsgüter und Rüstmaterial)",
-                "Wartungs-Servicepauschale (Vierteljährliche Systemprüfung)",
-                "Notdienst-Zuschlag (Außerhalb der regulären Arbeitszeiten)",
-                "Entsorgungs-Service (Fachgerechte Baumülltrennung und Abtransport)",
-                "Beratungs-Honorar (Technische Projektierung und Planung)",
-                "Maschinen-Nutzungsgebühr (Spezialwerkzeuge pro Einsatztag)"
+
+        const DICT = {
+            SV: [
+                "Facharbeiter-Stunde (Qualifizierte Ausführung technischer Gewerke gemäß Aufwand)",
+                "Meister-Stundenleistung (Projektleitung, Fachplanung sowie finale Bauabnahme)",
+                "Fachhelfer-Einsatz (Unterstützende Montagetätigkeiten und Baustellenvorbereitung)",
+                "An- und Abfahrtspauschale (Zonenbasierte Abrechnung inkl. Treibstoff und Rüstzeit)",
+                "Materialaufwand (Pauschalabrechnung für Kleinmaterialien, Hilfsstoffe und Entsorgung)",
+                "Wartungs-Service (Regelmäßige technische Inspektion, Systemprüfung und Reinigung)",
+                "DGUV V3 Sicherheitsprüfung (Gesetzliche Prüfung elektrischer Anlagen & Betriebsmittel)",
+                "Notdienst-Bereitstellung (Zuschlag für Soforteinsätze außerhalb der Kernarbeitszeiten)",
+                "Baustellen-Logistik (Sicherung, Werkzeugvorhaltung und Entsorgungspauschale)"
             ],
-            UNITS: [
-                "Stunden (Std.) - Zeiteinheit für Arbeitsaufwand",
-                "Pauschal (Pa.) - Fixpreis für die gesamte Leistung",
-                "Stück (Stk.) - Einzelpreis pro geliefertem Artikel",
-                "Meter (m) - Längenmaß für verbaute Materialien",
-                "Quadratmeter (m²) - Flächenmaß für Boden/Wand",
-                "Kilometer (km) - Fahrtkostenabrechnung pro Distanz",
-                "Tag (Tag) - Tagessatz für Dauereinsätze",
-                "Set (Set) - Kombinierte Leistungspakete"
-            ],
-            TAX_RATE: 0.19,
-            STORAGE_KEY: 'MB_ENTERPRISE_DATA_V17'
+            UN: [
+                "Stunden (Std.) - Zeitbasierte Abrechnung",
+                "Pauschal (Pa.) - Globaler Festpreis",
+                "Stück (Stk.) - Einzelabrechnung pro Objekt",
+                "Meter (m) - Längenbasierte Abrechnung",
+                "Quadratmeter (m²) - Flächen-Kalkulation"
+            ]
         };
 
-        const _SUPA = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
+        const _DB = supabase.createClient('https://gemywlmdshnagfetimyy.supabase.co', 'sb_publishable_hwjB__36LittD9mWemOeYw_Ur89dBxi');
 
-        /**
-         * CLASS: AUTH_CONTROLLER
-         * Verarbeitet den gesamten Systemzugriff
-         */
-        class AuthController {
-            constructor() {
-                this.currentUser = null;
-                this.sessionActive = false;
-            }
+        const CORE = {
+            user: null,
+            creds: 0,
+            logo: null,
+            timer: null,
 
             async init() {
-                const { data: { session } } = await _SUPA.auth.getSession();
+                const { data: { session } } = await _DB.auth.getSession();
                 if (session) {
-                    this.currentUser = session.user;
-                    this.sessionActive = true;
-                    appController.boot();
+                    this.user = session.user;
+                    this.boot();
                 }
-            }
+            },
 
-            async execute(mode) {
-                const email = document.getElementById('login-email').value;
-                const pass = document.getElementById('login-pass').value;
-
-                if (mode === 'in') {
-                    const { error } = await _SUPA.auth.signInWithPassword({ email, password: pass });
-                    if (error) return alert("System-Fehler: " + error.message);
-                    location.reload();
-                } else {
-                    const { data, error } = await _SUPA.auth.signUp({ email, password: pass });
-                    if (error) return alert("Fehler: " + error.message);
-                    await _SUPA.from('profiles').insert({ id: data.user.id, credits: 5 });
-                    alert("Account erstellt! System wird nun freigeschaltet.");
-                }
-            }
-
-            async logout() {
-                await _SUPA.auth.signOut();
+            async login() {
+                const email = document.getElementById('auth-mail').value;
+                const password = document.getElementById('auth-pass').value;
+                const { error } = await _DB.auth.signInWithPassword({ email, password });
+                if (error) return alert("System-Fehler: " + error.message);
                 location.reload();
-            }
-        }
+            },
 
-        /**
-         * CLASS: INVOICE_ENGINE
-         * Die Kernlogik für die Beleg-Produktion
-         */
-        class InvoiceEngine {
-            constructor() {
-                this.rowCount = 0;
-            }
+            async boot() {
+                document.getElementById('auth-overlay').classList.add('hide');
+                document.getElementById('main-app').style.display = 'grid';
+                document.getElementById('user-info').innerText = this.user.email;
 
-            addRow() {
-                this.rowCount++;
-                const container = document.getElementById('items-root');
-                const row = document.createElement('div');
-                row.className = 'item-row';
-                row.id = `row-${this.rowCount}`;
-                
-                row.innerHTML = `
-                    <div class="input-group hybrid-field">
-                        <label>Leistungstext</label>
-                        <input type="text" class="hybrid-overlay p-name" placeholder="Tippen oder wählen...">
-                        <select class="input-premium hybrid-selector" onchange="this.previousElementSibling.value = this.value.split(' (')[0]">
-                            <option value="">-- Schnellwahl --</option>
-                            ${MASTER_DATA.SERVICES.map(s => `<option value="${s}">${s}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Menge</label>
-                        <input type="number" class="input-premium p-qty" value="1" oninput="invoiceEngine.calcPreview()">
-                    </div>
-                    <div class="input-group hybrid-field">
-                        <label>Einheit</label>
-                        <input type="text" class="hybrid-overlay p-unit" placeholder="Wählen...">
-                        <select class="input-premium hybrid-selector" onchange="this.previousElementSibling.value = this.value.split(' (')[0]">
-                            <option value="">-- Wahl --</option>
-                            ${MASTER_DATA.UNITS.map(u => `<option value="${u}">${u}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Einzelpreis (€)</label>
-                        <input type="number" class="input-premium p-price" placeholder="0.00" oninput="invoiceEngine.calcPreview()">
-                    </div>
-                    <button class="btn-icon-del" onclick="invoiceEngine.removeRow('${row.id}')">✕</button>
-                `;
-                container.appendChild(row);
-            }
+                const { data: p } = await _DB.from('profiles').select('*').eq('id', this.user.id).maybeSingle();
+                if (p) {
+                    this.creds = p.credits ?? 3;
+                    map('m-fn', p.firma_name); map('m-ceo', p.firma_inhaber);
+                    map('m-str', p.firma_strasse); map('m-ort', p.firma_ort);
+                    map('m-iban', p.firma_iban); map('m-tax', p.firma_steuer);
+                    UI.updateStatus();
+                    this.renderJournal();
+                }
+                UI.addPos();
+            },
 
-            removeRow(id) {
-                document.getElementById(id).remove();
-                this.calcPreview();
-            }
+            sync() {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(async () => {
+                    await _DB.from('profiles').upsert({
+                        id: this.user.id,
+                        firma_name: val('m-fn'), firma_inhaber: val('m-ceo'),
+                        firma_strasse: val('m-str'), firma_ort: val('m-ort'),
+                        firma_iban: val('m-iban'), firma_steuer: val('m-tax')
+                    });
+                }, 1200);
+            },
 
-            calcPreview() {
-                // Hier könnte eine Live-Summe eingebaut werden
-            }
-
-            async generate(sendMail) {
-                const profile = appController.profile;
-                if (!profile.isPro && profile.credits <= 0) return alert("Kontingent erschöpft!");
+            async gen(mail) {
+                if (this.creds <= 0) {
+                    document.getElementById('paywall').style.display = 'flex';
+                    return;
+                }
 
                 const doc = new jspdf.jsPDF();
-                const invNumber = "RE-" + Date.now().toString().slice(-8);
-
-                // PDF HEADER ENGINE
-                if (appController.logoBase64) doc.addImage(appController.logoBase64, 'PNG', 25, 15, 55, 0);
+                const rid = "RE-" + Date.now().toString().slice(-7);
                 
+                if (this.logo) doc.addImage(this.logo, 'PNG', 20, 15, 50, 0);
+                
+                doc.setFontSize(8).setFont(undefined, 'normal');
+                doc.text(`${val('m-fn')} | ${val('m-ceo')} | ${val('m-str')} | ${val('m-ort')}`, 20, 65);
+
+                doc.setFontSize(32).setFont(undefined, 'bold');
+                doc.text("RECHNUNG", 20, 90);
+
                 doc.setFontSize(10).setFont(undefined, 'normal');
-                const sender = `${val('firm-name')}\n${val('firm-ceo')}\n${val('firm-str')}\n${val('firm-ort')}\nUSt-ID: ${val('firm-tax')}`;
-                doc.text(sender, 185, 25, { align: 'right' });
+                doc.text(`KUNDE:\n${val('c-nm')}\n${val('c-st')}\n${val('c-ot')}`, 20, 105);
+                doc.text(`Beleg-Nr: ${rid}\nDatum: ${new Date().toLocaleDateString('de-DE')}`, 190, 105, { align: 'right' });
 
-                doc.setFontSize(34).setFont(undefined, 'bold');
-                doc.text("RECHNUNG", 25, 80);
-
-                doc.setFontSize(11).setFont(undefined, 'normal');
-                doc.text("RECHNUNGSEMPFÄNGER:", 25, 95);
-                doc.setFont(undefined, 'bold');
-                doc.text(`${val('cust-name')}\n${val('cust-str')}\n${val('cust-ort')}`, 25, 102);
-
-                doc.setFont(undefined, 'normal');
-                doc.text("Datum: " + new Date().toLocaleDateString('de-DE'), 185, 102, { align: 'right' });
-                doc.text("Belegnummer: " + invNumber, 185, 108, { align: 'right' });
-
-                // TABLE DATA EXTRACTION
-                const tableBody = [];
-                let netTotal = 0;
-                document.querySelectorAll('.item-row').forEach(row => {
-                    const name = row.querySelector('.p-name').value;
-                    const qty = parseFloat(row.querySelector('.p-qty').value) || 0;
-                    const unit = row.querySelector('.p-unit').value;
-                    const price = parseFloat(row.querySelector('.p-price').value) || 0;
-                    const total = qty * price;
-                    netTotal += total;
-                    tableBody.push([name, qty + " " + unit, price.toFixed(2) + " €", total.toFixed(2) + " €"]);
+                const rows = [];
+                let net = 0;
+                document.querySelectorAll('.pos-grid').forEach(r => {
+                    const t = r.querySelector('.p-tx').value;
+                    const q = parseFloat(r.querySelector('.p-qy').value) || 0;
+                    const u = r.querySelector('.p-un').value;
+                    const p = parseFloat(r.querySelector('.p-pr').value) || 0;
+                    const s = q * p;
+                    net += s;
+                    rows.push([t, `${q} ${u}`, `${p.toFixed(2)} €`, `${s.toFixed(2)} €`]);
                 });
 
                 doc.autoTable({
-                    startY: 130,
-                    head: [['Leistungsbeschreibung', 'Menge / Einheit', 'Einzelpreis', 'Gesamtbetrag']],
-                    body: tableBody,
+                    startY: 135,
+                    head: [['Beschreibung der Leistung', 'Menge', 'Einzelpreis', 'Gesamtbetrag']],
+                    body: rows,
                     theme: 'grid',
-                    headStyles: { fillColor: [15, 23, 42], textColor: 255, fontStyle: 'bold' },
-                    columnStyles: { 1: {halign: 'right'}, 2: {halign: 'right'}, 3: {halign: 'right'} }
+                    headStyles: { fillColor: [15, 23, 42] }
                 });
 
-                // CALCULATIONS
-                const tax = netTotal * MASTER_DATA.TAX_RATE;
-                const gross = netTotal + tax;
-                const finalY = doc.lastAutoTable.finalY + 20;
+                const fy = doc.lastAutoTable.finalY + 15;
+                const tx = net * 0.19;
+                const gr = net + tx;
 
-                doc.setFontSize(10).setFont(undefined, 'normal');
-                doc.text("Nettobetrag:", 135, finalY);
-                doc.text(netTotal.toFixed(2) + " €", 185, finalY, { align: 'right' });
-                doc.text("Umsatzsteuer 19%:", 135, finalY + 8);
-                doc.text(tax.toFixed(2) + " €", 185, finalY + 8, { align: 'right' });
-                
-                doc.setFontSize(16).setFont(undefined, 'bold');
-                doc.text("GESAMTSUMME (€):", 135, finalY + 20);
-                doc.text(gross.toFixed(2) + " €", 185, finalY + 20, { align: 'right' });
+                doc.setFontSize(10).text("Netto-Betrag:", 135, fy);
+                doc.text(net.toFixed(2) + " €", 190, fy, { align: 'right' });
+                doc.text("MwSt. 19%:", 135, fy + 8);
+                doc.text(tx.toFixed(2) + " €", 190, fy + 8, { align: 'right' });
+                doc.setFontSize(15).setFont(undefined, 'bold').text("GESAMTSUMME (€):", 135, fy + 18);
+                doc.text(gr.toFixed(2) + " €", 190, fy + 18, { align: 'right' });
 
-                // LEGAL FOOTER
-                doc.setFontSize(8).setFont(undefined, 'normal');
-                const footerTxt = `Bitte überweisen Sie den fälligen Betrag innerhalb von 14 Tagen auf unser Konto.\nIBAN: ${val('firm-iban')} | Bank: Geschäftskonto | Verwendungszweck: ${invNumber}\nWir danken für die angenehme Zusammenarbeit!`;
-                doc.text(footerTxt, 105, 280, { align: 'center' });
+                doc.setFontSize(8).setFont(undefined, 'normal').text(`Bitte überweisen Sie den Betrag innerhalb von 14 Tagen auf IBAN: ${val('m-iban')}`, 105, 285, { align: 'center' });
 
-                if (sendMail) {
-                    const mailBody = `Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie die Rechnung ${invNumber} über ${gross.toFixed(2)} €.\n\nBeste Grüße,\n${val('firm-name')}`;
-                    window.location.href = `mailto:${val('cust-mail')}?subject=Rechnung ${invNumber}&body=${encodeURIComponent(mailBody)}`;
+                if (mail) {
+                    window.location.href = `mailto:${val('c-ml')}?subject=Rechnung ${rid}&body=Anbei Ihre Rechnung über ${gr.toFixed(2)} € von ${val('m-fn')}.`;
                 }
 
-                doc.save(`${invNumber}_MeisterBlitz.pdf`);
+                doc.save(`${rid}_Rechnung.pdf`);
+                
+                this.creds--;
+                await _DB.from('profiles').update({ credits: this.creds }).eq('id', this.user.id);
+                this.addJ(val('c-nm'), gr.toFixed(2));
+                UI.updateStatus();
+                confetti({ particleCount: 150, origin: { y: 0.8 } });
+            },
 
-                // POST-PROCESSING
-                if (!profile.isPro) {
-                    profile.credits--;
-                    await _SUPA.from('profiles').update({ credits: profile.credits }).eq('id', authController.currentUser.id);
+            addJ(c, v) {
+                let j = JSON.parse(localStorage.getItem('mb_j_supreme_' + this.user.id) || '[]');
+                j.unshift({ c, v, d: new Date().toLocaleDateString('de-DE') });
+                localStorage.setItem('mb_j_supreme_' + this.user.id, JSON.stringify(j.slice(0, 30)));
+                this.renderJournal();
+            },
+
+            renderJournal() {
+                const root = document.getElementById('journal');
+                const j = JSON.parse(localStorage.getItem('mb_j_supreme_' + this.user.id) || '[]');
+                if (j.length > 0) {
+                    root.innerHTML = j.map(i => `<div style="display:flex; justify-content:space-between; padding:25px; border-bottom:1px solid #eee;">
+                        <div><strong>${i.c}</strong><br><small style="color:#94a3b8">${i.d}</small></div>
+                        <div style="font-size:20px; font-weight:800; color:var(--p-brand);">${i.v} €</div>
+                    </div>`).join('');
                 }
-                
-                journalController.addEntry(val('cust-name'), gross.toFixed(2));
-                appController.updateUI();
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
             }
-        }
+        };
 
-        /**
-         * CLASS: CLOUD_CONTROLLER
-         * Synchronisation der Firmendaten
-         */
-        class CloudController {
-            constructor() {
-                this.syncTimer = null;
-            }
-
-            scheduleSync() {
-                clearTimeout(this.syncTimer);
-                this.syncTimer = setTimeout(() => this.syncNow(), 2000);
-            }
-
-            async syncNow() {
-                if (!authController.sessionActive) return;
-                console.log("CloudSync: Push Data...");
-                await _SUPA.from('profiles').upsert({
-                    id: authController.currentUser.id,
-                    firma_name: val('firm-name'),
-                    firma_inhaber: val('firm-ceo'),
-                    firma_strasse: val('firm-str'),
-                    firma_ort: val('firm-ort'),
-                    firma_iban: val('firm-iban'),
-                    firma_steuer: val('firm-tax')
-                });
-            }
-        }
-
-        /**
-         * CLASS: JOURNAL_CONTROLLER
-         * Verwaltung der Historie und Analysen
-         */
-        class JournalController {
-            constructor() {
-                this.entries = [];
-            }
-
-            addEntry(client, amount) {
-                const entry = {
-                    id: Date.now(),
-                    client: client,
-                    amount: amount,
-                    date: new Date().toLocaleDateString('de-DE')
-                };
-                this.entries.unshift(entry);
-                this.save();
-                this.render();
-                appController.updateChart();
-            }
-
-            save() {
-                localStorage.setItem(`MB_HIST_${authController.currentUser.id}`, JSON.stringify(this.entries.slice(0, 50)));
-            }
-
-            load() {
-                const stored = localStorage.getItem(`MB_HIST_${authController.currentUser.id}`);
-                this.entries = stored ? JSON.parse(stored) : [];
-                this.render();
-            }
-
-            render() {
-                const root = document.getElementById('journal-root');
-                if (this.entries.length === 0) return;
-                
-                root.innerHTML = this.entries.map(e => `
-                    <div class="journal-item">
-                        <div>
-                            <div style="font-weight: 800; font-size: 17px;">${e.client}</div>
-                            <div style="color: var(--txt-dim); font-size: 13px;">Datum: ${e.date}</div>
-                        </div>
-                        <div style="font-size: 22px; font-weight: 900; color: var(--p-color);">${e.amount} €</div>
+        const UI = {
+            addPos() {
+                const root = document.getElementById('pos-root');
+                const row = document.createElement('div');
+                row.className = 'pos-grid';
+                row.innerHTML = `
+                    <div class="g-field h-box">
+                        <label>Leistungstext</label>
+                        <input type="text" class="h-txt p-tx" placeholder="Tippen...">
+                        <select class="g-input h-sel" onchange="this.previousElementSibling.value = this.value.split(' (')[0]">
+                            <option value="">-- Schnellwahl --</option>
+                            ${DICT.SV.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
                     </div>
-                `).join('');
+                    <div class="g-field">
+                        <label>Menge</label>
+                        <input type="number" class="g-input p-qy" value="1">
+                    </div>
+                    <div class="g-field h-box">
+                        <label>Einheit</label>
+                        <input type="text" class="h-txt p-un" placeholder="Wahl...">
+                        <select class="g-input h-sel" onchange="this.previousElementSibling.value = this.value.split(' (')[0]">
+                            <option value="">--</option>
+                            ${DICT.UN.map(u => `<option value="${u}">${u}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="g-field">
+                        <label>Preis (€)</label>
+                        <input type="number" class="g-input p-pr" placeholder="0.00">
+                    </div>
+                    <button class="btn-core btn-del" onclick="this.parentElement.remove()">✕</button>
+                `;
+                root.appendChild(row);
+            },
+            updateStatus() {
+                const el = document.getElementById('lic-box');
+                el.innerText = CORE.creds + " SUPREME-BELEGE VERFÜGBAR";
+                el.style.color = CORE.creds > 0 ? "#065f46" : "#ef4444";
+                el.style.background = CORE.creds > 0 ? "#ecfdf5" : "#fee2e2";
             }
-        }
+        };
 
-        /**
-         * CLASS: APP_CONTROLLER
-         * Hauptsteuerung der Anwendung
-         */
-        class AppController {
-            constructor() {
-                this.profile = { credits: 0, isPro: false };
-                this.logoBase64 = null;
-                this.chart = null;
-            }
+        document.getElementById('logo-in').onchange = (e) => {
+            const r = new FileReader();
+            r.onload = (ev) => {
+                CORE.logo = ev.target.result;
+                document.getElementById('logo-pre').src = CORE.logo;
+                document.getElementById('logo-pre').classList.remove('hide');
+                document.getElementById('logo-msg').classList.add('hide');
+            };
+            r.readAsDataURL(e.target.files[0]);
+        };
 
-            async boot() {
-                document.getElementById('auth-layer').style.display = 'none';
-                document.getElementById('workspace').style.display = 'grid';
-                document.getElementById('display-user').innerText = authController.currentUser.email;
-
-                const { data: prof } = await _SUPA.from('profiles').select('*').eq('id', authController.currentUser.id).maybeSingle();
-                if (prof) {
-                    this.profile.credits = prof.credits || 0;
-                    this.profile.isPro = prof.abo_bis && new Date(prof.abo_bis) > new Date();
-                    
-                    fill('firm-name', prof.firma_name);
-                    fill('firm-ceo', prof.firma_inhaber);
-                    fill('firm-str', prof.firma_strasse);
-                    fill('firm-ort', prof.firma_ort);
-                    fill('firm-iban', prof.firma_iban);
-                    fill('firm-tax', prof.firma_steuer);
-                }
-
-                this.updateUI();
-                invoiceEngine.addRow();
-                journalController.load();
-                this.initChart();
-                this.setupMedia();
-            }
-
-            updateUI() {
-                const card = document.getElementById('status-card');
-                if (this.profile.isPro) {
-                    card.className = "status-hero status-pro";
-                    card.innerText = "Enterprise Pro Aktiv (Unlimitiert)";
-                } else {
-                    card.className = "status-hero status-free";
-                    card.innerText = `${this.profile.credits} Freibelege Verfügbar`;
-                }
-            }
-
-            setupMedia() {
-                document.getElementById('logo-upload').onchange = (e) => {
-                    const file = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        this.logoBase64 = event.target.result;
-                        document.getElementById('logo-preview').src = this.logoBase64;
-                        document.getElementById('logo-preview').style.display = 'block';
-                        document.getElementById('logo-info').style.display = 'none';
-                    };
-                    reader.readAsDataURL(file);
-                };
-            }
-
-            initChart() {
-                const ctx = document.getElementById('enterpriseChart').getContext('2d');
-                this.chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr'],
-                        datasets: [{
-                            label: 'Tagesumsatz (€)',
-                            data: [0, 0, 0, 0, 0],
-                            backgroundColor: '#6366f1',
-                            borderRadius: 10
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-                });
-                this.updateChart();
-            }
-
-            updateChart() {
-                if (!this.chart) return;
-                const dailySum = journalController.entries.slice(0, 5).map(e => parseFloat(e.amount)).reverse();
-                this.chart.data.datasets[0].data = dailySum;
-                this.chart.update();
-            }
-        }
-
-        // INITIALIZE SYSTEM
-        const authController = new AuthController();
-        const invoiceEngine = new InvoiceEngine();
-        const cloudController = new CloudController();
-        const journalController = new JournalController();
-        const appController = new AppController();
-
-        // HELPERS
         function val(id) { return document.getElementById(id).value; }
-        function fill(id, v) { if(v) document.getElementById(id).value = v; }
+        function map(id, v) { if(v) document.getElementById(id).value = v; }
 
-        // BOOTING
-        authController.init();
+        CORE.init();
 
-        /**
-         * END OF ENTERPRISE CORE v17.0
-         * MASSIVE INFRASTRUCTURE FOR HIGH VOLUME BILLING
-         */
     </script>
 </body>
 </html>
