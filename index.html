@@ -46,7 +46,6 @@
         .tax-line { display: flex; justify-content: space-between; margin-bottom: 8px; color: #94a3b8; font-weight: 600; font-size: 13px; }
         .hidden { display: none !important; }
 
-        /* ERWEITERT: Impressum & Datenschutz Styles für Deutschland */
         .impr-btn { color: var(--p-text); font-size: 12px; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .impr-btn:hover { color: var(--p-blue); }
         #impr-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
@@ -97,6 +96,10 @@
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                     <div class="card">
                         <span class="label">Meine Firmendaten</span>
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; background:#eff6ff; padding:10px; border-radius:12px; border:1px solid var(--p-blue);">
+                            <input type="checkbox" id="m-is-klein" style="width:20px; margin:0;" onchange="CORE.sync(); UI.calc();">
+                            <label for="m-is-klein" style="font-weight:700; font-size:12px; color:var(--p-blue);">Kleinunternehmer (§ 19 UStG)</label>
+                        </div>
                         <input type="text" id="m-name" placeholder="Firma / Inhaber" oninput="CORE.sync()">
                         <textarea id="m-addr" placeholder="Anschrift" style="height:80px;" oninput="CORE.sync()"></textarea>
                         <input type="text" id="m-tel" placeholder="Telefon" oninput="CORE.sync()">
@@ -238,6 +241,8 @@
                 document.getElementById('m-tel').value = p.firma_tel || '';
                 document.getElementById('m-iban').value = p.firma_iban || '';
                 document.getElementById('m-tax').value = p.firma_steuer || '';
+                // ERWEITERUNG: Checkbox-Status laden (muss in Supabase Tabelle existieren: is_kleinunternehmer bool)
+                if(p.is_kleinunternehmer !== undefined) document.getElementById('m-is-klein').checked = p.is_kleinunternehmer;
             },
 
             status() {
@@ -263,7 +268,8 @@
                     firma_strasse: document.getElementById('m-addr').value,
                     firma_tel: document.getElementById('m-tel').value,
                     firma_iban: document.getElementById('m-iban').value,
-                    firma_steuer: document.getElementById('m-tax').value
+                    firma_steuer: document.getElementById('m-tax').value,
+                    is_kleinunternehmer: document.getElementById('m-is-klein').checked
                 });
             },
 
@@ -271,6 +277,7 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 const calc = UI.lastCalc;
+                const isKlein = document.getElementById('m-is-klein').checked;
                 
                 doc.setFontSize(22).setFont(undefined, 'bold').text(this.type, 20, 30);
                 doc.setFontSize(10).setFont(undefined, 'normal').text([
@@ -293,12 +300,11 @@
                         r.querySelector('.p-q').value, 
                         r.querySelector('.p-u').value, 
                         r.querySelector('.p-p').value + " €",
-                        r.querySelector('.p-t').value + "%"
+                        isKlein ? "0%" : r.querySelector('.p-t').value + "%"
                     ]);
                 });
 
                 const footRows = [];
-                // RECHTLICHER ZUSATZ IM PDF: KLEINUNTERNEHMER-HINWEIS
                 footRows.push(['', '', '', 'GESAMT:', calc.total.toFixed(2) + " €"]);
 
                 doc.autoTable({
@@ -309,10 +315,16 @@
                     footStyles: { fillColor: [15, 23, 42] }
                 });
 
-                // RECHTLICHE FUSSZEILE IM PDF
                 const finalY = doc.lastAutoTable.finalY + 10;
                 doc.setFontSize(8);
-                doc.text("Hinweis: Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.", 20, finalY);
+                
+                // DYNAMISCHE LOGIK: Nur wenn Checkbox aktiv ist, kommt der Kleinunternehmer-Satz
+                if(isKlein) {
+                    doc.text("Hinweis: Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.", 20, finalY);
+                } else {
+                    doc.text("Vielen Dank für Ihren Auftrag.", 20, finalY);
+                }
+
                 doc.text(`Steuer-Nr: ${document.getElementById('m-tax').value} | IBAN: ${document.getElementById('m-iban').value}`, 105, 285, { align: 'center' });
                 
                 doc.save(`${this.type}_${document.getElementById('doc-num').value}.pdf`);
@@ -355,30 +367,43 @@
             setType(t, el) { CORE.type = t; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); },
             calc() {
                 let n19 = 0, n7 = 0, n0 = 0;
+                const isKlein = document.getElementById('m-is-klein').checked;
+
                 document.querySelectorAll('.pos-row').forEach(r => {
                     const line = (parseFloat(r.querySelector('.p-q').value)||0) * (parseFloat(r.querySelector('.p-p').value)||0);
                     const tax = r.querySelector('.p-t').value;
-                    if(tax == "19") n19 += line;
-                    else if(tax == "7") n7 += line;
-                    else n0 += line;
+                    
+                    // Wenn Kleinunternehmer aktiv, alles als 0% behandeln
+                    if(isKlein) {
+                        n0 += line;
+                    } else {
+                        if(tax == "19") n19 += line;
+                        else if(tax == "7") n7 += line;
+                        else n0 += line;
+                    }
                 });
-                const t19 = n19 * 0.19;
-                const t7 = n7 * 0.07;
+
+                const t19 = isKlein ? 0 : n19 * 0.19;
+                const t7 = isKlein ? 0 : n7 * 0.07;
                 const total = n19 + t19 + n7 + t7 + n0;
                 
                 this.lastCalc = { n19, t19, n7, t7, n0, total };
 
                 let html = "";
-                if(n19 > 0) {
-                    html += `<div class="tax-line"><span>Netto (19%):</span><span>${n19.toFixed(2)} €</span></div>`;
-                    html += `<div class="tax-line"><span>MwSt (19%):</span><span>${t19.toFixed(2)} €</span></div>`;
+                if(!isKlein) {
+                    if(n19 > 0) {
+                        html += `<div class="tax-line"><span>Netto (19%):</span><span>${n19.toFixed(2)} €</span></div>`;
+                        html += `<div class="tax-line"><span>MwSt (19%):</span><span>${t19.toFixed(2)} €</span></div>`;
+                    }
+                    if(n7 > 0) {
+                        html += `<div class="tax-line"><span>Netto (7%):</span><span>${n7.toFixed(2)} €</span></div>`;
+                        html += `<div class="tax-line"><span>MwSt (7%):</span><span>${t7.toFixed(2)} €</span></div>`;
+                    }
                 }
-                if(n7 > 0) {
-                    html += `<div class="tax-line"><span>Netto (7%):</span><span>${n7.toFixed(2)} €</span></div>`;
-                    html += `<div class="tax-line"><span>MwSt (7%):</span><span>${t7.toFixed(2)} €</span></div>`;
-                }
-                if(n0 > 0) {
-                    html += `<div class="tax-line"><span>Steuerfrei (0%):</span><span>${n0.toFixed(2)} €</span></div>`;
+                
+                if(n0 > 0 || isKlein) {
+                    const label = isKlein ? "Gesamt Netto:" : "Steuerfrei (0%):";
+                    html += `<div class="tax-line"><span>${label}</span><span>${(isKlein ? total : n0).toFixed(2)} €</span></div>`;
                 }
                 
                 document.getElementById('v-tax-details').innerHTML = html;
